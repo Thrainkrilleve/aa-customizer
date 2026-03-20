@@ -1,0 +1,36 @@
+[build-system]
+requires = ["setuptools>=61", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "aa-customizer"
+version = "1.0.0"
+description = "Branding & customization plugin for Alliance Auth — custom logos, login backgrounds, favicons, and more."
+readme = "README.md"
+license = { text = "MIT" }
+requires-python = ">=3.8"
+keywords = ["alliance auth", "eve online", "branding", "customization"]
+classifiers = [
+    "Environment :: Web Environment",
+    "Framework :: Django",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+]
+dependencies = [
+    "allianceauth>=4.0.0",
+    "django-solo",
+    "Pillow",
+]
+
+[project.urls]
+Repository = "https://github.com/your-org/aa-customizer"
+
+[tool.setuptools.packages.find]
+include = ["aa_customizer*"]
+
+[tool.setuptools.package-data]
+"aa_customizer" = [
+    "templates/**/*.html",
+    "static/**/*",
+    "migrations/*.py",
+]

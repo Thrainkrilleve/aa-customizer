@@ -1,0 +1,27 @@
+{% extends 'public/middle_box.html' %}
+
+{% load i18n %}
+{% load static %}
+{% load aa_customizer_tags %}
+
+{% block page_title %}{% translate "Login" %}{% endblock %}
+
+{% block middle_box_content %}
+    {# Optional logo, title, and subtitle from the Custom Branding admin #}
+    {% customizer_login_branding %}
+
+    {# EVE SSO login button #}
+    <a href="{% url 'auth_sso_login' %}{% if request.GET.next %}?next={{ request.GET.next|urlencode }}{% endif %}">
+        <img
+            class="img-responsive center-block"
+            src="{% static 'allianceauth/authentication/img/sso/EVE_SSO_Login_Buttons_Large_Black.png' %}"
+            alt="{% translate 'Login with Eve SSO' %}"
+        >
+    </a>
+
+    {% if AA_CUSTOMIZER.login_extra_html %}
+        <div class="aa-customizer-login-extra mt-3">
+            {{ AA_CUSTOMIZER.login_extra_html|safe }}
+        </div>
+    {% endif %}
+{% endblock %}

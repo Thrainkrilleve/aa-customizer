@@ -1,0 +1,75 @@
+{% load theme_tags %}
+{% load static %}
+{% load aa_customizer_tags %}
+<!DOCTYPE html>
+<html lang="en" {% theme_html_tags %}>
+    <head>
+        <!-- Required meta tags -->
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <!-- End Required meta tags -->
+
+        <!-- Meta tags -->
+        {% include 'allianceauth/opengraph.html' %}
+        {% include 'allianceauth/icons.html' %}
+        <!-- Meta tags -->
+
+        <title>{% block title %}{% block page_title %}{% endblock page_title %} - {{ SITE_NAME }}{% endblock title %}</title>
+
+        {% theme_css %}
+
+        {% include 'bundles/fontawesome.html' %}
+        {% include 'bundles/auth-framework-css.html' %}
+        <link rel="stylesheet" href="{% static 'aa_customizer/css/aa-customizer.css' %}">
+
+        {% block extra_include %}
+        {% endblock %}
+
+        <style>
+            body {
+                {% if AA_CUSTOMIZER.effective_login_background %}
+                    background: url('{{ AA_CUSTOMIZER.effective_login_background }}') no-repeat center center fixed;
+                {% elif AA_CUSTOMIZER.login_background_color %}
+                    background: {{ AA_CUSTOMIZER.login_background_color }};
+                {% else %}
+                    background: url('{% static 'allianceauth/authentication/img/background.jpg' %}') no-repeat center center fixed;
+                {% endif %}
+                -webkit-background-size: cover;
+                -moz-background-size: cover;
+                -o-background-size: cover;
+                background-size: cover;
+            }
+
+            .card-login {
+                background: rgba(48 48 48 / 0.7);
+                color: rgb(255 255 255);
+                padding-bottom: 21px;
+            }
+
+            #lang-select {
+                width: 40%;
+                margin-left: auto;
+                margin-right: auto;
+            }
+
+            {% block extra_style %}
+            {% endblock %}
+        </style>
+
+        {# Custom CSS from aa_customizer — loaded last so it overrides everything #}
+        {% if AA_CUSTOMIZER.custom_css_url %}
+            <link rel="stylesheet" href="{{ AA_CUSTOMIZER.custom_css_url }}">
+        {% endif %}
+        {% if AA_CUSTOMIZER.custom_css %}
+            <style>{{ AA_CUSTOMIZER.custom_css|safe }}</style>
+        {% endif %}
+        {% if AA_CUSTOMIZER.head_extra_html %}{{ AA_CUSTOMIZER.head_extra_html|safe }}{% endif %}
+    </head>
+
+    <body>
+        <div class="container" style="margin-top:150px;">
+            {% block content %}
+            {% endblock %}
+        </div>
+    </body>
+</html>

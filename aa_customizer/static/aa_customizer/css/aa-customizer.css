@@ -1,0 +1,27 @@
+/* aa-customizer — minimal structural styles
+   All values are intentionally light; the heavy lifting is done by
+   Bootstrap / the active Alliance Auth theme. */
+
+/* ----------------------------------------------------------------- login -- */
+
+.aa-customizer-login-logo {
+    display: block;
+    margin: 0 auto 0.75rem;
+}
+
+.aa-customizer-login-title {
+    font-size: 1.5rem;
+    font-weight: 600;
+}
+
+.aa-customizer-login-subtitle {
+    font-size: 0.95rem;
+}
+
+/* ---------------------------------------------------------------- navbar -- */
+
+.aa-customizer-navbar-logo {
+    display: inline-block;
+    vertical-align: middle;
+    object-fit: contain;
+}

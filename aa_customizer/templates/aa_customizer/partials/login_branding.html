@@ -1,0 +1,18 @@
+{% if has_branding %}
+    {% if branding.effective_login_logo %}
+        <img
+            class="aa-customizer-login-logo img-fluid mb-3"
+            src="{{ branding.effective_login_logo }}"
+            alt="Site logo"
+            style="max-width: {{ branding.login_logo_max_width }}px;"
+        >
+    {% endif %}
+
+    {% if branding.login_title %}
+        <h2 class="aa-customizer-login-title mb-2">{{ branding.login_title }}</h2>
+    {% endif %}
+
+    {% if branding.login_subtitle %}
+        <p class="aa-customizer-login-subtitle text-white-50 mb-3">{{ branding.login_subtitle }}</p>
+    {% endif %}
+{% endif %}

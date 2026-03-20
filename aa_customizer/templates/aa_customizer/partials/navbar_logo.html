@@ -1,0 +1,9 @@
+{% if branding.effective_navbar_logo %}
+    <img
+        class="aa-customizer-navbar-logo me-2"
+        src="{{ branding.effective_navbar_logo }}"
+        alt="{{ site_name }}"
+        height="{{ branding.navbar_logo_height }}"
+        style="max-height: {{ branding.navbar_logo_height }}px; width: auto;"
+    >
+{% endif %}
