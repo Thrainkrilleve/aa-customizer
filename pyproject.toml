@@ -23,16 +23,17 @@ dependencies = [
 ]
 
 [project.urls]
-Repository = "https://github.com/your-org/aa-customizer"
+Repository = "https://github.com/Thrainkrilleve/aa-customizer"
 
-[tool.setuptools]
-# The repo root IS the aa_customizer package — no subfolder needed.
-package-dir = {"aa_customizer" = "."}
-packages = ["aa_customizer", "aa_customizer.migrations", "aa_customizer.templatetags"]
+[tool.setuptools.packages.find]
+include = ["aa_customizer*"]
 
 [tool.setuptools.package-data]
-"aa_customizer" = [
-    "templates/**/*.html",
-    "static/**/*",
+aa_customizer = [
     "migrations/*.py",
+    "templates/aa_customizer/*.html",
+    "templates/aa_customizer/**/*.html",
+    "templates/allianceauth/*.html",
+    "templates/public/*.html",
+    "static/aa_customizer/css/*.css",
 ]
