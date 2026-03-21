@@ -1,6 +1,6 @@
 # AA Customizer
 
-A branding & customization plugin for [Alliance Auth](https://github.com/allianceauth/allianceauth).
+A branding & customization plugin for [Alliance Auth](https://allianceauth.readthedocs.io/en/v4.13.1/).
 
 Gives administrators a simple admin-panel UI to customize their Alliance Auth installation without touching code or replacing static files.
 
