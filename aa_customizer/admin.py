@@ -49,6 +49,16 @@ class CustomBrandingAdmin(SingletonModelAdmin):
             },
         ),
         (
+            _("Login Page — Layout"),
+            {
+                "fields": ("login_layout",),
+                "description": _(
+                    "Choose between the default centered card or a split-screen layout "
+                    "(background image on the left, login panel on the right)."
+                ),
+            },
+        ),
+        (
             _("Login Page — Branding"),
             {
                 "fields": (

@@ -103,6 +103,25 @@ class CustomBranding(SingletonModel):
         ),
     )
 
+    # ---------------------------------------------------------- login layout --
+    LAYOUT_CARD = "card"
+    LAYOUT_SPLIT = "split"
+    LAYOUT_CHOICES = [
+        (LAYOUT_CARD, _("Centered Card (default)")),
+        (LAYOUT_SPLIT, _("Split Screen")),
+    ]
+    login_layout = models.CharField(
+        max_length=10,
+        choices=LAYOUT_CHOICES,
+        default=LAYOUT_CARD,
+        verbose_name=_("Login Page Layout"),
+        help_text=_(
+            "Centered Card: the default AA layout — a login card centered over a "
+            "full-page background image. "
+            "Split Screen: background image on the left half, dark login panel on the right."
+        ),
+    )
+
     # ---------------------------------------------------------------- favicon --
     favicon = models.ImageField(
         upload_to="aa_customizer/icons/",
