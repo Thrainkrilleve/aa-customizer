@@ -45,6 +45,45 @@ jobs:
       - name: Install build frontend
         run: python -m pip install --upgrade build
 
+      # Verify every model change has a committed migration before we build.
+      # This prevents publishing a package that requires end-users to run
+      # makemigrations themselves.
+      - name: Check for missing migrations
+        run: |
+          pip install django django-solo Pillow
+          python - <<'EOF'
+          import django
+          from django.conf import settings
+          settings.configure(
+              INSTALLED_APPS=[
+                  "django.contrib.contenttypes",
+                  "django.contrib.auth",
+                  "solo",
+                  "aa_customizer",
+              ],
+              DATABASES={"default": {"ENGINE": "django.db.backends.sqlite3", "NAME": ":memory:"}},
+              DEFAULT_AUTO_FIELD="django.db.models.AutoField",
+          )
+          django.setup()
+          from django.db.migrations.autodetector import MigrationAutodetector
+          from django.db.migrations.loader import MigrationLoader
+          from django.db.migrations.state import ProjectState
+          from django.apps import apps
+          import sys
+
+          loader = MigrationLoader(None, ignore_no_migrations=True)
+          autodetector = MigrationAutodetector(
+              loader.project_state(),
+              ProjectState.from_apps(apps),
+          )
+          changes = autodetector.changes(graph=loader.graph).get("aa_customizer", [])
+          if changes:
+              print("ERROR: Unmigrated model changes detected in aa_customizer!")
+              print("Run 'python manage.py makemigrations aa_customizer' and commit the result.")
+              sys.exit(1)
+          print("Migration check passed — all model changes are covered.")
+          EOF
+
       - name: Build wheel and sdist
         run: python -m build
 
