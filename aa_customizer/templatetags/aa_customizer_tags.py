@@ -3,6 +3,7 @@ Template tags for the aa_customizer app.
 """
 
 from django import template
+from django.utils.html import conditional_escape
 from django.utils.safestring import mark_safe
 
 from ..models import CustomBranding
@@ -33,13 +34,14 @@ def customizer_favicon_tags(context) -> str:
     if not url:
         return ""
 
+    safe_url = conditional_escape(url)
     return mark_safe(
-        f'<link rel="apple-touch-icon" sizes="180x180" href="{url}">\n'
-        f'<link rel="icon" type="image/png" href="{url}" sizes="192x192">\n'
-        f'<link rel="icon" type="image/png" href="{url}" sizes="96x96">\n'
-        f'<link rel="icon" type="image/png" href="{url}" sizes="32x32">\n'
-        f'<link rel="icon" type="image/png" href="{url}" sizes="16x16">\n'
-        f'<link rel="shortcut icon" href="{url}">\n'
+        f'<link rel="apple-touch-icon" sizes="180x180" href="{safe_url}">\n'
+        f'<link rel="icon" type="image/png" href="{safe_url}" sizes="192x192">\n'
+        f'<link rel="icon" type="image/png" href="{safe_url}" sizes="96x96">\n'
+        f'<link rel="icon" type="image/png" href="{safe_url}" sizes="32x32">\n'
+        f'<link rel="icon" type="image/png" href="{safe_url}" sizes="16x16">\n'
+        f'<link rel="shortcut icon" href="{safe_url}">\n'
     )
 
 
