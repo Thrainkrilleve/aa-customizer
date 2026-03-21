@@ -20,7 +20,6 @@ class CustomBrandingAdmin(SingletonModelAdmin):
     """
 
     form = CustomBrandingAdminForm
-    save_on_top = True
 
     fieldsets = (
         (
