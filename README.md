@@ -174,6 +174,13 @@ location /media/ {
 
 For most Docker installs, **using URL fields is simpler** — just paste an image link and skip all of the above.
 
+**5 — Build and Restart**
+
+```
+docker compose build
+docker compose down
+docker compose up -d
+```
 ---
 
 ## Usage
