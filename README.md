@@ -15,7 +15,7 @@ Gives administrators a simple admin-panel UI to customize their Alliance Auth in
 ![Centered Card layout](https://i.imgur.com/GaTmrDD.png)
 
 ### Side Bar Icon
-![Sidebar Icon](https://i.imgur.com/GaTmrDD.png)
+![Sidebar Icon](https://i.imgur.com/HG7hRYo.png)
 
 ---
 
