@@ -175,7 +175,7 @@ class CustomBranding(SingletonModel):
     )
 
     class Meta:
-        default_permissions = ()
+        default_permissions = ("view", "change")
         verbose_name = _("Custom Branding")
         verbose_name_plural = _("Custom Branding")
 
