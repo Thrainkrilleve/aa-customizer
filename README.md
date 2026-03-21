@@ -60,24 +60,17 @@ INSTALLED_APPS = [
 
 ### 3 — Add the context processor
 
-In your `local.py`, add `"aa_customizer.context_processors.aa_customizer"` to the `context_processors` list:
+In your `local.py`, append the context processor to the existing `TEMPLATES` list.
+The standard Alliance Auth `local.py` imports from `base.py`, so the `TEMPLATES` setting already exists — you just need to append to it:
 
 ```python
-TEMPLATES = [
-    {
-        "BACKEND": "django.template.backends.django.DjangoTemplates",
-        "DIRS": [os.path.join(PROJECT_DIR, "templates")],
-        "APP_DIRS": True,
-        "OPTIONS": {
-            "context_processors": [
-                # … existing processors …
-                "allianceauth.context_processors.auth_settings",
-                "aa_customizer.context_processors.aa_customizer",   # ← add this
-            ],
-        },
-    },
-]
+# local.py — add AFTER your imports / INSTALLED_APPS block
+TEMPLATES[0]["OPTIONS"]["context_processors"].append(
+    "aa_customizer.context_processors.aa_customizer"
+)
 ```
+
+> **Why not redefine `TEMPLATES`?**  Your `local.py` starts with `from .base import *`, so `TEMPLATES` is already defined by Alliance Auth's `base.py`.  Appending keeps all existing context processors intact and avoids duplicating the full block.
 
 ### 4 — Run migrations
 
