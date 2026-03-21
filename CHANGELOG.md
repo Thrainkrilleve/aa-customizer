@@ -5,6 +5,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.1.0] - 2026-03-21
+
+### Added
+- **Media Library** — a new `AA Customizer → Media Library` section in the admin lets you upload and name images once, then reuse them across any image slot without re-uploading. Each image slot (login background, login logo, favicon, navbar logo, sidebar logo) now has a **Library** dropdown alongside the existing URL and direct-upload fields.
+- **Image priority chain** — for every image slot the resolution order is: URL field (highest) → Library selection → direct upload. Existing URL and upload fields continue to work exactly as before.
+- **Media Library admin thumbnail** — the Media Library list view shows an inline preview of each image for quick identification.
+
 ## [1.0.18] - 2026-03-20
 
 ### Fixed

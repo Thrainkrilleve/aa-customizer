@@ -8,6 +8,52 @@ from django.db import models
 from django.utils.translation import gettext_lazy as _
 
 
+class AACMediaImage(models.Model):
+    """
+    Media library image.  Upload images here once, then select them from any
+    image field in Custom Branding — no need to re-upload or copy files.
+    """
+
+    IMAGE_TYPE_ANY = "any"
+    IMAGE_TYPE_BACKGROUND = "background"
+    IMAGE_TYPE_LOGO = "logo"
+    IMAGE_TYPE_ICON = "icon"
+    IMAGE_TYPE_CHOICES = [
+        (IMAGE_TYPE_ANY, _("Any / General")),
+        (IMAGE_TYPE_BACKGROUND, _("Background")),
+        (IMAGE_TYPE_LOGO, _("Logo")),
+        (IMAGE_TYPE_ICON, _("Icon / Favicon")),
+    ]
+
+    name = models.CharField(
+        max_length=100,
+        verbose_name=_("Name"),
+        help_text=_(
+            "A descriptive label for this image, e.g. 'Corp logo v2' or 'Winter background'."
+        ),
+    )
+    image = models.ImageField(
+        upload_to="aa_customizer/library/",
+        verbose_name=_("Image"),
+    )
+    image_type = models.CharField(
+        max_length=20,
+        choices=IMAGE_TYPE_CHOICES,
+        default=IMAGE_TYPE_ANY,
+        verbose_name=_("Type"),
+        help_text=_("Optional category for organisation — does not restrict usage."),
+    )
+    uploaded = models.DateTimeField(auto_now_add=True, verbose_name=_("Uploaded"))
+
+    class Meta:
+        verbose_name = _("Media Library Image")
+        verbose_name_plural = _("Media Library")
+        ordering = ["name"]
+
+    def __str__(self) -> str:
+        return self.name
+
+
 class CustomBranding(SingletonModel):
     """
     Singleton model for Alliance Auth branding customization.
@@ -46,8 +92,10 @@ class CustomBranding(SingletonModel):
         blank=True,
         verbose_name=_("Login Background — URL"),
         help_text=_(
-            "URL of a background image (e.g. a CDN, Imgur, or object-storage link). "
-            "Takes priority over an uploaded file. Ideal for Docker installs."
+            "URL of a background image or video file (e.g. a CDN, Imgur, or object-storage link). "
+            "Takes priority over an uploaded file. Ideal for Docker installs. "
+            "Supported video formats: .mp4, .webm, .ogv. "
+            "Note: YouTube and other streaming links are not supported — the URL must point directly to a file."
         ),
     )
     login_background_color = models.CharField(
@@ -57,6 +105,18 @@ class CustomBranding(SingletonModel):
         help_text=_(
             "Fallback CSS background color used when neither an image URL nor an "
             "uploaded file is set (e.g. #1a1a2e or rgba(26,26,46,1))."
+        ),
+    )
+    login_background_library = models.ForeignKey(
+        "AACMediaImage",
+        null=True,
+        blank=True,
+        on_delete=models.SET_NULL,
+        related_name="+",
+        verbose_name=_("Login Background — Library"),
+        help_text=_(
+            "Select an image from the media library. "
+            "Takes priority over a direct upload; a URL takes priority over both."
         ),
     )
 
@@ -76,6 +136,18 @@ class CustomBranding(SingletonModel):
         blank=True,
         verbose_name=_("Login Logo — URL"),
         help_text=_("URL of a logo image. Takes priority over an uploaded file."),
+    )
+    login_logo_library = models.ForeignKey(
+        "AACMediaImage",
+        null=True,
+        blank=True,
+        on_delete=models.SET_NULL,
+        related_name="+",
+        verbose_name=_("Login Logo — Library"),
+        help_text=_(
+            "Select an image from the media library. "
+            "Takes priority over a direct upload; a URL takes priority over both."
+        ),
     )
     login_logo_max_width = models.PositiveSmallIntegerField(
         default=200,
@@ -173,6 +245,18 @@ class CustomBranding(SingletonModel):
         verbose_name=_("Favicon — URL"),
         help_text=_("URL of a favicon image. Takes priority over an uploaded file."),
     )
+    favicon_library = models.ForeignKey(
+        "AACMediaImage",
+        null=True,
+        blank=True,
+        on_delete=models.SET_NULL,
+        related_name="+",
+        verbose_name=_("Favicon — Library"),
+        help_text=_(
+            "Select an image from the media library. "
+            "Takes priority over a direct upload; a URL takes priority over both."
+        ),
+    )
 
     # ---------------------------------------------------------- navbar logo ---
     navbar_logo = models.ImageField(
@@ -190,6 +274,18 @@ class CustomBranding(SingletonModel):
         blank=True,
         verbose_name=_("Navbar Logo — URL"),
         help_text=_("URL of a navbar logo image. Takes priority over an uploaded file."),
+    )
+    navbar_logo_library = models.ForeignKey(
+        "AACMediaImage",
+        null=True,
+        blank=True,
+        on_delete=models.SET_NULL,
+        related_name="+",
+        verbose_name=_("Navbar Logo — Library"),
+        help_text=_(
+            "Select an image from the media library. "
+            "Takes priority over a direct upload; a URL takes priority over both."
+        ),
     )
     navbar_logo_height = models.PositiveSmallIntegerField(
         default=32,
@@ -213,6 +309,18 @@ class CustomBranding(SingletonModel):
         blank=True,
         verbose_name=_("Sidebar Logo — URL"),
         help_text=_("URL of a sidebar logo image. Takes priority over an uploaded file."),
+    )
+    sidebar_logo_library = models.ForeignKey(
+        "AACMediaImage",
+        null=True,
+        blank=True,
+        on_delete=models.SET_NULL,
+        related_name="+",
+        verbose_name=_("Sidebar Logo — Library"),
+        help_text=_(
+            "Select an image from the media library. "
+            "Takes priority over a direct upload; a URL takes priority over both."
+        ),
     )
     sidebar_logo_width = models.PositiveSmallIntegerField(
         default=128,
@@ -262,9 +370,11 @@ class CustomBranding(SingletonModel):
 
     @property
     def effective_login_background(self) -> str:
-        """URL field > uploaded file > empty string."""
+        """URL field > library selection > uploaded file > empty string."""
         if self.login_background_url:
             return self.login_background_url
+        if self.login_background_library_id and self.login_background_library.image:
+            return self.login_background_library.image.url
         if self.login_background:
             return self.login_background.url
         return ""
@@ -301,36 +411,44 @@ class CustomBranding(SingletonModel):
 
     @property
     def effective_login_logo(self) -> str:
-        """URL field > uploaded file > empty string."""
+        """URL field > library selection > uploaded file > empty string."""
         if self.login_logo_url:
             return self.login_logo_url
+        if self.login_logo_library_id and self.login_logo_library.image:
+            return self.login_logo_library.image.url
         if self.login_logo:
             return self.login_logo.url
         return ""
 
     @property
     def effective_favicon(self) -> str:
-        """URL field > uploaded file > empty string."""
+        """URL field > library selection > uploaded file > empty string."""
         if self.favicon_url:
             return self.favicon_url
+        if self.favicon_library_id and self.favicon_library.image:
+            return self.favicon_library.image.url
         if self.favicon:
             return self.favicon.url
         return ""
 
     @property
     def effective_navbar_logo(self) -> str:
-        """URL field > uploaded file > empty string."""
+        """URL field > library selection > uploaded file > empty string."""
         if self.navbar_logo_url:
             return self.navbar_logo_url
+        if self.navbar_logo_library_id and self.navbar_logo_library.image:
+            return self.navbar_logo_library.image.url
         if self.navbar_logo:
             return self.navbar_logo.url
         return ""
 
     @property
     def effective_sidebar_logo(self) -> str:
-        """URL field > uploaded file > empty string."""
+        """URL field > library selection > uploaded file > empty string."""
         if self.sidebar_logo_url:
             return self.sidebar_logo_url
+        if self.sidebar_logo_library_id and self.sidebar_logo_library.image:
+            return self.sidebar_logo_library.image.url
         if self.sidebar_logo:
             return self.sidebar_logo.url
         return ""

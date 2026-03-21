@@ -5,10 +5,34 @@ Admin configuration for the aa_customizer app.
 from solo.admin import SingletonModelAdmin
 
 from django.contrib import admin
+from django.utils.html import format_html
 from django.utils.translation import gettext_lazy as _
 
 from .forms import CustomBrandingAdminForm
-from .models import CustomBranding
+from .models import AACMediaImage, CustomBranding
+
+
+@admin.register(AACMediaImage)
+class AACMediaImageAdmin(admin.ModelAdmin):
+    """
+    Admin for the image media library.  Upload images here once, then select
+    them from any image slot in Custom Branding without re-uploading.
+    """
+
+    list_display = ("name", "image_type", "thumbnail", "uploaded")
+    list_filter = ("image_type",)
+    search_fields = ("name",)
+    readonly_fields = ("thumbnail", "uploaded")
+    fields = ("name", "image_type", "image", "thumbnail", "uploaded")
+
+    @admin.display(description=_("Preview"))
+    def thumbnail(self, obj):
+        if obj.image:
+            return format_html(
+                '<img src="{}" style="max-height:80px; max-width:160px; object-fit:contain;">',
+                obj.image.url,
+            )
+        return "—"
 
 
 @admin.register(CustomBranding)
@@ -38,12 +62,13 @@ class CustomBrandingAdmin(SingletonModelAdmin):
             {
                 "fields": (
                     "login_background_url",
+                    "login_background_library",
                     "login_background",
                     "login_background_color",
                 ),
                 "description": _(
                     "Set a background for the login page. "
-                    "Priority: URL → uploaded file → color. "
+                    "Priority: URL → library selection → uploaded file → color. "
                     "Leave everything blank to use the default Alliance Auth space background."
                 ),
             },
@@ -69,6 +94,7 @@ class CustomBrandingAdmin(SingletonModelAdmin):
             {
                 "fields": (
                     "login_logo_url",
+                    "login_logo_library",
                     "login_logo",
                     "login_logo_max_width",
                     "login_title",
@@ -84,7 +110,7 @@ class CustomBrandingAdmin(SingletonModelAdmin):
         (
             _("Favicon"),
             {
-                "fields": ("favicon_url", "favicon"),
+                "fields": ("favicon_url", "favicon_library", "favicon"),
                 "description": _(
                     "Replace the Alliance Auth favicon. URL takes priority over an uploaded file."
                 ),
@@ -93,7 +119,7 @@ class CustomBrandingAdmin(SingletonModelAdmin):
         (
             _("Navigation Bar Logo"),
             {
-                "fields": ("navbar_logo_url", "navbar_logo", "navbar_logo_height"),
+                "fields": ("navbar_logo_url", "navbar_logo_library", "navbar_logo", "navbar_logo_height"),
                 "description": _(
                     "Optional logo displayed next to the site name in the navbar. "
                     "URL takes priority over an uploaded file."
@@ -103,7 +129,7 @@ class CustomBrandingAdmin(SingletonModelAdmin):
         (
             _("Sidebar Logo"),
             {
-                "fields": ("sidebar_logo_url", "sidebar_logo", "sidebar_logo_width"),
+                "fields": ("sidebar_logo_url", "sidebar_logo_library", "sidebar_logo", "sidebar_logo_width"),
                 "description": _(
                     "Replaces the Alliance Auth logo at the bottom of the sidebar. "
                     "URL takes priority over an uploaded file."

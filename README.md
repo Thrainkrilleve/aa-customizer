@@ -87,16 +87,25 @@ python manage.py collectstatic
 
 **6 — (Optional) Configure media file serving**
 
-Only needed if you want to use **file uploads** instead of image URLs.
+Only needed if you want to use **file uploads or the media library** instead of image URLs.
 
-In `local.py`:
+Add these two lines anywhere in the Custom Settings section of your `local.py`:
 
 ```python
 MEDIA_ROOT = "/path/to/your/media/"
 MEDIA_URL  = "/media/"
 ```
 
-Make sure your web server (nginx, Apache, etc.) is configured to serve files from `MEDIA_ROOT` at `MEDIA_URL`.
+Make sure your web server (nginx, Apache, etc.) is configured to serve files from `MEDIA_ROOT` at `MEDIA_URL`:
+
+        location /media {
+            alias /var/www/myauth/media;
+            autoindex off;
+        }
+
+**7 — (Optional) Populate the Media Library**
+
+Once media is configured, go to **AA Customizer → Media Library** in the admin panel to upload images. Give each one a descriptive name (e.g. "Corp logo v2", "Winter background"). You can then pick from your library in **Custom Branding** without re-uploading — just change the dropdown selection to switch images instantly.
 
 
 ### Docker install
@@ -144,30 +153,77 @@ TEMPLATES[0]["OPTIONS"]["context_processors"].append(
 )
 ```
 
-**4 — (Optional) Media file uploads**
+**4 — (Optional) Configure media file serving**
 
-If you want to upload images through the admin instead of using URLs, you need a media volume:
+If you want to upload images through the admin or use the media library instead of external URLs, follow these steps.
+For most Docker installs, **using URL fields is simpler** — just paste an image link and skip all of the below.
 
-In `local.py`:
+**a) Add to `local.py`**
+
+Add these two lines anywhere in the Custom Settings section of your `local.py`:
+
 ```python
-MEDIA_ROOT = "/home/allianceserver/aa-docker/media/"
+MEDIA_ROOT = "/var/www/myauth/media/"
 MEDIA_URL  = "/media/"
 ```
 
-Mount the volume in `docker-compose.yml` for both the gunicorn and nginx services:
+**b) Add the named volume to `docker-compose.yml`**
+
+The standard AA Docker setup uses a named Docker volume for media. Add it in three places:
+
+1. In `x-allianceauth-base` volumes (so gunicorn, beat, and workers all share it):
 ```yaml
-volumes:
-  - ./media:/home/allianceserver/aa-docker/media
+x-allianceauth-base: &allianceauth-base
+  volumes:
+    # ... your existing volume mounts ...
+    - media-data:/var/www/myauth/media
 ```
 
-And configure nginx to serve it:
+2. In the `nginx` service volumes:
+```yaml
+services:
+  nginx:
+    volumes:
+      # ... your existing volume mounts ...
+      - media-data:/var/www/myauth/media
+```
+
+3. In the top-level `volumes:` section:
+```yaml
+volumes:
+  media-data:
+```
+
+**c) Configure nginx**
+
+In your `nginx.conf`, add a `/media` location block inside the `server {}` block:
+
 ```nginx
-location /media/ {
-    alias /home/allianceserver/aa-docker/media/;
+location /media {
+    alias /var/www/myauth/media;
+    autoindex off;
 }
 ```
 
-For most Docker installs, **using URL fields is simpler** — just paste an image link and skip all of the above.
+**d) Bring the stack up**
+
+```bash
+docker compose up -d
+```
+
+**e) Fix volume permissions**
+
+Docker creates named volumes owned by root. The AA container runs as uid/gid `61000`. Run this once after first bringing the stack up:
+
+Confimr the uid/gid
+
+```bash
+docker compose exec allianceauth_gunicorn ls -la /var/www/myauth/media
+#change using
+docker compose exec -u root allianceauth_gunicorn chown -R 61000:61000 /var/www/myauth/media
+```
+
+After this, uploads made through `/admin/aa_customizer/aacustomizersettings/` will be stored under `/var/www/myauth/media/aa_customizer/` and served immediately by nginx.
 
 **5 — Build and Restart**
 
@@ -180,8 +236,13 @@ docker compose up -d
 ## Usage
 
 1. Log in to the Alliance Auth **admin panel** (`/admin/`).
-2. Find **AA Customizer → Custom Branding** in the left-hand sidebar.
-3. Fill in whichever fields you want to customize and click **Save**.
+2. **(Optional) Build your image library** — find **AA Customizer → Media Library** and upload your images there, giving each a name. You can upload as many as you like and switch between them without re-uploading.
+3. Find **AA Customizer → Custom Branding** in the left-hand sidebar.
+4. For each image slot, choose how to set it:
+   - **Library** — pick from an image you uploaded to the Media Library (recommended when self-hosting media)
+   - **URL** — paste an external link (CDN, Imgur, etc.) — always takes priority
+   - **Upload** — upload a file directly into the field
+5. Fill in any other fields you want and click **Save**.
 
 Changes take effect immediately on the next page load — no server restart needed.
 
@@ -198,8 +259,9 @@ Changes take effect immediately on the next page load — no server restart need
 
 | Field | Description |
 |---|---|
-| **Login Background — URL** | URL of a background image **or video** (takes priority over an upload). Video files (`.mp4`, `.webm`, `.ogv`) play fullscreen, looped, muted, and auto-paused by the browser when the tab is hidden |
-| **Login Background — Upload** | Uploaded background image (bare metal / media volume only) |
+| **Login Background — URL** | URL of a background image **or video** (takes priority over everything). Video files (`.mp4`, `.webm`, `.ogv`) play fullscreen, looped, muted, and auto-paused by the browser when the tab is hidden |
+| **Login Background — Library** | Select an image uploaded to the Media Library (takes priority over a direct upload) |
+| **Login Background — Upload** | Upload a background image directly into this field |
 | **Login Background Color** | CSS color fallback when no image is set, or the color shown behind a video while it loads (e.g. `#1a1a2e`) |
 
 ### Login Page — Layout
@@ -215,8 +277,9 @@ Changes take effect immediately on the next page load — no server restart need
 
 | Field | Description |
 |---|---|
-| **Login Logo — URL** | URL of a logo image (takes priority) |
-| **Login Logo — Upload** | Uploaded logo image |
+| **Login Logo — URL** | URL of a logo image (takes priority over everything) |
+| **Login Logo — Library** | Select an image from the Media Library (takes priority over a direct upload) |
+| **Login Logo — Upload** | Upload a logo image directly into this field |
 | **Login Logo Max Width (px)** | Maximum display width of the login logo |
 | **Login Page Title** | Custom heading shown above the SSO button |
 | **Login Page Subtitle** | Optional description text below the title |
@@ -226,23 +289,26 @@ Changes take effect immediately on the next page load — no server restart need
 
 | Field | Description |
 |---|---|
-| **Favicon — URL** | URL of a favicon image (takes priority) |
-| **Favicon — Upload** | Uploaded favicon image |
+| **Favicon — URL** | URL of a favicon image (takes priority over everything) |
+| **Favicon — Library** | Select an image from the Media Library (takes priority over a direct upload) |
+| **Favicon — Upload** | Upload a favicon image directly into this field |
 
 ### Navigation Bar Logo
 
 | Field | Description |
 |---|---|
-| **Navbar Logo — URL** | URL of a navbar logo image (takes priority) |
-| **Navbar Logo — Upload** | Uploaded navbar logo image |
+| **Navbar Logo — URL** | URL of a navbar logo image (takes priority over everything) |
+| **Navbar Logo — Library** | Select an image from the Media Library (takes priority over a direct upload) |
+| **Navbar Logo — Upload** | Upload a navbar logo image directly into this field |
 | **Navbar Logo Height (px)** | Display height of the navbar logo |
 
 ### Sidebar Logo
 
 | Field | Description |
 |---|---|
-| **Sidebar Logo — URL** | URL of an image to replace the AA logo in the sidebar (takes priority) |
-| **Sidebar Logo — Upload** | Uploaded sidebar logo image |
+| **Sidebar Logo — URL** | URL of an image to replace the AA logo in the sidebar (takes priority over everything) |
+| **Sidebar Logo — Library** | Select an image from the Media Library (takes priority over a direct upload) |
+| **Sidebar Logo — Upload** | Upload a sidebar logo image directly into this field |
 | **Sidebar Logo Width (px)** | Display width of the sidebar logo |
 
 ### Custom CSS
