@@ -1,0 +1,60 @@
+{% extends 'public/base.html' %}
+
+{% load i18n %}
+
+{# Override the outer container so we can render both the card and split layouts
+   without being constrained by base.html's fixed <div class="container">. #}
+{% block outer_container %}
+<div class="aac-login-root{% if AA_CUSTOMIZER.login_layout == 'split' %} aac-split{% endif %}">
+
+    {# Left panel — only visible in split layout on large screens (≥ 992 px) #}
+    <div class="aac-login-left">
+        <div class="text-center text-white p-5">
+            <h1 class="aac-split-site-name fw-bold">{{ SITE_NAME }}</h1>
+        </div>
+    </div>
+
+    {# Login panel — always visible, full-width in card mode, right column in split #}
+    <div class="aac-login-right">
+        <div class="aac-login-inner">
+
+            {% if messages %}
+                {% for message in messages %}
+                    <div class="alert alert-{{ message.level_tag }}">{{ message }}</div>
+                {% endfor %}
+            {% endif %}
+
+            <div class="card card-login border-secondary p-3">
+                <div class="card-body">
+                    <div class="text-center">
+                        {% block middle_box_content %}{% endblock %}
+                    </div>
+                </div>
+
+                {% include 'public/lang_select.html' %}
+
+                {# CCP footer links — hidden in split layout via CSS #}
+                <div class="aac-ccp-footer">
+                    <p class="text-center mt-3">
+                        {% translate "For information on SSO, ESI and security read the CCP Dev Blog" %}<br>
+                        <a class="text-reset" href="https://www.eveonline.com/news/view/introducing-esi" target="_blank" rel="noopener noreferrer">
+                            {% translate "Introducing ESI - A New API For EVE Online" %}
+                        </a>
+                    </p>
+                    <p class="text-center">
+                        <a class="text-reset" href="https://developers.eveonline.com/authorized-apps" target="_blank" rel="noopener noreferrer">
+                            {% translate "Manage ESI Applications" %}
+                        </a>
+                    </p>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+</div>
+{% endblock outer_container %}
+
+{% block extra_include %}
+    {% include 'bundles/bootstrap-js-bs5.html' %}
+{% endblock %}

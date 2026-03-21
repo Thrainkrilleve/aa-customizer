@@ -67,9 +67,11 @@
     </head>
 
     <body>
+        {% block outer_container %}
         <div class="container" style="margin-top:150px;">
             {% block content %}
             {% endblock %}
         </div>
+        {% endblock outer_container %}
     </body>
 </html>

@@ -8,6 +8,7 @@ Gives administrators a simple admin-panel UI to customize their Alliance Auth in
 |---|---|
 | **Custom site name** | Overrides `SITE_NAME` from `local.py` across the whole site |
 | **Login background** | URL or uploaded image; falls back to a CSS color, then the default AA space background |
+| **Login layout** | Choose between **Centered Card** (default) and **Split Screen** (background left, login panel right) |
 | **Login logo** | URL or uploaded image shown at the top of the login card |
 | **Login title & subtitle** | Welcome heading and description text on the login card |
 | **Login extra HTML** | Raw HTML injected below the EVE SSO button (notices, Discord links, etc.) |
@@ -146,6 +147,12 @@ In containerized deployments, mounting a media volume just to serve a few images
 | **Login Background — URL** | URL of a background image (takes priority) |
 | **Login Background — Upload** | Uploaded background image |
 | **Login Background Color** | CSS color fallback (e.g. `#1a1a2e`) when no image is set |
+
+### Login Page — Layout
+
+| Field | Description |
+|---|---|
+| **Login Page Layout** | Choose the page structure: **Centered Card** (default) centers a login card over the full-page background; **Split Screen** places the background on the left and a dark login panel on the right |
 
 ### Login Page — Branding
 

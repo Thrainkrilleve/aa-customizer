@@ -18,6 +18,70 @@
     font-size: 0.95rem;
 }
 
+/* ------------------------------------------------------- login layouts -- */
+
+/* Root wrapper used for both card and split layouts */
+.aac-login-root {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: row;
+}
+
+/* Left background panel — hidden in card layout, shown in split at lg+ */
+.aac-login-left {
+    display: none;
+}
+
+/* Login panel — full-width in card layout */
+.aac-login-right {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    padding-top: 150px;
+    padding-bottom: 2rem;
+    padding-left: 1rem;
+    padding-right: 1rem;
+}
+
+.aac-login-inner {
+    width: 100%;
+    max-width: 520px;
+}
+
+/* Split layout overrides */
+.aac-split .aac-login-right {
+    padding-top: 0;
+    justify-content: center;
+    background: rgba(18, 18, 20, 0.96);
+}
+
+@media (min-width: 992px) {
+    .aac-split .aac-login-left {
+        display: flex;
+        flex: 0 0 60%;
+        align-items: center;
+        justify-content: center;
+        background: linear-gradient(135deg, rgba(0, 0, 0, 0.50) 0%, rgba(0, 0, 0, 0.10) 100%);
+        min-height: 100vh;
+    }
+
+    .aac-split .aac-login-inner {
+        max-width: 460px;
+    }
+}
+
+.aac-split-site-name {
+    font-size: 3rem;
+    text-shadow: 0 2px 12px rgba(0, 0, 0, 0.85);
+}
+
+/* Hide the CCP Dev Blog / Manage ESI links in split layout */
+.aac-split .aac-ccp-footer {
+    display: none;
+}
+
 /* ---------------------------------------------------------------- navbar -- */
 
 .aa-customizer-navbar-logo {
