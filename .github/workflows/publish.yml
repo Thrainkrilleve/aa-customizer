@@ -62,7 +62,7 @@ jobs:
       # makemigrations themselves.
       - name: Check for missing migrations
         run: |
-          pip install django django-solo Pillow
+          pip install "django>=4.2,<7" django-solo Pillow
           python - <<'EOF'
           import django
           from django.conf import settings
