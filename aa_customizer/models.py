@@ -269,6 +269,18 @@ class CustomBranding(SingletonModel):
             return self.login_background.url
         return ""
 
+    _VIDEO_EXTENSIONS = (".mp4", ".webm", ".ogv", ".ogg")
+
+    @property
+    def effective_login_background_is_video(self) -> bool:
+        """Return True when the effective login background is a video file."""
+        url = self.effective_login_background
+        if not url:
+            return False
+        # Strip query-string / fragment before checking extension
+        path = url.split("?")[0].split("#")[0].lower()
+        return any(path.endswith(ext) for ext in self._VIDEO_EXTENSIONS)
+
     @property
     def effective_login_logo(self) -> str:
         """URL field > uploaded file > empty string."""
