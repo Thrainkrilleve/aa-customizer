@@ -1,6 +1,6 @@
 # AA Customizer
 
-A branding & customization plugin for [Alliance Auth](https://github.com/allianceauth/allianceauth).
+A branding & customization plugin for [Alliance Auth](https://allianceauth.readthedocs.io).
 
 Gives administrators a simple admin-panel UI to customize their Alliance Auth installation without touching code or replacing static files.
 
@@ -8,19 +8,14 @@ Gives administrators a simple admin-panel UI to customize their Alliance Auth in
 
 ## Screenshots
 
-<!-- 
-  To add screenshots:
-  1. Open any GitHub Issue or Pull Request in this repo
-  2. Drag and drop your image into the comment box — GitHub uploads it and gives you a URL like:
-       https://github.com/user-attachments/assets/xxxxxxxx-...
-  3. Paste that URL below, replacing the placeholder text inside the parentheses.
--->
-
 ### Split Screen layout
-![Split Screen layout](https://via.placeholder.com/1200x600.png?text=Add+your+screenshot+URL+here)
+![Split Screen layout](https://i.imgur.com/4TSEjOG.png)
 
 ### Centered Card layout (default)
-![Centered Card layout](https://via.placeholder.com/1200x600.png?text=Add+your+screenshot+URL+here)
+![Centered Card layout](https://i.imgur.com/GaTmrDD.png)
+
+### Side Bar Icon
+![Sidebar Icon](https://i.imgur.com/HG7hRYo.png)
 
 ---
 
@@ -53,12 +48,6 @@ Gives administrators a simple admin-panel UI to customize their Alliance Auth in
 
 ## Installation
 
-> **Which path is yours?**
-> - Running Alliance Auth directly on a server with `pip` and a virtualenv → follow the **Bare Metal** steps.
-> - Running Alliance Auth via `docker compose` → follow the **Docker** steps.
-
----
-
 ### Bare Metal install
 
 **1 — Install the package**
@@ -70,15 +59,9 @@ pip install aa-customizer
 
 **2 — Add to `INSTALLED_APPS`**
 
-Open your `local.py` and add `"aa_customizer"` as the **first** entry:
-
+Open your `local.py` and add above INSTALLED_APPS =:
 ```python
-INSTALLED_APPS = [
-    "aa_customizer",        # ← must come before allianceauth
-    "allianceauth",
-    "django.contrib.admin",
-    # … rest of your apps …
-]
+INSTALLED_APPS.insert(0, 'aa_customizer')
 ```
 
 > Django searches each app's `templates/` folder in `INSTALLED_APPS` order and uses the first match.
@@ -86,7 +69,7 @@ INSTALLED_APPS = [
 
 **3 — Add the context processor**
 
-In `local.py`, append to the existing `TEMPLATES` list:
+In `local.py`, add to the settings section to append the existing `TEMPLATES` list:
 
 ```python
 TEMPLATES[0]["OPTIONS"]["context_processors"].append(
@@ -127,32 +110,38 @@ The recommended approach for Docker is to use **URL fields** for all images (poi
 
 **1 — Install the package inside the container**
 
-Add `aa-customizer` to your pip requirements file (e.g. `requirements.txt` or the equivalent in your Docker setup), then rebuild:
-
 ```bash
-docker compose build
+# Activate your Alliance Auth virtualenv first, then:
+pip install aa-customizer
 ```
 
-Or install directly into a running container for a quick test:
 
-```bash
-docker exec -u root -i <gunicorn_container> pip install aa-customizer
+Add `aa-customizer` to your pip requirements file (e.g. `requirements.txt` or the equivalent in your Docker setup), then rebuild:
+
+```
+auth migrate
+```
+
+```
+auth collectstatic
+```
+```
+exit
 ```
 
 **2 — Add to `INSTALLED_APPS`**
 
-In your `local.py` (mounted into the container), add `"aa_customizer"` as the **first** entry:
-
+Open your `local.py` and add above INSTALLED_APPS =:
 ```python
-INSTALLED_APPS = [
-    "aa_customizer",        # ← must come before allianceauth
-    "allianceauth",
-    "django.contrib.admin",
-    # … rest of your apps …
-]
+INSTALLED_APPS.insert(0, 'aa_customizer')
 ```
 
+> Django searches each app's `templates/` folder in `INSTALLED_APPS` order and uses the first match.
+> Placing `aa_customizer` first ensures its template overrides are picked up before the Alliance Auth originals.
+
 **3 — Add the context processor**
+
+In `local.py`, add to the settings section to append the existing `TEMPLATES` list:
 
 ```python
 TEMPLATES[0]["OPTIONS"]["context_processors"].append(
@@ -160,19 +149,7 @@ TEMPLATES[0]["OPTIONS"]["context_processors"].append(
 )
 ```
 
-**4 — Run migrations**
-
-```bash
-docker exec -i <gunicorn_container> python manage.py migrate aa_customizer
-```
-
-**5 — Collect static files**
-
-```bash
-docker exec -i <gunicorn_container> python manage.py collectstatic --noinput
-```
-
-**6 — (Optional) Media file uploads**
+**4 — (Optional) Media file uploads**
 
 If you want to upload images through the admin instead of using URLs, you need a media volume:
 
