@@ -270,6 +270,12 @@ class CustomBranding(SingletonModel):
         return ""
 
     _VIDEO_EXTENSIONS = (".mp4", ".webm", ".ogv", ".ogg")
+    _VIDEO_MIME_TYPES = {
+        ".mp4": "video/mp4",
+        ".webm": "video/webm",
+        ".ogv": "video/ogg",
+        ".ogg": "video/ogg",
+    }
 
     @property
     def effective_login_background_is_video(self) -> bool:
@@ -280,6 +286,18 @@ class CustomBranding(SingletonModel):
         # Strip query-string / fragment before checking extension
         path = url.split("?")[0].split("#")[0].lower()
         return any(path.endswith(ext) for ext in self._VIDEO_EXTENSIONS)
+
+    @property
+    def effective_login_background_mime_type(self) -> str:
+        """Return the MIME type for the effective login background video."""
+        url = self.effective_login_background
+        if not url:
+            return ""
+        path = url.split("?")[0].split("#")[0].lower()
+        for ext, mime in self._VIDEO_MIME_TYPES.items():
+            if path.endswith(ext):
+                return mime
+        return ""
 
     @property
     def effective_login_logo(self) -> str:

@@ -74,7 +74,7 @@
         <video autoplay loop muted playsinline
                style="position:fixed;top:0;left:0;width:100%;height:100%;object-fit:cover;z-index:-1;"
                aria-hidden="true">
-            <source src="{{ AA_CUSTOMIZER.effective_login_background }}">
+            <source src="{{ AA_CUSTOMIZER.effective_login_background }}" type="{{ AA_CUSTOMIZER.effective_login_background_mime_type }}">
         </video>
         {% endif %}
         {% block outer_container %}
