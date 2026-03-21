@@ -9,10 +9,13 @@ Gives administrators a simple admin-panel UI to customize their Alliance Auth in
 ## Screenshots
 
 ### Split Screen layout
-![Split Screen layout](https://via.placeholder.com/1200x600.png?text=Add+your+screenshot+URL+here)
+![Split Screen layout](https://i.imgur.com/4TSEjOG.png)
 
 ### Centered Card layout (default)
-![Centered Card layout](https://via.placeholder.com/1200x600.png?text=Add+your+screenshot+URL+here)
+![Centered Card layout](https://i.imgur.com/GaTmrDD.png)
+
+### Side Bar Icon
+![Sidebar Icon] (https://i.imgur.com/GaTmrDD.png)
 
 ---
 
