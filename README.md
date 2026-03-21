@@ -4,7 +4,6 @@ A branding & customization plugin for [Alliance Auth](https://allianceauth.readt
 
 Gives administrators a simple admin-panel UI to customize their Alliance Auth installation without touching code or replacing static files.
 
----
 
 ## Screenshots
 
@@ -17,7 +16,6 @@ Gives administrators a simple admin-panel UI to customize their Alliance Auth in
 ### Side Bar Icon
 ![Sidebar Icon](https://i.imgur.com/HG7hRYo.png)
 
----
 
 ## Features
 
@@ -36,7 +34,6 @@ Gives administrators a simple admin-panel UI to customize their Alliance Auth in
 | **Custom CSS — inline** | CSS text injected via `<style>` on every page, loaded after the active theme |
 | **Extra `<head>` HTML** | Raw HTML at the end of `<head>` on every page (analytics, font imports, meta tags) |
 
----
 
 ## Requirements
 
@@ -44,7 +41,6 @@ Gives administrators a simple admin-panel UI to customize their Alliance Auth in
 - `django-solo`
 - `Pillow`
 
----
 
 ## Installation
 
@@ -102,7 +98,6 @@ MEDIA_URL  = "/media/"
 
 Make sure your web server (nginx, Apache, etc.) is configured to serve files from `MEDIA_ROOT` at `MEDIA_URL`.
 
----
 
 ### Docker install
 
@@ -181,7 +176,6 @@ docker compose build
 docker compose down
 docker compose up -d
 ```
----
 
 ## Usage
 
@@ -191,7 +185,6 @@ docker compose up -d
 
 Changes take effect immediately on the next page load — no server restart needed.
 
----
 
 ## Field reference
 
@@ -265,7 +258,6 @@ Changes take effect immediately on the next page load — no server restart need
 |---|---|
 | **Extra `<head>` HTML** | Raw HTML injected at the end of `<head>` on every page |
 
----
 
 ## Image recommendations
 
@@ -278,7 +270,6 @@ Changes take effect immediately on the next page load — no server restart need
 | Navbar logo | Transparent PNG, height ≤ 64 px |
 | Sidebar logo | Transparent PNG, width ≤ 256 px |
 
----
 
 ## Security notes
 
@@ -286,7 +277,6 @@ Changes take effect immediately on the next page load — no server restart need
 - **Custom CSS URL** is validated as a URL by Django's field validator; only `http`/`https` schemes are accepted.
 - AA Customizer works alongside Alliance Auth's built-in **Custom CSS** admin (`/admin/custom_css/customcss/`). The customizer's CSS loads after the built-in one, so it takes precedence.
 
----
 
 ## License
 
