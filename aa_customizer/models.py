@@ -144,6 +144,29 @@ class CustomBranding(SingletonModel):
         help_text=_("Display height of the navbar logo in pixels."),
     )
 
+    # --------------------------------------------------------- sidebar logo ---
+    sidebar_logo = models.ImageField(
+        upload_to="aa_customizer/logos/",
+        blank=True,
+        null=True,
+        verbose_name=_("Sidebar Logo — Upload"),
+        help_text=_(
+            "Upload a logo to replace the Alliance Auth logo in the sidebar. "
+            "Recommended: transparent PNG. "
+            "Ignored when a URL is also provided."
+        ),
+    )
+    sidebar_logo_url = models.URLField(
+        blank=True,
+        verbose_name=_("Sidebar Logo — URL"),
+        help_text=_("URL of a sidebar logo image. Takes priority over an uploaded file."),
+    )
+    sidebar_logo_width = models.PositiveSmallIntegerField(
+        default=128,
+        verbose_name=_("Sidebar Logo Width (px)"),
+        help_text=_("Display width of the sidebar logo in pixels."),
+    )
+
     # -------------------------------------------------------------- custom CSS --
     custom_css = models.TextField(
         blank=True,
@@ -218,4 +241,13 @@ class CustomBranding(SingletonModel):
             return self.navbar_logo_url
         if self.navbar_logo:
             return self.navbar_logo.url
+        return ""
+
+    @property
+    def effective_sidebar_logo(self) -> str:
+        """URL field > uploaded file > empty string."""
+        if self.sidebar_logo_url:
+            return self.sidebar_logo_url
+        if self.sidebar_logo:
+            return self.sidebar_logo.url
         return ""

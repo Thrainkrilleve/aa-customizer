@@ -85,6 +85,16 @@ class CustomBrandingAdmin(SingletonModelAdmin):
             },
         ),
         (
+            _("Sidebar Logo"),
+            {
+                "fields": ("sidebar_logo_url", "sidebar_logo", "sidebar_logo_width"),
+                "description": _(
+                    "Replaces the Alliance Auth logo at the bottom of the sidebar. "
+                    "URL takes priority over an uploaded file."
+                ),
+            },
+        ),
+        (
             _("Custom CSS"),
             {
                 "fields": ("custom_css_url", "custom_css"),

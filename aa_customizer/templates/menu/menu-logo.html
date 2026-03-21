@@ -1,0 +1,13 @@
+<div class="align-items-center text-center">
+    {% if AA_CUSTOMIZER.effective_sidebar_logo %}
+        <img
+            class="aa-customizer-sidebar-logo"
+            src="{{ AA_CUSTOMIZER.effective_sidebar_logo }}"
+            alt="{{ SITE_NAME }}"
+            width="{{ AA_CUSTOMIZER.sidebar_logo_width }}"
+            style="max-width: {{ AA_CUSTOMIZER.sidebar_logo_width }}px; height: auto;"
+        >
+    {% else %}
+        {% include "bundles/image-auth-logo.html" %}
+    {% endif %}
+</div>

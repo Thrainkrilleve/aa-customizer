@@ -173,6 +173,14 @@ In containerized deployments, mounting a media volume just to serve a few images
 | **Navbar Logo — Upload** | Uploaded navbar logo image |
 | **Navbar Logo Height (px)** | Display height of the navbar logo |
 
+### Sidebar Logo
+
+| Field | Description |
+|---|---|
+| **Sidebar Logo — URL** | URL of an image to replace the AA logo in the sidebar (takes priority) |
+| **Sidebar Logo — Upload** | Uploaded sidebar logo image |
+| **Sidebar Logo Width (px)** | Display width of the sidebar logo |
+
 ### Custom CSS
 
 | Field | Description |
