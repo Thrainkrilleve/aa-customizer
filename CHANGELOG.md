@@ -5,6 +5,11 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.1.1] - 2026-03-21
+
+### Fixed
+- **Django 6.0 field serialization for 0009 fields** — Django 6.0 re-serializes `CharField`, `URLField`, and `ForeignKey` definitions differently from earlier versions, causing `MigrationAutodetector` to detect false-positive changes on fields introduced in migration 0009. Added `0010_alter_fields_django6_compat` to align the recorded state with Django 6.0's output.
+
 ## [1.1.0] - 2026-03-21
 
 ### Added
