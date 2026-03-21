@@ -61,9 +61,7 @@
                 </a>
 
                 <div class="navbar-brand">
-                    {% block header_nav_brand %}
-                        {% customizer_navbar_logo %}{{ SITE_NAME }}
-                    {% endblock %}
+                    {% customizer_navbar_logo %}{% block header_nav_brand %}{{ SITE_NAME }}{% endblock %}
                 </div>
 
                 <div class="collapse navbar-collapse ms-2 px-2" id="navbarexpand">
