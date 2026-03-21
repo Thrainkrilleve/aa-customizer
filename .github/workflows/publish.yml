@@ -106,22 +106,15 @@ jobs:
           path: dist/
           if-no-files-found: error
 
-  # ── 2. Publish to PyPI using Trusted Publishing (OIDC) ────────────────────
+  # ── 2. Publish to PyPI using API token ────────────────────────────────────
   publish:
     name: Publish to PyPI
     needs: build
     runs-on: ubuntu-latest
 
-    # This environment must exist in GitHub Settings → Environments and must
-    # match the environment name you enter on the PyPI Trusted Publisher form.
     environment:
       name: pypi
       url: https://pypi.org/p/aa-customizer
-
-    # Trusted Publishing requires id-token:write so GitHub can generate an
-    # OIDC token for PyPI to verify.  No PyPI API token secret is needed.
-    permissions:
-      id-token: write
 
     steps:
       - name: Download built packages
@@ -132,3 +125,5 @@ jobs:
 
       - name: Publish to PyPI
         uses: pypa/gh-action-pypi-publish@release/v1
+        with:
+          password: ${{ secrets.PYPI_API_TOKEN }}
