@@ -51,10 +51,16 @@ class CustomBrandingAdmin(SingletonModelAdmin):
         (
             _("Login Page — Layout"),
             {
-                "fields": ("login_layout",),
+                "fields": (
+                    "login_layout",
+                    "login_split_show_overlay_text",
+                    "login_split_overlay_text",
+                    "login_split_text_position",
+                ),
                 "description": _(
-                    "Choose between the default centered card or a split-screen layout "
-                    "(background image on the left, login panel on the right)."
+                    "Choose the page structure. The split-screen options divide the page into a "
+                    "full-bleed background panel and a dark login panel — use the fields below to "
+                    "control the text shown on the background side."
                 ),
             },
         ),

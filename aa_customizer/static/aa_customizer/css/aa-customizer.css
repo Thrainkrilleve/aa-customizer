@@ -27,12 +27,12 @@
     flex-direction: row;
 }
 
-/* Left background panel — hidden in card layout, shown in split at lg+ */
+/* Background panel — hidden in card mode, shown at lg+ in split modes */
 .aac-login-left {
     display: none;
 }
 
-/* Login panel — full-width in card layout */
+/* Login panel — full-width in card mode */
 .aac-login-right {
     flex: 1;
     display: flex;
@@ -50,19 +50,23 @@
     max-width: 520px;
 }
 
-/* Split layout overrides */
+/* Shared split-screen overrides */
 .aac-split .aac-login-right {
     padding-top: 0;
     justify-content: center;
     background: rgba(18, 18, 20, 0.96);
 }
 
+/* Split-right: swap which side each panel appears on */
+.aac-split-right {
+    flex-direction: row-reverse;
+}
+
 @media (min-width: 992px) {
     .aac-split .aac-login-left {
         display: flex;
         flex: 0 0 60%;
-        align-items: center;
-        justify-content: center;
+        align-items: stretch;
         background: linear-gradient(135deg, rgba(0, 0, 0, 0.50) 0%, rgba(0, 0, 0, 0.10) 100%);
         min-height: 100vh;
     }
@@ -72,12 +76,37 @@
     }
 }
 
+/* Background panel overlay text wrapper */
+.aac-split-overlay-text {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    padding: 3rem;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    color: #fff;
+}
+
+/* Vertical position modifiers */
+.aac-split-text-top {
+    justify-content: flex-start;
+    align-items: flex-start;
+    text-align: left;
+}
+
+.aac-split-text-bottom {
+    justify-content: flex-end;
+    align-items: flex-start;
+    text-align: left;
+}
+
 .aac-split-site-name {
     font-size: 3rem;
     text-shadow: 0 2px 12px rgba(0, 0, 0, 0.85);
 }
 
-/* Hide the CCP Dev Blog / Manage ESI links in split layout */
+/* Hide CCP Dev Blog / Manage ESI links in split mode */
 .aac-split .aac-ccp-footer {
     display: none;
 }

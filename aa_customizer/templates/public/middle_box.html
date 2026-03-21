@@ -5,12 +5,20 @@
 {# Override the outer container so we can render both the card and split layouts
    without being constrained by base.html's fixed <div class="container">. #}
 {% block outer_container %}
-<div class="aac-login-root{% if AA_CUSTOMIZER.login_layout == 'split' %} aac-split{% endif %}">
+<div class="aac-login-root{% if AA_CUSTOMIZER.login_layout == 'split' or AA_CUSTOMIZER.login_layout == 'split-right' %} aac-split{% endif %}{% if AA_CUSTOMIZER.login_layout == 'split-right' %} aac-split-right{% endif %}">
 
-    {# Left panel — only visible in split layout on large screens (≥ 992 px) #}
+    {# Background panel — hidden in card mode, shown in split on large screens #}
     <div class="aac-login-left">
-        <div class="text-center text-white p-5">
-            <h1 class="aac-split-site-name fw-bold">{{ SITE_NAME }}</h1>
+        <div class="aac-split-overlay-text aac-split-text-{{ AA_CUSTOMIZER.login_split_text_position }}">
+            {% if AA_CUSTOMIZER.login_split_show_overlay_text %}
+                <h1 class="aac-split-site-name fw-bold">
+                    {% if AA_CUSTOMIZER.login_split_overlay_text %}
+                        {{ AA_CUSTOMIZER.login_split_overlay_text }}
+                    {% else %}
+                        {{ SITE_NAME }}
+                    {% endif %}
+                </h1>
+            {% endif %}
         </div>
     </div>
 

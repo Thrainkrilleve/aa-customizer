@@ -106,20 +106,54 @@ class CustomBranding(SingletonModel):
     # ---------------------------------------------------------- login layout --
     LAYOUT_CARD = "card"
     LAYOUT_SPLIT = "split"
+    LAYOUT_SPLIT_RIGHT = "split-right"
     LAYOUT_CHOICES = [
         (LAYOUT_CARD, _("Centered Card (default)")),
-        (LAYOUT_SPLIT, _("Split Screen")),
+        (LAYOUT_SPLIT, _("Split Screen — Background Left, Login Right")),
+        (LAYOUT_SPLIT_RIGHT, _("Split Screen — Login Left, Background Right")),
     ]
     login_layout = models.CharField(
-        max_length=10,
+        max_length=15,
         choices=LAYOUT_CHOICES,
         default=LAYOUT_CARD,
         verbose_name=_("Login Page Layout"),
         help_text=_(
-            "Centered Card: the default AA layout — a login card centered over a "
-            "full-page background image. "
-            "Split Screen: background image on the left half, dark login panel on the right."
+            "Centered Card: login card centered over a full-page background. "
+            "Split Screen: divides the page into a background panel and a dark login panel — "
+            "choose which side each appears on."
         ),
+    )
+
+    SPLIT_TEXT_TOP = "top"
+    SPLIT_TEXT_CENTER = "center"
+    SPLIT_TEXT_BOTTOM = "bottom"
+    SPLIT_TEXT_CHOICES = [
+        (SPLIT_TEXT_TOP, _("Top")),
+        (SPLIT_TEXT_CENTER, _("Center")),
+        (SPLIT_TEXT_BOTTOM, _("Bottom")),
+    ]
+    login_split_overlay_text = models.CharField(
+        max_length=200,
+        blank=True,
+        verbose_name=_("Split Panel — Overlay Text"),
+        help_text=_(
+            "Text shown on the background panel in split layouts. "
+            "Leave blank to display the site name automatically."
+        ),
+    )
+    login_split_show_overlay_text = models.BooleanField(
+        default=True,
+        verbose_name=_("Split Panel — Show Overlay Text"),
+        help_text=_(
+            "Tick to display text on the background panel; untick to hide it entirely."
+        ),
+    )
+    login_split_text_position = models.CharField(
+        max_length=10,
+        choices=SPLIT_TEXT_CHOICES,
+        default=SPLIT_TEXT_CENTER,
+        verbose_name=_("Split Panel — Text Position"),
+        help_text=_("Vertical position of the overlay text on the background panel."),
     )
 
     # ---------------------------------------------------------------- favicon --

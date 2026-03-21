@@ -152,7 +152,10 @@ In containerized deployments, mounting a media volume just to serve a few images
 
 | Field | Description |
 |---|---|
-| **Login Page Layout** | Choose the page structure: **Centered Card** (default) centers a login card over the full-page background; **Split Screen** places the background on the left and a dark login panel on the right |
+| **Login Page Layout** | `Centered Card` centers a login card over the full-page background. `Split Screen — Background Left` places the background on the left and the dark login panel on the right. `Split Screen — Login Left` mirrors it. |
+| **Split Panel — Show Overlay Text** | Toggle the text displayed on the background panel (split layouts only) |
+| **Split Panel — Overlay Text** | Custom text for the background panel. Leave blank to use the site name automatically |
+| **Split Panel — Text Position** | Vertical position of the overlay text: `Top`, `Center`, or `Bottom` |
 
 ### Login Page — Branding
 
