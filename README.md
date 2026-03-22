@@ -1,5 +1,7 @@
 # AA Customizer
 
+📖 **[Interactive Documentation](https://thrainkrilleve.github.io/aa-customizer/)** — Installation guide, field reference, media strategy
+
 A branding & customization plugin for [Alliance Auth](https://allianceauth.readthedocs.io).
 
 Gives administrators a simple admin-panel UI to customize their Alliance Auth installation without touching code or replacing static files.
@@ -347,4 +349,3 @@ Changes take effect immediately on the next page load — no server restart need
 ## License
 
 MIT
-

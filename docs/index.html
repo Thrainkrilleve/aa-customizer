@@ -1,0 +1,773 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AA Customizer — Documentation</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 500px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 300px;
+            max-height: 350px;
+        }
+        @media (min-width: 768px) {
+            .chart-container { height: 350px; }
+        }
+        .nav-active {
+            background-color: #1e293b;
+            border-left: 4px solid #3b82f6;
+            color: #ffffff;
+        }
+        .tab-active {
+            border-bottom: 2px solid #3b82f6;
+            color: #2563eb;
+            font-weight: 600;
+        }
+        .hidden-section { display: none; }
+        .fade-in {
+            animation: fadeIn 0.25s ease-in-out;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(8px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #f1f5f9; }
+        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+        code {
+            background: #f1f5f9;
+            padding: 1px 5px;
+            border-radius: 4px;
+            font-size: 0.85em;
+        }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800 font-sans antialiased overflow-hidden flex h-screen">
+
+    <!-- Sidebar -->
+    <aside class="w-64 bg-slate-900 text-slate-300 flex flex-col h-full flex-shrink-0 shadow-xl z-10">
+        <div class="p-6 bg-slate-950 border-b border-slate-800">
+            <h1 class="text-2xl font-bold text-white tracking-tight">AA Customizer</h1>
+            <p class="text-xs text-slate-400 mt-1">Interactive Documentation</p>
+        </div>
+        <nav class="flex-1 overflow-y-auto py-4" id="sidebar-nav">
+            <button data-target="section-overview" class="nav-btn w-full text-left px-6 py-3 hover:bg-slate-800 hover:text-white transition-colors nav-active flex items-center gap-3">
+                <span class="text-lg">📊</span> Overview &amp; Features
+            </button>
+            <button data-target="section-install" class="nav-btn w-full text-left px-6 py-3 hover:bg-slate-800 hover:text-white transition-colors flex items-center gap-3">
+                <span class="text-lg">⚙️</span> Installation Guide
+            </button>
+            <button data-target="section-media" class="nav-btn w-full text-left px-6 py-3 hover:bg-slate-800 hover:text-white transition-colors flex items-center gap-3">
+                <span class="text-lg">🗄️</span> Media Strategy
+            </button>
+            <button data-target="section-reference" class="nav-btn w-full text-left px-6 py-3 hover:bg-slate-800 hover:text-white transition-colors flex items-center gap-3">
+                <span class="text-lg">📋</span> Field Reference
+            </button>
+            <button data-target="section-security" class="nav-btn w-full text-left px-6 py-3 hover:bg-slate-800 hover:text-white transition-colors flex items-center gap-3">
+                <span class="text-lg">🔒</span> Security &amp; License
+            </button>
+        </nav>
+        <div class="p-4 border-t border-slate-800 text-xs text-slate-500 text-center">
+            Alliance Auth Plugin Docs
+        </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="flex-1 overflow-y-auto bg-slate-50 relative p-6 md:p-10" id="main-content">
+
+        <!-- ======================== OVERVIEW ======================== -->
+        <section id="section-overview" class="content-section fade-in max-w-6xl mx-auto">
+            <header class="mb-8">
+                <h2 class="text-3xl font-extrabold text-slate-900 mb-2">Platform Overview</h2>
+                <p class="text-lg text-slate-600 leading-relaxed max-w-3xl">
+                    AA Customizer is a branding plugin for <a href="https://allianceauth.readthedocs.io" class="text-blue-600 underline" target="_blank" rel="noopener">Alliance Auth</a> that gives administrators a simple admin-panel UI to fully brand their installation — custom logos, backgrounds, layout, CSS, and more — all without touching code or static files.
+                </p>
+            </header>
+
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-12">
+                <div class="lg:col-span-2 space-y-6">
+                    <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200">
+                        <h3 class="text-xl font-bold text-slate-800 mb-4 border-b pb-2">Core Features</h3>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div class="p-4 bg-slate-50 rounded-lg border border-slate-100 hover:border-blue-300 transition-colors">
+                                <div class="font-bold text-blue-700 mb-1">🏷️ Custom Site Name</div>
+                                <p class="text-sm text-slate-600">Global override for <code>SITE_NAME</code> without editing <code>local.py</code>.</p>
+                            </div>
+                            <div class="p-4 bg-slate-50 rounded-lg border border-slate-100 hover:border-blue-300 transition-colors">
+                                <div class="font-bold text-blue-700 mb-1">🎬 Video Backgrounds</div>
+                                <p class="text-sm text-slate-600">Fullscreen .mp4/.webm/.ogv videos with configurable loop count (play once, N times, or forever).</p>
+                            </div>
+                            <div class="p-4 bg-slate-50 rounded-lg border border-slate-100 hover:border-blue-300 transition-colors">
+                                <div class="font-bold text-blue-700 mb-1">📐 Multiple Layouts</div>
+                                <p class="text-sm text-slate-600">Centered Card or Split-Screen (Background Left / Login Left) login layouts.</p>
+                            </div>
+                            <div class="p-4 bg-slate-50 rounded-lg border border-slate-100 hover:border-blue-300 transition-colors">
+                                <div class="font-bold text-blue-700 mb-1">🖼️ Dynamic Logos</div>
+                                <p class="text-sm text-slate-600">Upload or link logos for the Login page, Navbar, and Sidebar independently.</p>
+                            </div>
+                            <div class="p-4 bg-slate-50 rounded-lg border border-slate-100 hover:border-blue-300 transition-colors">
+                                <div class="font-bold text-blue-700 mb-1">💉 Injected Content</div>
+                                <p class="text-sm text-slate-600">Add custom HTML to the Login card or site-wide <code>&lt;head&gt;</code> (analytics, Discord links, etc.).</p>
+                            </div>
+                            <div class="p-4 bg-slate-50 rounded-lg border border-slate-100 hover:border-blue-300 transition-colors">
+                                <div class="font-bold text-blue-700 mb-1">🎨 Custom CSS</div>
+                                <p class="text-sm text-slate-600">Inject inline CSS or link external stylesheets, loaded after the active theme.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-blue-50 p-6 rounded-xl border border-blue-100">
+                        <h3 class="text-lg font-bold text-blue-900 mb-2">System Requirements</h3>
+                        <ul class="list-disc list-inside text-blue-800 space-y-1 text-sm">
+                            <li>Alliance Auth &gt;= 4.0.0 (Bootstrap 5 template set)</li>
+                            <li><code>django-solo</code></li>
+                            <li><code>Pillow</code> (required for image upload &amp; processing)</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200 flex flex-col items-center justify-center">
+                    <h3 class="text-lg font-bold text-slate-800 mb-1 w-full text-center">Customization Areas</h3>
+                    <p class="text-xs text-slate-500 text-center mb-4">Breakdown of configuration categories.</p>
+                    <div class="chart-container">
+                        <canvas id="featuresChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ======================== INSTALLATION ======================== -->
+        <section id="section-install" class="content-section hidden-section fade-in max-w-5xl mx-auto">
+            <header class="mb-8">
+                <h2 class="text-3xl font-extrabold text-slate-900 mb-2">Installation Guide</h2>
+                <p class="text-lg text-slate-600 leading-relaxed">
+                    Every installation requires the Core Setup below. Then select the tab for your hosting environment to finish configuring media storage.
+                </p>
+            </header>
+
+            <!-- Core setup -->
+            <div class="bg-slate-900 rounded-xl overflow-hidden shadow-lg mb-8">
+                <div class="bg-slate-800 px-6 py-4 border-b border-slate-700">
+                    <h3 class="text-xl font-semibold text-white">1. Core Setup — All Environments</h3>
+                </div>
+                <div class="p-6 text-slate-300 space-y-4 text-sm">
+                    <p>Activate your Alliance Auth virtual environment and install:</p>
+                    <div class="bg-black rounded-md p-4 font-mono text-green-400">pip install aa-customizer</div>
+
+                    <p class="pt-2">Edit your <code>local.py</code>:</p>
+                    <div class="bg-black rounded-md p-4 font-mono text-blue-300 overflow-x-auto leading-loose">
+<span class="text-slate-500"># 1. Place aa_customizer first so its templates take priority</span><br>
+INSTALLED_APPS.insert(0, 'aa_customizer')<br><br>
+<span class="text-slate-500"># 2. Register the context processor</span><br>
+TEMPLATES[0]["OPTIONS"]["context_processors"].append(<br>
+&nbsp;&nbsp;&nbsp;&nbsp;"aa_customizer.context_processors.aa_customizer"<br>
+)<br><br>
+<span class="text-slate-500"># 3. Define media paths (adjust to your install path)</span><br>
+MEDIA_ROOT = "/var/www/myauth/media/"<br>
+MEDIA_URL&nbsp;&nbsp;= "/media/"
+                    </div>
+
+                    <p class="pt-2">Run migrations:</p>
+                    <div class="bg-black rounded-md p-4 font-mono text-green-400">python manage.py migrate aa_customizer</div>
+                </div>
+            </div>
+
+            <!-- Environment tabs -->
+            <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
+                <div class="flex border-b border-slate-200 bg-slate-50">
+                    <button class="install-tab px-6 py-4 text-slate-600 hover:bg-slate-100 transition-colors tab-active focus:outline-none" data-tab="docker">
+                        🐳 Docker
+                    </button>
+                    <button class="install-tab px-6 py-4 text-slate-600 hover:bg-slate-100 transition-colors focus:outline-none" data-tab="baremetal">
+                        🖥️ Bare Metal (Nginx)
+                    </button>
+                </div>
+
+                <div id="tab-docker" class="tab-content p-6">
+                    <h4 class="text-lg font-bold text-slate-800 mb-2">Docker: Media Volume Setup</h4>
+                    <p class="text-slate-600 text-sm mb-6">
+                        The easiest approach for Docker is to use <strong>URL fields</strong> (external CDN, Imgur, GitHub raw) so no volume is needed.
+                        If you want to self-host media, add a named volume in three places in <code>docker-compose.yml</code>:
+                    </p>
+                    <ol class="list-decimal list-outside ml-5 space-y-6 text-slate-700 text-sm">
+                        <li>
+                            <strong>Add the volume to the base service definition, nginx, and top-level volumes:</strong>
+                            <div class="mt-2 bg-slate-900 rounded-md p-4 font-mono text-yellow-300 overflow-x-auto leading-loose">
+<span class="text-slate-500"># In x-allianceauth-base</span><br>
+x-allianceauth-base: &amp;allianceauth-base<br>
+&nbsp;&nbsp;volumes:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;- media-data:/var/www/myauth/media<br><br>
+<span class="text-slate-500"># In the nginx service</span><br>
+services:<br>
+&nbsp;&nbsp;nginx:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;volumes:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- media-data:/var/www/myauth/media<br><br>
+<span class="text-slate-500"># Top-level volumes section</span><br>
+volumes:<br>
+&nbsp;&nbsp;media-data:
+                            </div>
+                        </li>
+                        <li>
+                            <strong>Add the Nginx media location block</strong> inside <code>server {}</code>:
+                            <div class="mt-2 bg-slate-900 rounded-md p-4 font-mono text-pink-300 overflow-x-auto leading-loose">
+client_max_body_size 20m;<br><br>
+location /media {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;alias /var/www/myauth/media;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;autoindex off;<br>
+}
+                            </div>
+                        </li>
+                        <li>
+                            <strong>Fix permissions</strong> — the AA container runs as UID 61000:
+                            <div class="mt-2 bg-slate-900 rounded-md p-3 font-mono text-green-400">
+docker compose exec -u root allianceauth_gunicorn chown -R 61000:61000 /var/www/myauth/media
+                            </div>
+                        </li>
+                        <li>
+                            <strong>Build and restart:</strong>
+                            <div class="mt-2 bg-slate-900 rounded-md p-3 font-mono text-green-400">
+docker compose build<br>
+docker compose up -d
+                            </div>
+                        </li>
+                    </ol>
+                </div>
+
+                <div id="tab-baremetal" class="tab-content hidden-section p-6">
+                    <h4 class="text-lg font-bold text-slate-800 mb-6">Bare Metal: Nginx &amp; Static Files</h4>
+                    <ol class="list-decimal list-outside ml-5 space-y-6 text-slate-700 text-sm">
+                        <li>
+                            <strong>Create the media directory and set permissions:</strong>
+                            <div class="mt-2 bg-slate-900 rounded-md p-3 font-mono text-green-400">
+mkdir -p /var/www/myauth/media<br>
+chown -R www-data:www-data /var/www/myauth/media
+                            </div>
+                        </li>
+                        <li>
+                            <strong>Collect static files:</strong>
+                            <div class="mt-2 bg-slate-900 rounded-md p-3 font-mono text-green-400">
+python manage.py collectstatic
+                            </div>
+                        </li>
+                        <li>
+                            <strong>Add the media block to your Nginx config</strong> inside <code>server {}</code>:
+                            <div class="mt-2 bg-slate-900 rounded-md p-4 font-mono text-pink-300 overflow-x-auto leading-loose">
+<span class="text-slate-500"># Raise this if uploads are rejected with 413</span><br>
+client_max_body_size 20m;<br><br>
+location /media {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;alias /var/www/myauth/media;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;autoindex off;<br>
+}
+                            </div>
+                        </li>
+                        <li>
+                            <strong>Restart services:</strong>
+                            <div class="mt-2 bg-slate-900 rounded-md p-3 font-mono text-green-400">
+sudo nginx -t &amp;&amp; sudo systemctl reload nginx<br>
+sudo systemctl restart gunicorn
+                            </div>
+                        </li>
+                    </ol>
+                </div>
+            </div>
+        </section>
+
+        <!-- ======================== MEDIA STRATEGY ======================== -->
+        <section id="section-media" class="content-section hidden-section fade-in max-w-5xl mx-auto">
+            <header class="mb-8">
+                <h2 class="text-3xl font-extrabold text-slate-900 mb-2">Media Hosting Strategy</h2>
+                <p class="text-lg text-slate-600 leading-relaxed">
+                    There are two ways to supply images and videos to the customizer. Choose based on your hosting environment and accessibility needs.
+                </p>
+            </header>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div class="bg-white rounded-xl shadow-md border-t-4 border-t-blue-500 border border-slate-200 p-6 flex flex-col hover:shadow-lg transition-shadow">
+                    <h3 class="text-2xl font-bold text-slate-800 mb-1 flex items-center gap-2">🔗 Option A: External URLs</h3>
+                    <p class="text-slate-500 mb-6 font-medium text-sm">Quickest setup — no storage config needed</p>
+                    <p class="text-slate-700 mb-6 flex-grow text-sm">
+                        Paste a URL from any public image/video host (Imgur, Cloudflare R2, GitHub raw, etc.) directly into the URL fields in the admin panel.
+                    </p>
+                    <div class="space-y-4">
+                        <div class="bg-green-50 text-green-800 p-4 rounded-lg border border-green-200 text-sm">
+                            <strong class="block mb-1">Pros</strong>
+                            Works instantly with zero extra server config. No volume mounts, nginx rules, or permission changes.
+                        </div>
+                        <div class="bg-red-50 text-red-800 p-4 rounded-lg border border-red-200 text-sm">
+                            <strong class="block mb-1">Cons</strong>
+                            Users in regions that block certain CDNs (e.g. Imgur is blocked in parts of the UK) will see broken images. Third-party dependency.
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-white rounded-xl shadow-md border-t-4 border-t-indigo-500 border border-slate-200 p-6 flex flex-col hover:shadow-lg transition-shadow">
+                    <h3 class="text-2xl font-bold text-slate-800 mb-1 flex items-center gap-2">🗄️ Option B: Local Hosting</h3>
+                    <p class="text-slate-500 mb-6 font-medium text-sm">Best reliability — served from your own domain</p>
+                    <p class="text-slate-700 mb-6 flex-grow text-sm">
+                        Upload files directly via the <strong>Media Library</strong> tab in the admin panel. They're served from your own domain, so any user who can reach your Auth site will see them.
+                    </p>
+                    <div class="space-y-4">
+                        <div class="bg-green-50 text-green-800 p-4 rounded-lg border border-green-200 text-sm">
+                            <strong class="block mb-1">Pros</strong>
+                            Fully self-hosted. No third-party tracking. Guaranteed to load for all your users globally.
+                        </div>
+                        <div class="bg-yellow-50 text-yellow-800 p-4 rounded-lg border border-yellow-200 text-sm">
+                            <strong class="block mb-1">Cons</strong>
+                            Requires the Nginx media block and (for Docker) a named volume — see the Installation Guide.
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="mt-12 bg-slate-800 text-white rounded-xl p-6 shadow-md">
+                <h3 class="text-xl font-bold mb-3">Input Priority Logic</h3>
+                <p class="text-slate-300 mb-6 text-sm">
+                    For fields that support all three input methods (URL, Library, Upload), the plugin uses a strict priority chain. Only the highest-priority non-empty value is rendered.
+                </p>
+                <div class="flex flex-col md:flex-row items-center justify-center gap-4">
+                    <div class="bg-blue-600 text-white px-6 py-3 rounded-lg font-bold shadow-lg flex flex-col items-center">
+                        <span class="text-xs text-blue-200 uppercase tracking-widest mb-1">Priority 1</span>
+                        <span>URL Field</span>
+                    </div>
+                    <span class="text-2xl text-slate-500">→</span>
+                    <div class="bg-indigo-600 text-white px-6 py-3 rounded-lg font-bold shadow-lg flex flex-col items-center">
+                        <span class="text-xs text-indigo-200 uppercase tracking-widest mb-1">Priority 2</span>
+                        <span>Library Pick</span>
+                    </div>
+                    <span class="text-2xl text-slate-500">→</span>
+                    <div class="bg-slate-600 text-white px-6 py-3 rounded-lg font-bold shadow-lg flex flex-col items-center">
+                        <span class="text-xs text-slate-300 uppercase tracking-widest mb-1">Priority 3</span>
+                        <span>Direct Upload</span>
+                    </div>
+                </div>
+                <p class="text-center text-sm text-slate-400 mt-4">If a URL is set, the Library and Upload fields are ignored.</p>
+            </div>
+        </section>
+
+        <!-- ======================== FIELD REFERENCE ======================== -->
+        <section id="section-reference" class="content-section hidden-section fade-in max-w-6xl mx-auto">
+            <header class="mb-8">
+                <h2 class="text-3xl font-extrabold text-slate-900 mb-2">Field &amp; Layout Reference</h2>
+                <p class="text-lg text-slate-600 leading-relaxed">
+                    All configuration fields available in the AA Customizer admin panel. Use the search box to jump to a specific field.
+                </p>
+            </header>
+
+            <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden mb-12">
+                <div class="p-4 bg-slate-50 border-b border-slate-200 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
+                    <h3 class="font-bold text-slate-800">Admin Panel Fields</h3>
+                    <input
+                        type="text"
+                        id="field-search"
+                        placeholder="Search fields…"
+                        class="px-4 py-2 border border-slate-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 w-full sm:w-64 text-sm"
+                    >
+                </div>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left border-collapse" id="fields-table">
+                        <thead>
+                            <tr class="bg-slate-100 text-slate-600 text-xs uppercase tracking-wider">
+                                <th class="p-4 font-semibold border-b w-40">Section</th>
+                                <th class="p-4 font-semibold border-b w-64">Field</th>
+                                <th class="p-4 font-semibold border-b">Description</th>
+                            </tr>
+                        </thead>
+                        <tbody class="text-slate-700 text-sm divide-y divide-slate-100" id="fields-tbody">
+                            <!-- Site -->
+                            <tr class="hover:bg-slate-50">
+                                <td class="p-4 font-medium text-slate-900 align-top">Site</td>
+                                <td class="p-4 font-semibold align-top">Site Name</td>
+                                <td class="p-4 align-top">Global override for <code>SITE_NAME</code> from <code>local.py</code>, displayed across the whole site.</td>
+                            </tr>
+                            <!-- Background -->
+                            <tr class="hover:bg-slate-50">
+                                <td class="p-4 font-medium text-slate-900 align-top">Background</td>
+                                <td class="p-4 font-semibold align-top">Login Background — URL</td>
+                                <td class="p-4 align-top">URL of a background image <em>or</em> video (takes priority over all other background fields). Video files (<code>.mp4</code>, <code>.webm</code>, <code>.ogv</code>) play fullscreen, muted, and auto-pause when the tab is hidden.</td>
+                            </tr>
+                            <tr class="hover:bg-slate-50">
+                                <td class="p-4 font-medium text-slate-900 align-top">Background</td>
+                                <td class="p-4 font-semibold align-top">Login Background — Library</td>
+                                <td class="p-4 align-top">Select an image uploaded to the Media Library. Takes priority over a direct upload.</td>
+                            </tr>
+                            <tr class="hover:bg-slate-50">
+                                <td class="p-4 font-medium text-slate-900 align-top">Background</td>
+                                <td class="p-4 font-semibold align-top">Login Background — Upload</td>
+                                <td class="p-4 align-top">Upload a background image directly into this field.</td>
+                            </tr>
+                            <tr class="hover:bg-slate-50">
+                                <td class="p-4 font-medium text-slate-900 align-top">Background</td>
+                                <td class="p-4 font-semibold align-top">Login Background Color</td>
+                                <td class="p-4 align-top">CSS color shown when no image is set, or behind a video while it loads. Example: <code>#1a1a2e</code>.</td>
+                            </tr>
+                            <tr class="hover:bg-slate-50 bg-blue-50">
+                                <td class="p-4 font-medium text-blue-900 align-top">Background</td>
+                                <td class="p-4 font-semibold text-blue-900 align-top">Background Video — Loop Count</td>
+                                <td class="p-4 text-blue-800 align-top"><strong>0</strong> = loop forever (default). <strong>1</strong> = play once then freeze on the last frame. <strong>N</strong> = play N times then freeze. Only applies to video backgrounds.</td>
+                            </tr>
+                            <!-- Layout -->
+                            <tr class="hover:bg-slate-50">
+                                <td class="p-4 font-medium text-slate-900 align-top">Layout</td>
+                                <td class="p-4 font-semibold align-top">Login Page Layout</td>
+                                <td class="p-4 align-top"><code>Centered Card</code> — login card centered over the full background (default). <code>Split Screen — Background Left</code> — background on the left, dark login panel on the right. <code>Split Screen — Login Left</code> — mirrors it.</td>
+                            </tr>
+                            <tr class="hover:bg-slate-50">
+                                <td class="p-4 font-medium text-slate-900 align-top">Layout</td>
+                                <td class="p-4 font-semibold align-top">Split Panel — Show Overlay Text</td>
+                                <td class="p-4 align-top">Tick to show text on the background panel of a split-screen layout; untick to hide it.</td>
+                            </tr>
+                            <tr class="hover:bg-slate-50">
+                                <td class="p-4 font-medium text-slate-900 align-top">Layout</td>
+                                <td class="p-4 font-semibold align-top">Split Panel — Overlay Text</td>
+                                <td class="p-4 align-top">Text shown on the background panel. Leave blank to auto-display the site name.</td>
+                            </tr>
+                            <tr class="hover:bg-slate-50">
+                                <td class="p-4 font-medium text-slate-900 align-top">Layout</td>
+                                <td class="p-4 font-semibold align-top">Split Panel — Text Position</td>
+                                <td class="p-4 align-top">Vertical position of the overlay text: <code>Top</code>, <code>Center</code>, or <code>Bottom</code>.</td>
+                            </tr>
+                            <tr class="hover:bg-slate-50">
+                                <td class="p-4 font-medium text-slate-900 align-top">Layout</td>
+                                <td class="p-4 font-semibold align-top">Login Page Extra HTML</td>
+                                <td class="p-4 align-top">Raw HTML injected below the EVE SSO button on the login card. Useful for Discord links, notices, etc.</td>
+                            </tr>
+                            <!-- Login Branding -->
+                            <tr class="hover:bg-slate-50">
+                                <td class="p-4 font-medium text-slate-900 align-top">Login Branding</td>
+                                <td class="p-4 font-semibold align-top">Login Logo — URL</td>
+                                <td class="p-4 align-top">URL of a logo image shown at the top of the login card (highest priority).</td>
+                            </tr>
+                            <tr class="hover:bg-slate-50">
+                                <td class="p-4 font-medium text-slate-900 align-top">Login Branding</td>
+                                <td class="p-4 font-semibold align-top">Login Logo — Library</td>
+                                <td class="p-4 align-top">Select a logo from the Media Library.</td>
+                            </tr>
+                            <tr class="hover:bg-slate-50">
+                                <td class="p-4 font-medium text-slate-900 align-top">Login Branding</td>
+                                <td class="p-4 font-semibold align-top">Login Logo — Upload</td>
+                                <td class="p-4 align-top">Upload a logo image directly.</td>
+                            </tr>
+                            <tr class="hover:bg-slate-50">
+                                <td class="p-4 font-medium text-slate-900 align-top">Login Branding</td>
+                                <td class="p-4 font-semibold align-top">Login Logo Max Width (px)</td>
+                                <td class="p-4 align-top">CSS max-width applied to the login logo image.</td>
+                            </tr>
+                            <tr class="hover:bg-slate-50">
+                                <td class="p-4 font-medium text-slate-900 align-top">Login Branding</td>
+                                <td class="p-4 font-semibold align-top">Login Page Title</td>
+                                <td class="p-4 align-top">Custom heading shown above the SSO button on the login card.</td>
+                            </tr>
+                            <tr class="hover:bg-slate-50">
+                                <td class="p-4 font-medium text-slate-900 align-top">Login Branding</td>
+                                <td class="p-4 font-semibold align-top">Login Page Subtitle</td>
+                                <td class="p-4 align-top">Optional description text shown below the title.</td>
+                            </tr>
+                            <!-- Favicon -->
+                            <tr class="hover:bg-slate-50">
+                                <td class="p-4 font-medium text-slate-900 align-top">Favicon</td>
+                                <td class="p-4 font-semibold align-top">Favicon — URL</td>
+                                <td class="p-4 align-top">URL of a favicon image (highest priority). Replaces all Alliance Auth browser-tab icons.</td>
+                            </tr>
+                            <tr class="hover:bg-slate-50">
+                                <td class="p-4 font-medium text-slate-900 align-top">Favicon</td>
+                                <td class="p-4 font-semibold align-top">Favicon — Library</td>
+                                <td class="p-4 align-top">Select a favicon from the Media Library.</td>
+                            </tr>
+                            <tr class="hover:bg-slate-50">
+                                <td class="p-4 font-medium text-slate-900 align-top">Favicon</td>
+                                <td class="p-4 font-semibold align-top">Favicon — Upload</td>
+                                <td class="p-4 align-top">Upload a favicon image directly.</td>
+                            </tr>
+                            <!-- Navbar Logo -->
+                            <tr class="hover:bg-slate-50">
+                                <td class="p-4 font-medium text-slate-900 align-top">Navbar Logo</td>
+                                <td class="p-4 font-semibold align-top">Navbar Logo — URL</td>
+                                <td class="p-4 align-top">URL of a logo shown alongside the site name in the top navigation bar (highest priority).</td>
+                            </tr>
+                            <tr class="hover:bg-slate-50">
+                                <td class="p-4 font-medium text-slate-900 align-top">Navbar Logo</td>
+                                <td class="p-4 font-semibold align-top">Navbar Logo — Library</td>
+                                <td class="p-4 align-top">Select a navbar logo from the Media Library.</td>
+                            </tr>
+                            <tr class="hover:bg-slate-50">
+                                <td class="p-4 font-medium text-slate-900 align-top">Navbar Logo</td>
+                                <td class="p-4 font-semibold align-top">Navbar Logo — Upload</td>
+                                <td class="p-4 align-top">Upload a navbar logo directly.</td>
+                            </tr>
+                            <tr class="hover:bg-slate-50">
+                                <td class="p-4 font-medium text-slate-900 align-top">Navbar Logo</td>
+                                <td class="p-4 font-semibold align-top">Navbar Logo Height (px)</td>
+                                <td class="p-4 align-top">CSS height applied to the navbar logo.</td>
+                            </tr>
+                            <!-- Sidebar Logo -->
+                            <tr class="hover:bg-slate-50">
+                                <td class="p-4 font-medium text-slate-900 align-top">Sidebar Logo</td>
+                                <td class="p-4 font-semibold align-top">Sidebar Logo — URL</td>
+                                <td class="p-4 align-top">URL of an image to replace the Alliance Auth logo in the sidebar (highest priority).</td>
+                            </tr>
+                            <tr class="hover:bg-slate-50">
+                                <td class="p-4 font-medium text-slate-900 align-top">Sidebar Logo</td>
+                                <td class="p-4 font-semibold align-top">Sidebar Logo — Library</td>
+                                <td class="p-4 align-top">Select a sidebar logo from the Media Library.</td>
+                            </tr>
+                            <tr class="hover:bg-slate-50">
+                                <td class="p-4 font-medium text-slate-900 align-top">Sidebar Logo</td>
+                                <td class="p-4 font-semibold align-top">Sidebar Logo — Upload</td>
+                                <td class="p-4 align-top">Upload a sidebar logo directly.</td>
+                            </tr>
+                            <tr class="hover:bg-slate-50">
+                                <td class="p-4 font-medium text-slate-900 align-top">Sidebar Logo</td>
+                                <td class="p-4 font-semibold align-top">Sidebar Logo Width (px)</td>
+                                <td class="p-4 align-top">CSS max-width applied to the sidebar logo.</td>
+                            </tr>
+                            <!-- Custom CSS -->
+                            <tr class="hover:bg-slate-50">
+                                <td class="p-4 font-medium text-slate-900 align-top">Custom CSS</td>
+                                <td class="p-4 font-semibold align-top">Custom CSS — URL</td>
+                                <td class="p-4 align-top">External stylesheet URL linked in every page <code>&lt;head&gt;</code>, loaded after the active theme.</td>
+                            </tr>
+                            <tr class="hover:bg-slate-50">
+                                <td class="p-4 font-medium text-slate-900 align-top">Custom CSS</td>
+                                <td class="p-4 font-semibold align-top">Custom CSS (Inline)</td>
+                                <td class="p-4 align-top">Raw CSS text injected via <code>&lt;style&gt;</code> on every page, loaded after the active theme. Takes precedence over the built-in Custom CSS admin.</td>
+                            </tr>
+                            <!-- Extra HTML -->
+                            <tr class="hover:bg-slate-50">
+                                <td class="p-4 font-medium text-slate-900 align-top">Extra HTML</td>
+                                <td class="p-4 font-semibold align-top">Extra &lt;head&gt; HTML</td>
+                                <td class="p-4 align-top">Raw HTML injected at the end of <code>&lt;head&gt;</code> on every page. Useful for analytics scripts, font imports, or custom meta tags.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div id="no-results" class="hidden p-8 text-center text-slate-500 text-sm">
+                    No matching fields found. Try a different search term.
+                </div>
+            </div>
+
+            <!-- Image recommendations -->
+            <h3 class="text-xl font-bold text-slate-800 mb-4">Image &amp; Video Recommendations</h3>
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                <div class="bg-white p-4 rounded-lg shadow-sm border border-slate-200 border-l-4 border-l-blue-400">
+                    <div class="text-xs text-slate-500 uppercase tracking-widest font-bold mb-1">Background Image</div>
+                    <div class="font-mono text-lg text-slate-800 mb-1">1920 × 1080 px</div>
+                    <p class="text-sm text-slate-600">JPEG, PNG, or GIF. JPEG recommended for photos.</p>
+                </div>
+                <div class="bg-white p-4 rounded-lg shadow-sm border border-slate-200 border-l-4 border-l-purple-400">
+                    <div class="text-xs text-slate-500 uppercase tracking-widest font-bold mb-1">Background Video</div>
+                    <div class="font-mono text-lg text-slate-800 mb-1">1920 × 1080 px</div>
+                    <p class="text-sm text-slate-600">MP4 (H.264) or WebM (VP9). Keep under ~15 MB for fast loads.</p>
+                </div>
+                <div class="bg-white p-4 rounded-lg shadow-sm border border-slate-200 border-l-4 border-l-indigo-400">
+                    <div class="text-xs text-slate-500 uppercase tracking-widest font-bold mb-1">Logos (Login / Navbar / Sidebar)</div>
+                    <div class="font-mono text-lg text-slate-800 mb-1">Transparent PNG</div>
+                    <p class="text-sm text-slate-600">High-res PNG with transparent background. Navbar height ≤ 64 px, Sidebar width ≤ 256 px.</p>
+                </div>
+                <div class="bg-white p-4 rounded-lg shadow-sm border border-slate-200 border-l-4 border-l-slate-400">
+                    <div class="text-xs text-slate-500 uppercase tracking-widest font-bold mb-1">Favicon</div>
+                    <div class="font-mono text-lg text-slate-800 mb-1">≥ 192 × 192 px</div>
+                    <p class="text-sm text-slate-600">PNG or ICO format for best browser-tab display.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- ======================== SECURITY ======================== -->
+        <section id="section-security" class="content-section hidden-section fade-in max-w-4xl mx-auto">
+            <header class="mb-8">
+                <h2 class="text-3xl font-extrabold text-slate-900 mb-2">Security &amp; Licensing</h2>
+                <p class="text-lg text-slate-600 leading-relaxed">
+                    Important considerations for administrators regarding raw input fields and the open-source license.
+                </p>
+            </header>
+
+            <div class="bg-red-50 border border-red-200 rounded-xl p-6 mb-8">
+                <h3 class="text-xl font-bold text-red-800 mb-4 flex items-center gap-2">⚠️ Security Notes</h3>
+                <ul class="space-y-4 text-red-900 text-sm">
+                    <li class="flex gap-3">
+                        <span class="font-bold shrink-0">Raw HTML fields:</span>
+                        <span>
+                            <code>Login Page Extra HTML</code> and <code>Extra &lt;head&gt; HTML</code> are injected without sanitization.
+                            Only Django staff/superusers can access the AA Customizer admin panel, but you should still restrict access to
+                            highly trusted administrators to prevent XSS vulnerabilities.
+                        </span>
+                    </li>
+                    <li class="flex gap-3">
+                        <span class="font-bold shrink-0">CSS Precedence:</span>
+                        <span>
+                            The customizer's CSS loads <em>after</em> Alliance Auth's default custom CSS. This is intentional — it lets
+                            you override theme styles — but double-check your selectors to avoid unintended layout breaks.
+                        </span>
+                    </li>
+                    <li class="flex gap-3">
+                        <span class="font-bold shrink-0">Custom CSS URL:</span>
+                        <span>
+                            Validated as a URL by Django's field validator; only <code>http</code> and <code>https</code> schemes are accepted.
+                        </span>
+                    </li>
+                </ul>
+            </div>
+
+            <div class="bg-white border border-slate-200 rounded-xl p-6 shadow-sm">
+                <h3 class="text-xl font-bold text-slate-800 mb-2 flex items-center gap-2">📄 License</h3>
+                <p class="text-slate-600 mb-4 text-sm">This project is licensed under the <strong>MIT License</strong>.</p>
+                <div class="bg-slate-50 p-4 rounded font-mono text-xs text-slate-500 border border-slate-100 leading-relaxed">
+                    Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated
+                    documentation files (the "Software"), to deal in the Software without restriction, including without limitation
+                    the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software,
+                    and to permit persons to whom the Software is furnished to do so, subject to the following conditions: The above
+                    copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+
+            // ── Navigation ──────────────────────────────────────────────────
+            const navButtons = document.querySelectorAll('.nav-btn');
+            const sections   = document.querySelectorAll('.content-section');
+
+            navButtons.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    // Update nav highlight
+                    navButtons.forEach(b => b.classList.remove('nav-active'));
+                    btn.classList.add('nav-active');
+
+                    // Switch visible section with re-triggered fade
+                    const targetId = btn.getAttribute('data-target');
+                    sections.forEach(sec => {
+                        if (sec.id === targetId) {
+                            sec.classList.remove('hidden-section');
+                            // Force animation replay
+                            sec.classList.remove('fade-in');
+                            void sec.offsetWidth;
+                            sec.classList.add('fade-in');
+                        } else {
+                            sec.classList.add('hidden-section');
+                        }
+                    });
+
+                    // Scroll main pane to top on navigate
+                    document.getElementById('main-content').scrollTop = 0;
+
+                    // Nudge Chart.js to resize when overview is re-shown
+                    if (targetId === 'section-overview') {
+                        window.dispatchEvent(new Event('resize'));
+                    }
+                });
+            });
+
+            // ── Installation Tabs ────────────────────────────────────────────
+            const tabButtons  = document.querySelectorAll('.install-tab');
+            const tabContents = document.querySelectorAll('.tab-content');
+
+            tabButtons.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    // Deactivate all tabs
+                    tabButtons.forEach(b => b.classList.remove('tab-active'));
+                    // Hide all panels
+                    tabContents.forEach(c => c.classList.add('hidden-section'));
+
+                    // Activate clicked tab and show its panel
+                    btn.classList.add('tab-active');
+                    const panel = document.getElementById('tab-' + btn.getAttribute('data-tab'));
+                    panel.classList.remove('hidden-section');
+                });
+            });
+
+            // ── Field Reference Search ───────────────────────────────────────
+            const searchInput  = document.getElementById('field-search');
+            const tableRows    = document.querySelectorAll('#fields-tbody tr');
+            const noResultsMsg = document.getElementById('no-results');
+
+            searchInput.addEventListener('input', () => {
+                const term = searchInput.value.toLowerCase().trim();
+                let visible = 0;
+
+                tableRows.forEach(row => {
+                    const match = row.textContent.toLowerCase().includes(term);
+                    row.style.display = match ? '' : 'none';
+                    if (match) visible++;
+                });
+
+                noResultsMsg.classList.toggle('hidden', visible > 0);
+            });
+
+            // ── Chart.js ─────────────────────────────────────────────────────
+            const ctx = document.getElementById('featuresChart').getContext('2d');
+
+            const centerLabelPlugin = {
+                id: 'centerLabel',
+                beforeDraw(chart) {
+                    if (chart.config.type !== 'doughnut') return;
+                    const { width, height, ctx: c } = chart;
+                    c.save();
+                    const fontSize = (height / 160).toFixed(2);
+                    c.font = `bold ${fontSize}em sans-serif`;
+                    c.fillStyle = '#334155';
+                    c.textBaseline = 'middle';
+                    const text = 'Settings';
+                    const x = Math.round((width - c.measureText(text).width) / 2);
+                    c.fillText(text, x, height / 2);
+                    c.restore();
+                }
+            };
+
+            new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Branding & Logos', 'Layout & Backgrounds', 'Custom CSS', 'HTML Injection'],
+                    datasets: [{
+                        data: [5, 4, 2, 2],
+                        backgroundColor: ['#3b82f6', '#6366f1', '#0ea5e9', '#64748b'],
+                        borderWidth: 0,
+                        hoverOffset: 6
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    cutout: '68%',
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            labels: {
+                                padding: 16,
+                                font: { size: 12 },
+                                usePointStyle: true,
+                                boxWidth: 8
+                            }
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label(ctx) {
+                                    const labels = {
+                                        'Branding & Logos':    'Site name, login/nav/sidebar logos, favicon',
+                                        'Layout & Backgrounds':'Background image/video, layout modes, overlay',
+                                        'Custom CSS':          'External CSS URL + inline CSS',
+                                        'HTML Injection':      'Login card HTML + <head> HTML'
+                                    };
+                                    return ' ' + (labels[ctx.label] || ctx.label);
+                                }
+                            },
+                            backgroundColor: 'rgba(15,23,42,0.9)',
+                            padding: 10,
+                            cornerRadius: 4
+                        }
+                    }
+                },
+                plugins: [centerLabelPlugin]
+            });
+        });
+    </script>
+</body>
+</html>
