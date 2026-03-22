@@ -5,6 +5,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.1.3] - 2026-03-22
+
+### Added
+- **Login page video upload** — `login_background` field changed from `ImageField` to `FileField` with a validator allowing standard image formats (JPEG, PNG, GIF, WebP) and web video formats (MP4, WebM, OGV). Admins can now upload video files directly without needing an external URL (migration `0012`).
+- **Login page custom code** — four new fields for a fully custom login page design: `Login Page — CSS URL`, `Login Page — CSS`, `Login Page — Extra <head> HTML`, and `Login Page — Extra Body HTML`. These fields are scoped exclusively to the login page, injected after all global styles for maximum override power (migration `0013`).
+
 ## [1.1.2a] - 2026-03-22
 
 ### Changed

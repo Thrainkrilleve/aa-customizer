@@ -2,10 +2,33 @@
 Models for the aa_customizer app.
 """
 
+import os
+
 from solo.models import SingletonModel
 
+from django.core.exceptions import ValidationError
 from django.db import models
 from django.utils.translation import gettext_lazy as _
+
+_ALLOWED_IMAGE_EXTENSIONS = {".jpg", ".jpeg", ".png", ".gif", ".webp", ".bmp", ".tiff", ".svg"}
+_ALLOWED_VIDEO_EXTENSIONS = {".mp4", ".webm", ".ogv", ".ogg"}
+_ALLOWED_BACKGROUND_EXTENSIONS = _ALLOWED_IMAGE_EXTENSIONS | _ALLOWED_VIDEO_EXTENSIONS
+
+
+def validate_image_or_video(value):
+    """Accept standard image formats and web video formats (.mp4, .webm, .ogv)."""
+    ext = os.path.splitext(value.name)[1].lower()
+    if ext not in _ALLOWED_BACKGROUND_EXTENSIONS:
+        raise ValidationError(
+            "Unsupported file type '%(ext)s'. "
+            "Allowed images: %(images)s. "
+            "Allowed videos: %(videos)s.",
+            params={
+                "ext": ext,
+                "images": ", ".join(sorted(_ALLOWED_IMAGE_EXTENSIONS)),
+                "videos": ", ".join(sorted(_ALLOWED_VIDEO_EXTENSIONS)),
+            },
+        )
 
 
 class AACMediaImage(models.Model):
@@ -77,14 +100,16 @@ class CustomBranding(SingletonModel):
     )
 
     # ----------------------------------------------- login background image --
-    login_background = models.ImageField(
+    login_background = models.FileField(
         upload_to="aa_customizer/backgrounds/",
         blank=True,
         null=True,
+        validators=[validate_image_or_video],
         verbose_name=_("Login Background — Upload"),
         help_text=_(
-            "Upload a background image for the login page. "
-            "Recommended: at least 1920×1080 px, JPEG or PNG. "
+            "Upload a background image or video for the login page. "
+            "Images: JPEG, PNG, GIF, WebP (recommended: at least 1920×1080 px). "
+            "Videos: MP4, WebM, OGV. "
             "Ignored when a URL is also provided."
         ),
     )
@@ -365,6 +390,47 @@ class CustomBranding(SingletonModel):
         help_text=_(
             "Raw HTML injected at the very end of <head> on every page. "
             "Useful for analytics scripts, font imports, or custom meta tags. "
+            "Only editable by admins — content is rendered without sanitization."
+        ),
+    )
+
+    # ------------------------------------------ login page — custom code -----
+    login_page_css_url = models.URLField(
+        blank=True,
+        verbose_name=_("Login Page — CSS URL"),
+        help_text=_(
+            "URL of an external stylesheet linked only on the login page. "
+            "Loaded after the global Custom CSS URL, so it takes full priority. "
+            "Use this to load a completely different design framework (e.g. Tailwind, "
+            "a custom theme CDN link) without affecting the rest of the site."
+        ),
+    )
+    login_page_css = models.TextField(
+        blank=True,
+        verbose_name=_("Login Page — CSS"),
+        help_text=_(
+            "CSS injected only on the login page, after all other stylesheets. "
+            "Has the highest specificity of any CSS on the login page — use it to "
+            "completely override the card layout, colors, fonts, or any element."
+        ),
+    )
+    login_page_head_html = models.TextField(
+        blank=True,
+        verbose_name=_("Login Page — Extra <head> HTML"),
+        help_text=_(
+            "Raw HTML injected at the end of <head> only on the login page. "
+            "Useful for loading custom fonts, icon libraries, JS frameworks, or "
+            "Open Graph tags specific to the login page. "
+            "Only editable by admins — content is rendered without sanitization."
+        ),
+    )
+    login_page_body_html = models.TextField(
+        blank=True,
+        verbose_name=_("Login Page — Extra Body HTML"),
+        help_text=_(
+            "Raw HTML injected just before </body> only on the login page. "
+            "Useful for custom overlays, particle effects, animation scripts, or "
+            "any markup/JavaScript needed for a fully custom landing page. "
             "Only editable by admins — content is rendered without sanitization."
         ),
     )

@@ -67,6 +67,14 @@
             <style>{{ AA_CUSTOMIZER.custom_css|safe }}</style>
         {% endif %}
         {% if AA_CUSTOMIZER.head_extra_html %}{{ AA_CUSTOMIZER.head_extra_html|safe }}{% endif %}
+        {# Login-page-only custom code — loaded after everything else for maximum override power #}
+        {% if AA_CUSTOMIZER.login_page_css_url %}
+            <link rel="stylesheet" href="{{ AA_CUSTOMIZER.login_page_css_url }}">
+        {% endif %}
+        {% if AA_CUSTOMIZER.login_page_css %}
+            <style>{{ AA_CUSTOMIZER.login_page_css|safe }}</style>
+        {% endif %}
+        {% if AA_CUSTOMIZER.login_page_head_html %}{{ AA_CUSTOMIZER.login_page_head_html|safe }}{% endif %}
     </head>
 
     <body>
@@ -99,5 +107,6 @@
             {% endblock %}
         </div>
         {% endblock outer_container %}
+        {% if AA_CUSTOMIZER.login_page_body_html %}{{ AA_CUSTOMIZER.login_page_body_html|safe }}{% endif %}
     </body>
 </html>

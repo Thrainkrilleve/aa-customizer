@@ -4,7 +4,7 @@ Forms for the aa_customizer app.
 
 from django import forms
 
-from .models import CustomBranding
+from .models import CustomBranding, _ALLOWED_BACKGROUND_EXTENSIONS
 
 _MONO = "font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace; width: 100%;"
 
@@ -27,6 +27,9 @@ class CustomBrandingAdminForm(forms.ModelForm):
             "custom_css": forms.Textarea(attrs={"rows": 14, "style": _MONO}),
             "login_extra_html": forms.Textarea(attrs={"rows": 6, "style": _MONO}),
             "head_extra_html": forms.Textarea(attrs={"rows": 6, "style": _MONO}),
+            "login_page_css": forms.Textarea(attrs={"rows": 14, "style": _MONO}),
+            "login_page_head_html": forms.Textarea(attrs={"rows": 8, "style": _MONO}),
+            "login_page_body_html": forms.Textarea(attrs={"rows": 8, "style": _MONO}),
         }
 
     def clean_login_background_color(self):
@@ -39,3 +42,15 @@ class CustomBrandingAdminForm(forms.ModelForm):
                 + ". Use a valid CSS color such as #1a1a2e or rgba(26, 26, 46, 1)."
             )
         return value
+
+    def clean_login_background(self):
+        f = self.cleaned_data.get("login_background")
+        if f and hasattr(f, "name"):
+            import os
+            ext = os.path.splitext(f.name)[1].lower()
+            if ext not in _ALLOWED_BACKGROUND_EXTENSIONS:
+                raise forms.ValidationError(
+                    f"Unsupported file type '{ext}'. "
+                    "Please upload an image (JPEG, PNG, GIF, WebP) or a video (MP4, WebM, OGV)."
+                )
+        return f
