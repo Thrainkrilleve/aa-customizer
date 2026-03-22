@@ -71,6 +71,10 @@ In `local.py`, add to the settings section to append the existing `TEMPLATES` li
 TEMPLATES[0]["OPTIONS"]["context_processors"].append(
     "aa_customizer.context_processors.aa_customizer"
 )
+
+MEDIA_ROOT = "/path/to/your/media/"
+MEDIA_URL  = "/media/"
+
 ```
 
 **4 — Run migrations**
@@ -84,18 +88,6 @@ python manage.py migrate aa_customizer
 ```bash
 python manage.py collectstatic
 ```
-
-**6 — (Optional) Configure media file serving**
-
-Only needed if you want to use **file uploads or the media library** instead of image URLs.
-
-Add these two lines anywhere in the Custom Settings section of your `local.py`:
-
-```python
-MEDIA_ROOT = "/path/to/your/media/"
-MEDIA_URL  = "/media/"
-```
-
 Make sure your web server (nginx, Apache, etc.) is configured to serve files from `MEDIA_ROOT` at `MEDIA_URL`.
 
 In your `nginx.conf`, add inside the `server {}` block:
@@ -161,19 +153,8 @@ In `local.py`, add to the settings section to append the existing `TEMPLATES` li
 TEMPLATES[0]["OPTIONS"]["context_processors"].append(
     "aa_customizer.context_processors.aa_customizer"
 )
-```
 
-**4 — (Optional) Configure media file serving**
-
-If you want to upload images through the admin or use the media library instead of external URLs, follow these steps.
-For most Docker installs, **using URL fields is simpler** — just paste an image link and skip all of the below.
-
-**a) Add to `local.py`**
-
-Add these two lines anywhere in the Custom Settings section of your `local.py`:
-
-```python
-MEDIA_ROOT = "/var/www/myauth/media/"
+MEDIA_ROOT = "/path/to/your/media/"
 MEDIA_URL  = "/media/"
 ```
 
