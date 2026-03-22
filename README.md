@@ -96,12 +96,22 @@ MEDIA_ROOT = "/path/to/your/media/"
 MEDIA_URL  = "/media/"
 ```
 
-Make sure your web server (nginx, Apache, etc.) is configured to serve files from `MEDIA_ROOT` at `MEDIA_URL`:
+Make sure your web server (nginx, Apache, etc.) is configured to serve files from `MEDIA_ROOT` at `MEDIA_URL`.
 
-        location /media {
-            alias /var/www/myauth/media;
-            autoindex off;
-        }
+In your `nginx.conf`, add inside the `server {}` block:
+
+```nginx
+# Allow uploads up to 20 MB (nginx default is 1 MB — raise this if you
+# get "413 Request Entity Too Large" when uploading background images).
+client_max_body_size 20m;
+# add after location /static
+location /media {
+    alias /var/www/myauth/media;
+    autoindex off;
+}
+```
+
+> Adjust `client_max_body_size` to suit your largest file. A 1920×1080 JPEG is typically 1–5 MB; a short MP4 video background can be 10–20 MB. Set it slightly above your expected maximum.
 
 **7 — (Optional) Populate the Media Library**
 
@@ -196,14 +206,20 @@ volumes:
 
 **c) Configure nginx**
 
-In your `nginx.conf`, add a `/media` location block inside the `server {}` block:
+In your `nginx.conf`, add the following inside the `server {}` block:
 
 ```nginx
+# Allow uploads up to 20 MB (nginx default is 1 MB — raise this if you
+# get "413 Request Entity Too Large" when uploading background images).
+client_max_body_size 20m;
+
 location /media {
     alias /var/www/myauth/media;
     autoindex off;
 }
 ```
+
+> Adjust `client_max_body_size` to suit your largest file. A 1920×1080 JPEG is typically 1–5 MB; a short MP4 video background can be 10–20 MB. Set it slightly above your expected maximum.
 
 **d) Bring the stack up**
 
