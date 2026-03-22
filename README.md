@@ -24,7 +24,7 @@ Gives administrators a simple admin-panel UI to customize their Alliance Auth in
 | Feature | What it does |
 |---|---|
 | **Custom site name** | Overrides `SITE_NAME` from `local.py` across the whole site |
-| **Login background** | URL or uploaded image/video; falls back to a CSS color, then the default AA space background. `.mp4`, `.webm`, `.ogv` URLs play as a fullscreen looping video |
+| **Login background** | URL or uploaded image/video; falls back to a CSS color, then the default AA space background. `.mp4`, `.webm`, `.ogv` URLs play as a fullscreen muted video with configurable loop count (forever, once, or N times) |
 | **Login layout** | Centered Card, Split Screen (background left), or Split Screen (login left) |
 | **Login logo** | URL or uploaded image shown at the top of the login card |
 | **Login title & subtitle** | Welcome heading and description text on the login card |
@@ -261,10 +261,11 @@ Changes take effect immediately on the next page load — no server restart need
 
 | Field | Description |
 |---|---|
-| **Login Background — URL** | URL of a background image **or video** (takes priority over everything). Video files (`.mp4`, `.webm`, `.ogv`) play fullscreen, looped, muted, and auto-paused by the browser when the tab is hidden |
+| **Login Background — URL** | URL of a background image **or video** (takes priority over everything). Video files (`.mp4`, `.webm`, `.ogv`) play fullscreen, muted, and auto-paused by the browser when the tab is hidden. Loop behavior is controlled by the Loop Count field below |
 | **Login Background — Library** | Select an image uploaded to the Media Library (takes priority over a direct upload) |
 | **Login Background — Upload** | Upload a background image directly into this field |
 | **Login Background Color** | CSS color fallback when no image is set, or the color shown behind a video while it loads (e.g. `#1a1a2e`) |
+| **Background Video — Loop Count** | `0` (default) = loop forever. `1` = play once then freeze on the last frame. `N` = play exactly N times then freeze. Only applies to video backgrounds |
 
 ### Login Page — Layout
 

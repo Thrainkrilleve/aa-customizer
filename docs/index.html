@@ -75,7 +75,8 @@
             </button>
         </nav>
         <div class="p-4 border-t border-slate-800 text-xs text-slate-500 text-center">
-            Alliance Auth Plugin Docs
+            Alliance Auth Plugin Docs<br>
+            <span class="text-slate-400 font-mono">v1.1.2a</span>
         </div>
     </aside>
 
@@ -86,6 +87,10 @@
         <section id="section-overview" class="content-section fade-in max-w-6xl mx-auto">
             <header class="mb-8">
                 <h2 class="text-3xl font-extrabold text-slate-900 mb-2">Platform Overview</h2>
+                <div class="flex items-center gap-3 mb-3">
+                    <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-semibold bg-blue-100 text-blue-800 border border-blue-200">v1.1.2a</span>
+                    <span class="text-sm text-slate-400">Latest release</span>
+                </div>
                 <p class="text-lg text-slate-600 leading-relaxed max-w-3xl">
                     AA Customizer is a branding plugin for <a href="https://allianceauth.readthedocs.io" class="text-blue-600 underline" target="_blank" rel="noopener">Alliance Auth</a> that gives administrators a simple admin-panel UI to fully brand their installation — custom logos, backgrounds, layout, CSS, and more — all without touching code or static files.
                 </p>
@@ -433,11 +438,6 @@ sudo systemctl restart gunicorn
                                 <td class="p-4 font-semibold align-top">Split Panel — Text Position</td>
                                 <td class="p-4 align-top">Vertical position of the overlay text: <code>Top</code>, <code>Center</code>, or <code>Bottom</code>.</td>
                             </tr>
-                            <tr class="hover:bg-slate-50">
-                                <td class="p-4 font-medium text-slate-900 align-top">Layout</td>
-                                <td class="p-4 font-semibold align-top">Login Page Extra HTML</td>
-                                <td class="p-4 align-top">Raw HTML injected below the EVE SSO button on the login card. Useful for Discord links, notices, etc.</td>
-                            </tr>
                             <!-- Login Branding -->
                             <tr class="hover:bg-slate-50">
                                 <td class="p-4 font-medium text-slate-900 align-top">Login Branding</td>
@@ -468,6 +468,11 @@ sudo systemctl restart gunicorn
                                 <td class="p-4 font-medium text-slate-900 align-top">Login Branding</td>
                                 <td class="p-4 font-semibold align-top">Login Page Subtitle</td>
                                 <td class="p-4 align-top">Optional description text shown below the title.</td>
+                            </tr>
+                            <tr class="hover:bg-slate-50">
+                                <td class="p-4 font-medium text-slate-900 align-top">Login Branding</td>
+                                <td class="p-4 font-semibold align-top">Login Page Extra HTML</td>
+                                <td class="p-4 align-top">Raw HTML injected below the EVE SSO button on the login card. Useful for Discord links, notices, etc.</td>
                             </tr>
                             <!-- Favicon -->
                             <tr class="hover:bg-slate-50">
@@ -566,9 +571,14 @@ sudo systemctl restart gunicorn
                     <p class="text-sm text-slate-600">MP4 (H.264) or WebM (VP9). Keep under ~15 MB for fast loads.</p>
                 </div>
                 <div class="bg-white p-4 rounded-lg shadow-sm border border-slate-200 border-l-4 border-l-indigo-400">
-                    <div class="text-xs text-slate-500 uppercase tracking-widest font-bold mb-1">Logos (Login / Navbar / Sidebar)</div>
+                    <div class="text-xs text-slate-500 uppercase tracking-widest font-bold mb-1">Login Logo</div>
+                    <div class="font-mono text-lg text-slate-800 mb-1">≥ 256 × 256 px</div>
+                    <p class="text-sm text-slate-600">Transparent PNG. Displayed at the top of the login card.</p>
+                </div>
+                <div class="bg-white p-4 rounded-lg shadow-sm border border-slate-200 border-l-4 border-l-indigo-400">
+                    <div class="text-xs text-slate-500 uppercase tracking-widest font-bold mb-1">Navbar &amp; Sidebar Logos</div>
                     <div class="font-mono text-lg text-slate-800 mb-1">Transparent PNG</div>
-                    <p class="text-sm text-slate-600">High-res PNG with transparent background. Navbar height ≤ 64 px, Sidebar width ≤ 256 px.</p>
+                    <p class="text-sm text-slate-600">Navbar height ≤ 64 px. Sidebar width ≤ 256 px.</p>
                 </div>
                 <div class="bg-white p-4 rounded-lg shadow-sm border border-slate-200 border-l-4 border-l-slate-400">
                     <div class="text-xs text-slate-500 uppercase tracking-widest font-bold mb-1">Favicon</div>

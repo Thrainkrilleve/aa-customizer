@@ -5,6 +5,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.1.2a] - 2026-03-22
+
+### Changed
+- **Interactive documentation site** — synced field reference with README: moved Login Page Extra HTML to the Login Branding section, added separate Login Logo image recommendation card, added Background Video — Loop Count row, and updated video background descriptions to mention configurable loop count.
+- **README** — added Background Video — Loop Count to the field reference table and updated the features table and Login Background URL description to mention configurable loop count.
+- **Overview page** — added current version badge.
+
 ## [1.1.2] - 2026-03-22
 
 ### Added
