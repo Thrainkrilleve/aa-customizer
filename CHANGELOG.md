@@ -5,6 +5,15 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.2.0] - 2026-03-22
+
+### Added
+- **Background video loop count** — new `Background Video — Loop Count` field in the admin panel. Set to `0` (default) to loop forever, `1` to play once and freeze on the last frame, or `N` to play exactly N times then freeze. Implemented via a `PositiveSmallIntegerField` on `CustomBranding` (migration `0011`).
+
+### Changed
+- **Interactive documentation site** — added `docs/index.html`, a self-contained interactive docs page (Tailwind CSS + Chart.js) covering the installation guide, field reference, media strategy, and security notes. Enabled as a GitHub Pages site at `https://thrainkrilleve.github.io/aa-customizer/`.
+- **README** — added link to the interactive documentation site.
+
 ## [1.1.1] - 2026-03-21
 
 ### Fixed

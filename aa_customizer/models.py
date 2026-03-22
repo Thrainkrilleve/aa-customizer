@@ -119,6 +119,17 @@ class CustomBranding(SingletonModel):
             "Takes priority over a direct upload; a URL takes priority over both."
         ),
     )
+    login_background_video_loop_count = models.PositiveSmallIntegerField(
+        default=0,
+        verbose_name=_("Background Video — Loop Count"),
+        help_text=_(
+            "How many times to play the background video before stopping. "
+            "0 = loop forever (default). "
+            "1 = play once then freeze on the last frame. "
+            "2, 3, … = play that many times then freeze. "
+            "Has no effect when the background is a static image."
+        ),
+    )
 
     # ---------------------------------------------------- login card logo -----
     login_logo = models.ImageField(

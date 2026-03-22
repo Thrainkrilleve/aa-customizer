@@ -65,11 +65,13 @@ class CustomBrandingAdmin(SingletonModelAdmin):
                     "login_background_library",
                     "login_background",
                     "login_background_color",
+                    "login_background_video_loop_count",
                 ),
                 "description": _(
                     "Set a background for the login page. "
                     "Priority: URL → library selection → uploaded file → color. "
-                    "Leave everything blank to use the default Alliance Auth space background."
+                    "Leave everything blank to use the default Alliance Auth space background. "
+                    "Loop Count only applies when the background is a video file."
                 ),
             },
         ),
