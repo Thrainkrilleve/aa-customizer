@@ -161,4 +161,16 @@ class CustomBrandingAdmin(SingletonModelAdmin):
                 ),
             },
         ),
+        (
+            _("Login Page — Custom Code"),
+            {
+                "fields": ("login_page_css_url", "login_page_css", "login_page_head_html", "login_page_body_html"),
+                "description": _(
+                    "Inject CSS and HTML exclusively on the login page. "
+                    "These fields are scoped to the login page only and load after all global styles, "
+                    "giving you full control to redesign the login experience. "
+                    "HTML fields are not sanitized — only admins should edit these fields."
+                ),
+            },
+        ),
     )
