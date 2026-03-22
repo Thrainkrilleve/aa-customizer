@@ -41,6 +41,22 @@ Gives administrators a simple admin-panel UI to customize their Alliance Auth in
 - `django-solo`
 - `Pillow`
 
+***
+
+To prevent confusion on how to get this installed, I figured I would break it down a little more.
+
+After the initial install, mirgate, etc. the app will function without having to do any of the extra folder creations by using image URLs.
+
+The upside is, it will work, the downside is, for any user that is located in a country that is blocking certain websites, like Imgur, the images will not appear. (A UK user in our Corp pointed this out to me.) 
+
+![alt](https://i.imgur.com/ozx29tk.png)
+
+So, the work around is either: 
+
+* A: Use a service that can provide global hosting for images. For this, I used Cloudflare's R2 Object storage, linked to the custom domain (your Auth URL), which then created a DNS record for the storage. This in turn will expose anything put into the bucket, so it's recommended to only store what is needed, I.E.: pictures. (Tested this by using Proton VPN)
+
+* B: Do the setup to allow the images to be hosted directly in Auth:
+***
 
 ## Installation
 
@@ -121,23 +137,10 @@ The recommended approach for Docker is to use **URL fields** for all images (poi
 pip install aa-customizer
 ```
 
-
-Add `aa-customizer` to your pip requirements file (e.g. `requirements.txt` or the equivalent in your Docker setup), then rebuild:
-
-```
-auth migrate
-```
-
-```
-auth collectstatic
-```
-```
-exit
-```
-
 **2 — Add to `INSTALLED_APPS`**
 
 Open your `local.py` and add above INSTALLED_APPS =:
+
 ```python
 INSTALLED_APPS.insert(0, 'aa_customizer')
 ```
@@ -193,7 +196,7 @@ In your `nginx.conf`, add the following inside the `server {}` block:
 # Allow uploads up to 20 MB (nginx default is 1 MB — raise this if you
 # get "413 Request Entity Too Large" when uploading background images).
 client_max_body_size 20m;
-
+# add after location /static
 location /media {
     alias /var/www/myauth/media;
     autoindex off;
