@@ -1,4 +1,4 @@
 """Initialize the app"""
 
-__version__ = "1.1.4"
+__version__ = "1.1.15"
 __title__ = "Customizer"
