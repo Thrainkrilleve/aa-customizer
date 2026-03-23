@@ -16,16 +16,27 @@
         <style>{{ AA_CUSTOMIZER.dashboard_css|safe }}</style>
     {% endif %}
     {% if AA_CUSTOMIZER.dashboard_head_html %}{{ AA_CUSTOMIZER.dashboard_head_html|safe }}{% endif %}
+    {% if request.user.is_superuser or request.user.is_staff %}
+        {% if AA_CUSTOMIZER.superuser_dashboard_css_url %}
+            <link rel="stylesheet" href="{{ AA_CUSTOMIZER.superuser_dashboard_css_url }}">
+        {% endif %}
+        {% if AA_CUSTOMIZER.superuser_dashboard_css %}
+            <style>{{ AA_CUSTOMIZER.superuser_dashboard_css|safe }}</style>
+        {% endif %}
+        {% if AA_CUSTOMIZER.superuser_dashboard_head_html %}{{ AA_CUSTOMIZER.superuser_dashboard_head_html|safe }}{% endif %}
+    {% endif %}
 {% endblock extra_css %}
 
 {% block content %}
+    {% if request.user.is_superuser or request.user.is_staff %}
+        {% if AA_CUSTOMIZER.superuser_dashboard_body_html %}
+            {{ AA_CUSTOMIZER.superuser_dashboard_body_html|safe }}
+        {% endif %}
+    {% endif %}
     <div class="row aac-dashboard-context">
         {% for dash in views %}
             {{ dash | safe }}
         {% endfor %}
     </div>
-{% endblock %}
-
-{% block extra_javascript %}
     {% if AA_CUSTOMIZER.dashboard_body_html %}{{ AA_CUSTOMIZER.dashboard_body_html|safe }}{% endif %}
-{% endblock extra_javascript %}
+{% endblock %}
