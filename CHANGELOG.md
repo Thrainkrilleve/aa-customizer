@@ -5,6 +5,21 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.1.21] - 2026-03-23
+
+### Added
+- **Per-section CSS/HTML customization** — the admin panel now has two additional "Custom Code" fieldsets for targeting specific sections of the authenticated site:
+  - **Main Dashboard — Custom Code** (`dashboard_css_url`, `dashboard_css`, `dashboard_head_html`, `dashboard_body_html`) — styles and markup applied only on the post-login dashboard page, via a template override of `authentication/dashboard.html` that injects into `{% block extra_css %}` (for head assets) and `{% block extra_javascript %}` (for body scripts/markup).
+  - **Admin Dashboard — Custom Code** (`superuser_dashboard_css_url`, `superuser_dashboard_css`, `superuser_dashboard_head_html`, `superuser_dashboard_body_html`) — styles and markup injected into the superuser status widget (`allianceauth/admin-status/overview.html`). These are **superuser-only**: non-superusers never see the widget and therefore never receive these styles. Uses a new `{% superuser_branding %}` template tag to access `CustomBranding.get_solo()` directly because the AA `{% status_overview %}` inclusion tag does not forward request context.
+- **`superuser_branding` template tag** — new `simple_tag` in `aa_customizer_tags.py` that returns the `CustomBranding` singleton directly from the DB (django-solo cached). Usable in any template that does not receive the context processor output.
+- **Migration `0016`** — adds the 8 new `URLField`/`TextField` columns to `custombranding`.
+- **Unit tests** — 18 new tests (38 total): 8 model round-trip tests for the new fields, updated `test_all_custom_code_fields_blank_by_default` covering all 15 text/URL fields, expanded `HelpTextSafetyTest` checking 9 fields for raw-tag regressions, `DashboardTemplateInjectionTest` (5 cases), and `SuperuserDashboardTemplateInjectionTest` (5 cases).
+
+## [1.1.20] - 2026-03-22
+
+### Fixed
+- **Language selector clipped on login card** — Alliance Auth’s `lang_select.html` wraps the language `<select>` in a `<form class="dropdown-item">`, which applies Bootstrap’s `white-space: nowrap` and causes the option text (e.g. “English (en)”) to be cut off inside the login card. Added a template override at `public/lang_select.html` that replaces the `dropdown-item` class with `px-3 py-2` spacing and uses `form-select-sm` for a neater fit.
+
 ## [1.1.19] - 2026-03-22
 
 ### Fixed
