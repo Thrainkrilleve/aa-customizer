@@ -2,6 +2,8 @@
 Template tags for the aa_customizer app.
 """
 
+from crum import get_current_user
+
 from django import template
 from django.utils.html import conditional_escape
 from django.utils.safestring import mark_safe
@@ -95,12 +97,18 @@ def customizer_navbar_logo(context):
 
 
 @register.simple_tag()
-def superuser_branding() -> CustomBranding:
+def superuser_branding():
     """
-    Return the CustomBranding singleton for use in templates that are rendered
-    via inclusion tags (e.g. ``{% status_overview %}``) where the context
-    processor does not run and ``AA_CUSTOMIZER`` is not available.
+    Return the CustomBranding singleton when the current user is staff/superuser,
+    otherwise return None.
+
+    Uses ``crum.get_current_user()`` to retrieve the user without relying on
+    template context, which is dropped by Alliance Auth's inclusion-tag-based
+    status widget renderer (``{% status_overview %}``).
     """
+    user = get_current_user()
+    if user is None or not (user.is_superuser or user.is_staff):
+        return None
     return CustomBranding.get_solo()
 
 

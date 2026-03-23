@@ -491,13 +491,20 @@ class SuperuserDashboardTemplateInjectionTest(TestCase):
         self.branding = CustomBranding.get_solo()
 
     def _render_with_tag(self, snippet):
-        """Wrap snippet in the template tag load and superuser_branding call."""
-        return _render(
-            "{% load aa_customizer_tags %}"
-            "{% superuser_branding as aac_sb %}"
-            + snippet,
-            {},
-        )
+        """Render snippet with crum simulating a logged-in superuser."""
+        from unittest.mock import MagicMock, patch
+
+        mock_user = MagicMock(is_superuser=True, is_staff=True)
+        with patch(
+            "aa_customizer.templatetags.aa_customizer_tags.get_current_user",
+            return_value=mock_user,
+        ):
+            return _render(
+                "{% load aa_customizer_tags %}"
+                "{% superuser_branding as aac_sb %}"
+                + snippet,
+                {},
+            )
 
     def test_superuser_dashboard_css_url_renders_as_link_tag(self):
         self.branding.superuser_dashboard_css_url = "https://cdn.example.com/admin.css"
@@ -547,34 +554,31 @@ class SuperuserDashboardTemplateInjectionTest(TestCase):
 
     def test_superuser_code_suppressed_for_non_superusers(self):
         """
-        The AA view layer gates the widget: dashboard_admin() returns '' for
-        non-superusers without rendering overview.html at all.  We replicate
-        that guard here without importing from allianceauth, verifying that
-        a non-superuser request produces empty output containing none of the
-        custom superuser CSS/HTML.
+        When crum reports a non-superuser, superuser_branding() returns None
+        so every ``{% if aac_sb.xxx %}`` check is falsy and nothing renders.
         """
-        from unittest.mock import MagicMock
+        from unittest.mock import MagicMock, patch
 
         self.branding.superuser_dashboard_css = ".secret { color: red; }"
         self.branding.superuser_dashboard_head_html = "<script>alert(1)</script>"
         self.branding.save()
 
-        request = RequestFactory().get("/")
-        request.user = MagicMock(is_superuser=False)
-
-        # Replicate the AA view gate: render only for superusers
-        output = (
-            self._render_with_tag(
+        non_superuser = MagicMock(is_superuser=False, is_staff=False)
+        with patch(
+            "aa_customizer.templatetags.aa_customizer_tags.get_current_user",
+            return_value=non_superuser,
+        ):
+            output = _render(
+                "{% load aa_customizer_tags %}"
+                "{% superuser_branding as aac_sb %}"
                 "{% if aac_sb.superuser_dashboard_css %}"
                 "<style>{{ aac_sb.superuser_dashboard_css|safe }}</style>"
                 "{% endif %}"
                 "{% if aac_sb.superuser_dashboard_head_html %}"
                 "{{ aac_sb.superuser_dashboard_head_html|safe }}"
-                "{% endif %}"
+                "{% endif %}",
+                {},
             )
-            if request.user.is_superuser
-            else ""
-        )
 
         self.assertEqual(output, "")
         self.assertNotIn(".secret", output)

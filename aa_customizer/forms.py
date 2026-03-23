@@ -25,7 +25,6 @@ class CustomBrandingAdminForm(forms.ModelForm):
         widgets = {
             "login_subtitle": forms.Textarea(attrs={"rows": 3}),
             "custom_css": forms.Textarea(attrs={"rows": 14, "style": _MONO}),
-            "login_extra_html": forms.Textarea(attrs={"rows": 6, "style": _MONO}),
             "head_extra_html": forms.Textarea(attrs={"rows": 6, "style": _MONO}),
             "login_page_css": forms.Textarea(attrs={"rows": 14, "style": _MONO}),
             "login_page_head_html": forms.Textarea(attrs={"rows": 8, "style": _MONO}),
