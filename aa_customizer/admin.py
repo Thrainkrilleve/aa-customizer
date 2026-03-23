@@ -11,6 +11,7 @@ from django.utils.translation import gettext_lazy as _
 
 from .forms import CustomBrandingAdminForm
 from .models import AACMediaImage, CustomBranding
+from .permissions import _is_trusted_admin
 
 
 @admin.register(AACMediaImage)
@@ -35,6 +36,18 @@ class AACMediaImageAdmin(admin.ModelAdmin):
 class CustomBrandingAdmin(SingletonModelAdmin):
     form = CustomBrandingAdminForm
     save_on_top = True
+
+    def has_view_permission(self, request, obj=None):
+        return _is_trusted_admin(request)
+
+    def has_change_permission(self, request, obj=None):
+        return _is_trusted_admin(request)
+
+    def has_add_permission(self, request):
+        return False  # singleton — cannot add
+
+    def has_delete_permission(self, request, obj=None):
+        return False  # singleton — cannot delete
 
     # Organized fieldsets to act like sections/tabs
     fieldsets = (

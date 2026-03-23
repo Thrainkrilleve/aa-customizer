@@ -615,3 +615,62 @@ class SuperuserDashboardTemplateInjectionTest(TestCase):
                     "",
                     f"Expected no output for blank {field_name}, got: {out!r}",
                 )
+
+
+# ---------------------------------------------------------------------------
+# Trusted-user admin restriction (AA_CUSTOMIZER_TRUSTED_USER_IDS)
+# ---------------------------------------------------------------------------
+
+
+class TrustedAdminUserTests(TestCase):
+    """
+    Tests for the AA_CUSTOMIZER_TRUSTED_USER_IDS admin access restriction.
+
+    When the setting is absent or empty, any superuser passes.
+    When the setting is a non-empty list, only users whose pk appears in that
+    list are allowed — regardless of superuser flag.
+    """
+
+    def _make_request(self, pk, is_superuser=True):
+        request = RequestFactory().get("/")
+        from unittest.mock import MagicMock
+        request.user = MagicMock(pk=pk, is_superuser=is_superuser, is_staff=is_superuser)
+        return request
+
+    def test_no_setting_allows_superuser(self):
+        """Without the setting, any superuser is trusted."""
+        from .permissions import _is_trusted_admin
+        with self.settings(AA_CUSTOMIZER_TRUSTED_USER_IDS=[]):
+            self.assertTrue(_is_trusted_admin(self._make_request(pk=42, is_superuser=True)))
+
+    def test_no_setting_blocks_non_superuser(self):
+        """Without the setting, non-superusers are blocked."""
+        from .permissions import _is_trusted_admin
+        with self.settings(AA_CUSTOMIZER_TRUSTED_USER_IDS=[]):
+            self.assertFalse(_is_trusted_admin(self._make_request(pk=42, is_superuser=False)))
+
+    def test_trusted_list_allows_listed_pk(self):
+        """A user whose PK appears in the trusted list is allowed."""
+        from .permissions import _is_trusted_admin
+        with self.settings(AA_CUSTOMIZER_TRUSTED_USER_IDS=[1, 7]):
+            self.assertTrue(_is_trusted_admin(self._make_request(pk=7)))
+
+    def test_trusted_list_blocks_unlisted_superuser(self):
+        """A superuser whose PK is NOT in the trusted list is blocked."""
+        from .permissions import _is_trusted_admin
+        with self.settings(AA_CUSTOMIZER_TRUSTED_USER_IDS=[1, 7]):
+            self.assertFalse(_is_trusted_admin(self._make_request(pk=99, is_superuser=True)))
+
+    def test_trusted_list_allows_by_pk_regardless_of_superuser_flag(self):
+        """_is_trusted_admin gates on PK membership alone when the list is set."""
+        from .permissions import _is_trusted_admin
+        with self.settings(AA_CUSTOMIZER_TRUSTED_USER_IDS=[5]):
+            # pk=5 is in list; is_superuser flag is irrelevant when list is active
+            self.assertTrue(_is_trusted_admin(self._make_request(pk=5, is_superuser=False)))
+
+    def test_trusted_list_with_single_entry(self):
+        """Edge case: a single-element list still enforces the restriction correctly."""
+        from .permissions import _is_trusted_admin
+        with self.settings(AA_CUSTOMIZER_TRUSTED_USER_IDS=[3]):
+            self.assertTrue(_is_trusted_admin(self._make_request(pk=3)))
+            self.assertFalse(_is_trusted_admin(self._make_request(pk=4)))

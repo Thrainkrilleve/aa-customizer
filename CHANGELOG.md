@@ -5,6 +5,10 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.1.27] - 2026-03-23
+### Added
+- **`AA_CUSTOMIZER_TRUSTED_USER_IDS` setting** — optional list of integer user PKs in `local.py` that restricts access to the CustomBranding admin page. When set, only the listed users may view or modify branding settings, regardless of superuser status. When absent or empty, any superuser retains access (backward-compatible). The permission helper lives in `aa_customizer/permissions.py` so it can be tested without requiring `django.contrib.admin` in `INSTALLED_APPS`.
+
 ## [1.1.26] - 2026-03-23
 ### Fixed
 - **`celery_bar_partial.html` override removed** — the override's `|default:"0"` guards returned `SafeString("0")` when `tasks_count` was `None` or `0`, causing `decimal_widthratio` to crash with `TypeError: unsupported operand type(s) for /: 'SafeString' and 'int'` and breaking the entire dashboard. The stock AA template works correctly because the view always provides integer values; the override was unnecessary and harmful.
