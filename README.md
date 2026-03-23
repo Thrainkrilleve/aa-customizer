@@ -18,7 +18,11 @@ Gives administrators a simple admin-panel UI to customize their Alliance Auth in
 ### Side Bar Icon
 ![Sidebar Icon](https://i.imgur.com/HG7hRYo.png)
 
+### Custom Login CSS/HTML (Design how you want!)
 
+![Login Landing](https://i.imgur.com/5H8bNeM.png)
+
+![Login Popup](https://i.imgur.com/b3TqwwW.png)
 ## Features
 
 | Feature | What it does |
@@ -318,17 +322,12 @@ Changes take effect immediately on the next page load — no server restart need
 | **Sidebar Logo — Upload** | Upload a sidebar logo image directly into this field |
 | **Sidebar Logo Width (px)** | Display width of the sidebar logo |
 
-### Custom CSS
+### Site-Wide CSS & HTML
 
 | Field | Description |
 |---|---|
 | **Custom CSS — URL** | External stylesheet URL linked in every page `<head>` |
 | **Custom CSS** | Inline CSS injected via `<style>` on every page |
-
-### Extra HTML
-
-| Field | Description |
-|---|---|
 | **Extra `<head>` HTML** | Raw HTML injected at the end of `<head>` on every page |
 
 

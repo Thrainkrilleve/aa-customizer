@@ -79,7 +79,9 @@
             margin-bottom: 0.5rem;
         }
         .card-body img.img-responsive { max-width: 200px !important; }
-        .aac-ccp-footer, .aac-ccp-footer a { color: rgba(255,255,255,0.17) !important; font-size: 0.65rem !important; text-decoration: none; }
+        .aac-ccp-footer { margin-top: 1rem; text-align: center; padding: 0 0.5rem; font-size: 0.6rem !important; color: rgba(220,225,238,0.32) !important; letter-spacing: 0.03em; line-height: 1.6; }
+        .aac-ccp-footer a { color: rgba(220,225,238,0.32) !important; text-decoration: none !important; transition: color 0.2s; }
+        .aac-ccp-footer a:hover { color: rgba(245,158,11,0.65) !important; }
         #lang-select {
             background: rgba(255,255,255,0.04) !important;
             border: 1px solid rgba(255,255,255,0.08) !important;
@@ -269,6 +271,8 @@
 
         /* ── Footer ──────────────────────────────────────────────────── */
         #aac-footer { padding: 2.5rem; text-align: center; border-top: 1px solid rgba(255,255,255,0.045); color: rgba(220,225,238,0.55); font-size: 0.7rem; letter-spacing: 0.1em; }
+        #aac-footer > a { color: inherit; text-decoration: none; transition: color 0.2s; }
+        #aac-footer > a:hover { color: #f59e0b; }
 
         /* ── Scroll Reveal ───────────────────────────────────────────── */
         .aac-anim { opacity: 0; transform: translateY(24px); transition: opacity 0.65s cubic-bezier(0.22,1,0.36,1), transform 0.65s cubic-bezier(0.22,1,0.36,1); }
@@ -309,12 +313,14 @@
                         </div>
                     </div>
                 </div>
-                <div class="aac-ccp-footer" style="margin-top:1rem;text-align:center;padding:0 0.5rem;">
-                    <a href="https://developers.eveonline.com/" target="_blank" rel="noopener noreferrer">CCP Developer Site</a>
-                    &nbsp;·&nbsp;
-                    <a href="https://www.eveonline.com/legal" target="_blank" rel="noopener noreferrer">EVE Legal</a>
-                    &nbsp;·&nbsp;
-                    <a href="https://www.eveonline.com/privacy" target="_blank" rel="noopener noreferrer">Privacy Policy</a>
+                <div class="aac-ccp-footer">
+                    EVE Online &amp; all related marks &copy; <a href="https://www.ccpgames.com/" target="_blank" rel="noopener noreferrer">CCP hf</a>.
+                    Login via <a href="https://www.eveonline.com/news/view/introducing-esi" target="_blank" rel="noopener noreferrer">EVE SSO / ESI</a>.
+                    Not affiliated with CCP hf.
+                    &nbsp;&middot;&nbsp;
+                    <a href="https://developers.eveonline.com/" target="_blank" rel="noopener noreferrer">CCP Developers</a>
+                    &nbsp;&middot;&nbsp;
+                    <a href="https://www.eveonline.com/privacy" target="_blank" rel="noopener noreferrer">Privacy</a>
                 </div>
             </div>
         </div>
@@ -472,7 +478,22 @@
 
     <!-- Footer -->
     <footer id="aac-footer">
-        REV3NANTS WRATH &nbsp;·&nbsp; Alliance Auth &nbsp;·&nbsp; EVE Online
+        <a href="https://auth.r3v-w.space/" target="_blank" rel="noopener noreferrer">REV3NANTS WRATH</a>
+        &nbsp;·&nbsp;
+        <a href="https://allianceauth.readthedocs.io/" target="_blank" rel="noopener noreferrer">Alliance Auth</a>
+        &nbsp;·&nbsp;
+        <a href="https://www.eveonline.com" target="_blank" rel="noopener noreferrer">EVE Online</a>
+        <div class="aac-ccp-footer">
+            EVE Online and all related marks and designs are the intellectual property of CCP hf.
+            Authentication via <a href="https://www.eveonline.com/news/view/introducing-esi" target="_blank" rel="noopener noreferrer">EVE SSO / ESI</a>.
+            This site is not affiliated with CCP hf.
+            &nbsp;&middot;&nbsp;
+            <a href="https://developers.eveonline.com/" target="_blank" rel="noopener noreferrer">CCP Developers</a>
+            &nbsp;&middot;&nbsp;
+            <a href="https://www.ccpgames.com/privacy-policy" target="_blank" rel="noopener noreferrer">Privacy</a>
+            &nbsp;&middot;&nbsp;
+            <a href="https://github.com/Thrainkrilleve/aa-customizer" target="_blank" rel="noopener noreferrer">Custom App Design by Thrain Krill</a>
+        </div>
     </footer>
 
     <script>

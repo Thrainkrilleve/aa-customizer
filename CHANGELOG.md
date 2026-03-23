@@ -5,6 +5,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.1.18] - 2026-03-22
+
+### Changed
+- **Admin panel cleanup** — merged the separate "Custom CSS" and "Extra HTML" fieldsets into a single "Site-Wide CSS & HTML" section. Moved "Login Page — Custom Code" up to sit next to the other login-page sections. Trimmed redundant `help_text` on six fields whose descriptions were already covered by the fieldset header.
+- **CCP attribution footer** — added a `.aac-ccp-footer` attribution block to `customindex.html` and `docs/showcase.html` footers with EVE SSO / ESI credit, CCP Developers link, Privacy link, and repo attribution. All footer styling moved to CSS classes in `custom.css` (`#aac-footer > a` hover rules + `.aac-ccp-footer` block/link/hover rules); no inline styles remain.
+- **README** — merged "Custom CSS" and "Extra HTML" field-reference sections into "Site-Wide CSS & HTML" to match the updated admin panel.
+
 ## [1.1.17] - 2026-03-22
 
 ### Added

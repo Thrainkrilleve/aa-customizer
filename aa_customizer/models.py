@@ -369,28 +369,25 @@ class CustomBranding(SingletonModel):
         blank=True,
         verbose_name=_("Custom CSS"),
         help_text=_(
-            "CSS injected into every page via an inline &lt;style&gt; block, loaded after "
-            "the active theme so it can override any style. "
-            "Works alongside Alliance Auth's built-in Custom CSS admin."
+            "Inline &lt;style&gt; block applied to every page, after the URL stylesheet and active theme."
         ),
     )
     custom_css_url = models.URLField(
         blank=True,
         verbose_name=_("Custom CSS — URL"),
         help_text=_(
-            "URL of an external CSS stylesheet linked in every page &lt;head&gt; "
-            "(e.g. a CDN-hosted custom theme file). Loaded after the active AA theme."
+            "URL of an external stylesheet linked in &lt;head&gt; on every page "
+            "(e.g. a CDN-hosted theme or Google Fonts)."
         ),
     )
 
     # ------------------------------------------------------------ extra HTML --
     head_extra_html = models.TextField(
         blank=True,
-        verbose_name=_("Extra <head> HTML"),
+        verbose_name=_("Extra &lt;head&gt; HTML"),
         help_text=_(
-            "Raw HTML injected at the very end of &lt;head&gt; on every page. "
-            "Useful for analytics scripts, font imports, or custom meta tags. "
-            "Only editable by admins — content is rendered without sanitization."
+            "Raw HTML injected at the end of &lt;head&gt; on every page "
+            "(analytics scripts, font imports, meta tags). Not sanitized."
         ),
     )
 
@@ -399,39 +396,33 @@ class CustomBranding(SingletonModel):
         blank=True,
         verbose_name=_("Login Page — CSS URL"),
         help_text=_(
-            "URL of an external stylesheet linked only on the login page. "
-            "Loaded after the global Custom CSS URL, so it takes full priority. "
-            "Use this to load a completely different design framework (e.g. Tailwind, "
-            "a custom theme CDN link) without affecting the rest of the site."
+            "External stylesheet URL loaded on the login page after the global CSS URL. "
+            "Use this to pull in a separate design framework (e.g. Tailwind CDN) "
+            "without affecting the rest of the site."
         ),
     )
     login_page_css = models.TextField(
         blank=True,
         verbose_name=_("Login Page — CSS"),
         help_text=_(
-            "CSS injected only on the login page, after all other stylesheets. "
-            "Has the highest specificity of any CSS on the login page — use it to "
-            "completely override the card layout, colors, fonts, or any element."
+            "Inline CSS applied last on the login page, after all other stylesheets — "
+            "highest priority, full design control over the card layout, colors, and fonts."
         ),
     )
     login_page_head_html = models.TextField(
         blank=True,
-        verbose_name=_("Login Page — Extra <head> HTML"),
+        verbose_name=_("Login Page — Extra &lt;head&gt; HTML"),
         help_text=_(
-            "Raw HTML injected at the end of &lt;head&gt; only on the login page. "
-            "Useful for loading custom fonts, icon libraries, JS frameworks, or "
-            "Open Graph tags specific to the login page. "
-            "Only editable by admins — content is rendered without sanitization."
+            "Raw HTML injected at the end of &lt;head&gt; on the login page "
+            "(custom fonts, icon libraries, JS frameworks, Open Graph tags). Not sanitized."
         ),
     )
     login_page_body_html = models.TextField(
         blank=True,
         verbose_name=_("Login Page — Extra Body HTML"),
         help_text=_(
-            "Raw HTML injected just before &lt;/body&gt; only on the login page. "
-            "Useful for custom overlays, particle effects, animation scripts, or "
-            "any markup/JavaScript needed for a fully custom landing page. "
-            "Only editable by admins — content is rendered without sanitization."
+            "Raw HTML injected before &lt;/body&gt; on the login page "
+            "(overlays, animation scripts, custom markup). Not sanitized."
         ),
     )
 

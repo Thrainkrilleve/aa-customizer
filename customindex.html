@@ -149,7 +149,22 @@
 
 <!-- Footer -->
 <footer id="aac-footer">
-    REV3NANTS WRATH &nbsp;·&nbsp; Alliance Auth &nbsp;·&nbsp; EVE Online
+    <a href="https://auth.r3v-w.space/" target="_blank" rel="noopener noreferrer">REV3NANTS WRATH</a>
+    &nbsp;·&nbsp;
+    <a href="https://allianceauth.readthedocs.io/" target="_blank" rel="noopener noreferrer">Alliance Auth</a>
+    &nbsp;·&nbsp;
+    <a href="https://www.eveonline.com" target="_blank" rel="noopener noreferrer">EVE Online</a>
+    <div class="aac-ccp-footer">
+        EVE Online and all related marks and designs are the intellectual property of CCP hf.
+        Authentication via <a href="https://www.eveonline.com/news/view/introducing-esi" target="_blank" rel="noopener noreferrer">EVE SSO / ESI</a>.
+        This site is not affiliated with CCP hf.
+        &nbsp;&middot;&nbsp;
+        <a href="https://developers.eveonline.com/" target="_blank" rel="noopener noreferrer">CCP Developers</a>
+        &nbsp;&middot;&nbsp;
+        <a href="https://www.ccpgames.com/privacy-policy" target="_blank" rel="noopener noreferrer">Privacy</a>
+        &nbsp;&middot;&nbsp;
+        <a href="https://github.com/Thrainkrilleve/aa-customizer" target="_blank" rel="noopener noreferrer">Custom App Design by Thrain Krill</a>
+    </div>
 </footer>
 
 <script>
@@ -175,6 +190,19 @@
             x.setAttribute('aria-label', 'Close');
             x.onclick = aacClose;
             card.prepend(x);
+        }
+
+        /* Inject CCP SSO/ESI attribution into login card */
+        var cardBody = document.querySelector('.card-body');
+        if (cardBody) {
+            var ccp = document.createElement('div');
+            ccp.className = 'aac-ccp-footer';
+            ccp.innerHTML =
+                'EVE Online &amp; all related marks &copy; <a href="https://www.ccpgames.com/" target="_blank" rel="noopener noreferrer">CCP hf</a>. ' +
+                'Login via <a href="https://www.eveonline.com/news/view/introducing-esi" target="_blank" rel="noopener noreferrer">EVE SSO / ESI</a>. ' +
+                'Not affiliated with CCP hf.' +
+                ' &nbsp;&middot;&nbsp; <a href="https://www.ccpgames.com/privacy-policy" target="_blank" rel="noopener noreferrer">Privacy</a>';
+            cardBody.appendChild(ccp);
         }
 
         /* Close on backdrop click */

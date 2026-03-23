@@ -19,3 +19,14 @@ DATABASES = {
 }
 
 DEFAULT_AUTO_FIELD = 'django.db.models.AutoField'
+
+TEMPLATES = [
+    {
+        'BACKEND': 'django.template.backends.django.DjangoTemplates',
+        'DIRS': [],
+        'APP_DIRS': False,
+        'OPTIONS': {
+            'context_processors': [],
+        },
+    }
+]

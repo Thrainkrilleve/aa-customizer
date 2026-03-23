@@ -110,6 +110,17 @@ class CustomBrandingAdmin(SingletonModelAdmin):
             },
         ),
         (
+            _("Login Page — Custom Code"),
+            {
+                "fields": ("login_page_css_url", "login_page_css", "login_page_head_html", "login_page_body_html"),
+                "description": _(
+                    "CSS and HTML injected exclusively on the login page, after all global styles. "
+                    "Use these to fully restyle the login experience without affecting the rest of the site. "
+                    "HTML fields are not sanitized — admin use only."
+                ),
+            },
+        ),
+        (
             _("Favicon"),
             {
                 "fields": ("favicon_url", "favicon_library", "favicon"),
@@ -139,37 +150,14 @@ class CustomBrandingAdmin(SingletonModelAdmin):
             },
         ),
         (
-            _("Custom CSS"),
+            _("Site-Wide CSS & HTML"),
             {
-                "fields": ("custom_css_url", "custom_css"),
+                "fields": ("custom_css_url", "custom_css", "head_extra_html"),
                 "description": _(
-                    "Inject additional CSS into every page. "
-                    "The linked stylesheet (URL) is loaded first; the inline block is applied after it. "
-                    "Both are loaded after the active AA theme so they override any existing style. "
-                    "Works alongside Alliance Auth's built-in Custom CSS admin."
-                ),
-            },
-        ),
-        (
-            _("Extra HTML"),
-            {
-                "fields": ("head_extra_html",),
-                "description": _(
-                    "Raw HTML injected at the end of <head> on every page. "
-                    "Useful for analytics snippets, Google Fonts imports, or custom meta tags. "
-                    "Contents are not sanitized — only admins should edit this field."
-                ),
-            },
-        ),
-        (
-            _("Login Page — Custom Code"),
-            {
-                "fields": ("login_page_css_url", "login_page_css", "login_page_head_html", "login_page_body_html"),
-                "description": _(
-                    "Inject CSS and HTML exclusively on the login page. "
-                    "These fields are scoped to the login page only and load after all global styles, "
-                    "giving you full control to redesign the login experience. "
-                    "HTML fields are not sanitized — only admins should edit these fields."
+                    "Inject CSS and HTML into every page of the site. "
+                    "The URL stylesheet is loaded first, then inline CSS — both after the active AA theme. "
+                    "Works alongside Alliance Auth's built-in Custom CSS admin. "
+                    "The &lt;head&gt; HTML field is not sanitized — admin use only."
                 ),
             },
         ),
