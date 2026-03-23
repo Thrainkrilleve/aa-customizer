@@ -5,6 +5,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.1.23] - 2026-03-23
+
+### Fixed
+- **Template override priority** — `AppConfig.ready()` now appends `aa_customizer/templates/` to `settings.TEMPLATES[*]['DIRS']` at startup. This is required because Alliance Auth mandates `'allianceauth'` be first in `INSTALLED_APPS` (for Django admin favicon support), which causes Django's `app_directories` loader to find `allianceauth`'s own templates *before* ours. By inserting into the `DIRS` filesystem loader chain (which runs before `APP_DIRS`), all of our template overrides (`allianceauth/base-bs5.html`, `allianceauth/admin-status/overview.html`, `authentication/dashboard.html`, etc.) now correctly take effect. User project-level `DIRS[0]` entries still retain the highest priority.
+- **`superuser_branding` tag uses `crum.get_current_user()`** — the `{% status_overview %}` inclusion tag in AA does not pass `takes_context=True`, so `request` is never forwarded to `overview.html`. The tag now reads the active user from crum's thread-local storage instead of the template context, fixing all cases where the tag returned `None` for a legitimate superuser.
+- **`dashboard.html` `{{ block.super }}`** — the `{% block extra_css %}` override now calls `{{ block.super }}` before injecting customizer styles, preserving any CSS blocks that parent templates or other apps have already registered.
+
 ## [1.1.22] - 2026-03-22
 
 ### Added
