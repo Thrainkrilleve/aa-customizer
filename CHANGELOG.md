@@ -5,6 +5,14 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.1.25] - 2026-03-23
+### Fixed
+- **`pyproject.toml` package-data** — added `templates/allianceauth/**/*.html` and `templates/authentication/*.html` glob patterns. Without these, pip installations were missing the `authentication/dashboard.html` override (so `superuser_dashboard_*` fields never rendered) and the `allianceauth/admin-status/` template overrides (`overview.html`, `celery_bar_partial.html`, `esi_check.html`). All template overrides now ship correctly in the installed package.
+
+## [1.1.24] - 2026-03-23
+### Fixed
+- **`authentication/dashboard.html`** — added `{{ block.super }}` and rendered all `superuser_dashboard_*` fields; moved `superuser_dashboard_body_html` into `{% block content %}` above the dashboard panels.
+
 ## [1.1.23] - 2026-03-23
 
 ### Fixed
