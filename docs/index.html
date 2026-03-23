@@ -70,13 +70,16 @@
             <button data-target="section-reference" class="nav-btn w-full text-left px-6 py-3 hover:bg-slate-800 hover:text-white transition-colors flex items-center gap-3">
                 <span class="text-lg">📋</span> Field Reference
             </button>
+            <button data-target="section-showcase" class="nav-btn w-full text-left px-6 py-3 hover:bg-slate-800 hover:text-white transition-colors flex items-center gap-3">
+                <span class="text-lg">🎨</span> Login Showcase
+            </button>
             <button data-target="section-security" class="nav-btn w-full text-left px-6 py-3 hover:bg-slate-800 hover:text-white transition-colors flex items-center gap-3">
                 <span class="text-lg">🔒</span> Security &amp; License
             </button>
         </nav>
         <div class="p-4 border-t border-slate-800 text-xs text-slate-500 text-center">
             Alliance Auth Plugin Docs<br>
-            <span class="text-slate-400 font-mono">v1.1.15</span>
+            <span class="text-slate-400 font-mono">v1.1.17</span>
         </div>
     </aside>
 
@@ -88,7 +91,7 @@
             <header class="mb-8">
                 <h2 class="text-3xl font-extrabold text-slate-900 mb-2">Platform Overview</h2>
                 <div class="flex items-center gap-3 mb-3">
-                    <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-semibold bg-blue-100 text-blue-800 border border-blue-200">v1.1.15</span>
+                    <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-semibold bg-blue-100 text-blue-800 border border-blue-200">v1.1.17</span>
                     <span class="text-sm text-slate-400">Latest release</span>
                 </div>
                 <p class="text-lg text-slate-600 leading-relaxed max-w-3xl">
@@ -660,6 +663,71 @@ sudo systemctl restart gunicorn
                     copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
                 </div>
             </div>
+        </section>
+
+        <!-- ═══════════════ LOGIN SHOWCASE ═══════════════ -->
+        <section id="section-showcase" class="content-section hidden-section fade-in max-w-6xl mx-auto">
+
+            <header class="mb-8">
+                <h2 class="text-3xl font-extrabold text-slate-900 mb-2">Login Page Showcase</h2>
+                <p class="text-lg text-slate-600 leading-relaxed max-w-3xl">
+                    Using only the four <strong>Login Page Custom Code</strong> fields, you can replace the default Alliance Auth login
+                    card with a fully custom marketing page — without touching a single server file. This live demo shows a
+                    complete EVE Online corporation landing page built entirely in the admin panel.
+                </p>
+            </header>
+
+            <!-- Field attribution cards -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-10">
+                <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm">
+                    <div class="text-xs font-bold text-slate-400 uppercase tracking-widest mb-1">Field 1</div>
+                    <div class="font-semibold text-slate-800 mb-1">Login Page — Extra &lt;head&gt; HTML</div>
+                    <p class="text-xs text-slate-500">Imports the Space Grotesk Google Font used throughout the landing page.</p>
+                </div>
+                <div class="bg-indigo-50 p-4 rounded-xl border border-indigo-200 shadow-sm">
+                    <div class="text-xs font-bold text-indigo-400 uppercase tracking-widest mb-1">Field 2</div>
+                    <div class="font-semibold text-indigo-900 mb-1">Login Page — CSS (Inline)</div>
+                    <p class="text-xs text-indigo-700">Repositions the existing login card as a hidden overlay modal and styles the entire showcase page — 250+ lines of CSS.</p>
+                </div>
+                <div class="bg-indigo-50 p-4 rounded-xl border border-indigo-200 shadow-sm">
+                    <div class="text-xs font-bold text-indigo-400 uppercase tracking-widest mb-1">Field 3</div>
+                    <div class="font-semibold text-indigo-900 mb-1">Login Page — Extra Body HTML</div>
+                    <p class="text-xs text-indigo-700">Injects the full marketing page (nav, hero, stats, feature cards, CTA, footer) and all the JavaScript — 230+ lines.</p>
+                </div>
+                <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm">
+                    <div class="text-xs font-bold text-slate-400 uppercase tracking-widest mb-1">Result</div>
+                    <div class="font-semibold text-slate-800 mb-1">Zero server changes</div>
+                    <p class="text-xs text-slate-500">The Alliance Auth EVE SSO login button still works normally — only its visual presentation is controlled by your CSS.</p>
+                </div>
+            </div>
+
+            <!-- Open + usage hint -->
+            <div class="flex flex-wrap items-center gap-4 mb-6">
+                <a href="./showcase.html" target="_blank" rel="noopener"
+                   class="inline-flex items-center gap-2 bg-slate-900 text-white text-sm font-semibold px-5 py-2.5 rounded-lg hover:bg-slate-700 transition-colors no-underline">
+                    ↗ Open Full Demo
+                </a>
+                <span class="text-sm text-slate-500">Scroll the iframe &middot; click <em>Member Login</em> &middot; press <kbd class="bg-slate-100 text-slate-700 text-xs px-1.5 py-0.5 rounded border border-slate-300">Esc</kbd> to close the modal.</span>
+            </div>
+
+            <!-- Live iframe -->
+            <div class="rounded-2xl overflow-hidden shadow-2xl border border-slate-200 mb-10" style="height:620px;">
+                <iframe src="./showcase.html" width="100%" height="100%" style="border:none;display:block;"
+                        title="Login Page Showcase — Corp Landing Page Demo" loading="lazy"></iframe>
+            </div>
+
+            <!-- How the modal works -->
+            <div class="bg-amber-50 border border-amber-200 rounded-xl p-5">
+                <h3 class="font-bold text-amber-900 mb-2">&#128161; How the modal overlay works</h3>
+                <p class="text-sm text-amber-800 leading-relaxed">
+                    The CSS field sets <code>.aac-login-root { position: fixed; opacity: 0; pointer-events: none; }</code>,
+                    effectively hiding the existing login card without removing it from the DOM. The JavaScript
+                    in the Body HTML field adds the <code>.aac-open</code> class when a visitor clicks
+                    <em>Member Login</em>, transitioning the card to full opacity. The EVE SSO button inside
+                    the card still points to Alliance Auth's real login URL — no server-side changes required.
+                </p>
+            </div>
+
         </section>
 
     </main>

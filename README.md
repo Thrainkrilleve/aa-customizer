@@ -35,6 +35,10 @@ Gives administrators a simple admin-panel UI to customize their Alliance Auth in
 | **Custom CSS — URL** | External stylesheet linked in every page `<head>`, loaded after the active theme |
 | **Custom CSS — inline** | CSS text injected via `<style>` on every page, loaded after the active theme |
 | **Extra `<head>` HTML** | Raw HTML at the end of `<head>` on every page (analytics, font imports, meta tags) |
+| **Login Page — CSS URL** | External stylesheet linked only on the login page `<head>`, after global CSS |
+| **Login Page — CSS (Inline)** | CSS injected only on the login page, after global CSS; use to fully restyle or completely replace the login card with a custom design |
+| **Login Page — Extra `<head>` HTML** | Raw HTML injected at the end of `<head>` on the login page only (font imports, meta tags) |
+| **Login Page — Extra Body HTML** | Raw HTML injected before `</body>` on the login page only; combine with the CSS field to build a full custom landing page over the existing login card |
 
 
 ## Requirements

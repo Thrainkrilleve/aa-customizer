@@ -1,0 +1,564 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AA Customizer — Login Page Showcase Demo</title>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* ─── Minimal base for standalone (replaces Bootstrap/AA baseline) ─── */
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+        .card { display: flex; flex-direction: column; }
+        .card-body {
+            display: flex; flex-direction: column; align-items: center;
+            gap: 0.6rem; padding: 0; text-align: center;
+        }
+        .img-responsive { max-width: 100%; height: auto; display: block; }
+        .btn-social { margin: 0.5rem 0; }
+        .btn-social img { display: block; max-width: 185px; cursor: pointer; }
+        select { padding: 0.3rem 0.6rem; font-size: 0.82rem; border-radius: 4px; }
+
+        /* ══ TRANSFORM DEFAULT CARD INTO A MODAL OVERLAY ══════════════════════ */
+        .aac-login-root {
+            position: fixed !important;
+            inset: 0 !important;
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            background: rgba(4, 6, 14, 0.82) !important;
+            backdrop-filter: blur(16px) !important;
+            -webkit-backdrop-filter: blur(16px) !important;
+            z-index: 9000 !important;
+            opacity: 0 !important;
+            pointer-events: none !important;
+            transition: opacity 0.3s ease !important;
+        }
+        .aac-login-root.aac-open {
+            opacity: 1 !important;
+            pointer-events: auto !important;
+        }
+        .aac-login-right {
+            flex: 0 1 auto !important;
+            padding: 1.5rem !important;
+            background: transparent !important;
+            justify-content: center !important;
+        }
+        .aac-login-inner { max-width: 370px !important; width: 100%; }
+        .card-login {
+            position: relative !important;
+            overflow: visible !important;
+            background: rgba(10, 13, 24, 0.97) !important;
+            border: 1px solid rgba(245,158,11,0.2) !important;
+            border-radius: 16px !important;
+            padding: 2.5rem !important;
+            box-shadow: 0 2px 0 rgba(245,158,11,0.08), 0 30px 80px rgba(0,0,0,0.72) !important;
+            animation: aac-pop 0.28s cubic-bezier(0.34,1.56,0.64,1) both !important;
+        }
+        .aac-login-root:not(.aac-open) .card-login { animation: none !important; }
+        @keyframes aac-pop {
+            from { transform: scale(0.93) translateY(12px); opacity: 0; }
+            to   { transform: none; opacity: 1; }
+        }
+        .card-login::before {
+            content: ''; position: absolute;
+            top: -1px; left: 20%; right: 20%; height: 2px;
+            background: linear-gradient(90deg, transparent, #f59e0b 40%, #d97706 60%, transparent);
+        }
+        .card-login, .card-login * {
+            font-family: 'Space Grotesk', sans-serif !important;
+            color: #e2e4ec !important;
+        }
+        .aa-customizer-login-title {
+            font-size: 1.15rem !important;
+            font-weight: 600 !important;
+            margin-bottom: 0.15rem;
+        }
+        .aa-customizer-login-subtitle {
+            font-size: 0.78rem;
+            opacity: 0.45;
+            margin-bottom: 0.5rem;
+        }
+        .card-body img.img-responsive { max-width: 200px !important; }
+        .aac-ccp-footer, .aac-ccp-footer a { color: rgba(255,255,255,0.17) !important; font-size: 0.65rem !important; text-decoration: none; }
+        #lang-select {
+            background: rgba(255,255,255,0.04) !important;
+            border: 1px solid rgba(255,255,255,0.08) !important;
+            color: #889aaa !important; border-radius: 6px !important; font-family: inherit !important;
+        }
+        #aac-x {
+            position: absolute; top: -13px; right: -13px;
+            width: 28px; height: 28px; border-radius: 50%;
+            background: #1c2035; border: 1px solid rgba(255,255,255,0.12);
+            color: rgba(255,255,255,0.5); font-size: 1rem; line-height: 1;
+            cursor: pointer; display: flex; align-items: center; justify-content: center;
+            transition: background 0.15s, color 0.15s; z-index: 1; padding: 0;
+        }
+        #aac-x:hover { background: rgba(245,158,11,0.15); color: #f59e0b; }
+
+        /* ══ SHOWCASE PAGE BASE ════════════════════════════════════════════════ */
+        body {
+            background: #080b14 !important;
+            font-family: 'Space Grotesk', -apple-system, sans-serif !important;
+            color: #e4e7ef !important; margin: 0 !important; overflow-x: hidden !important;
+        }
+
+        /* Global gradient orbs */
+        body::before {
+            content: ''; position: fixed; inset: 0; z-index: -1; pointer-events: none;
+            background:
+                radial-gradient(ellipse 65% 50% at 12% 22%, rgba(245,158,11,0.045) 0%, transparent 60%),
+                radial-gradient(ellipse 55% 45% at 88% 78%, rgba(99,58,209,0.055) 0%, transparent 55%);
+        }
+
+        /* ── Fixed Nav ───────────────────────────────────────────────── */
+        #aac-nav {
+            position: fixed; top: 0; left: 0; right: 0; z-index: 8000;
+            height: 62px; padding: 0 2.5rem;
+            display: flex; align-items: center; justify-content: space-between;
+            border-bottom: 1px solid transparent;
+            transition: background 0.3s, border-color 0.3s;
+        }
+        #aac-nav.aac-scrolled {
+            background: rgba(8,11,20,0.92);
+            backdrop-filter: blur(18px); -webkit-backdrop-filter: blur(18px);
+            border-color: rgba(255,255,255,0.06);
+        }
+        .aac-brand { font-size: 0.82rem; font-weight: 700; letter-spacing: 0.18em; color: #f59e0b; text-transform: uppercase; }
+        .aac-nav-links { display: flex; gap: 2rem; list-style: none; margin: 0; padding: 0; }
+        .aac-nav-links a { color: rgba(220,225,238,0.85) !important; text-decoration: none; font-size: 0.82rem; font-weight: 500; transition: color 0.2s; }
+        .aac-nav-links a:hover { color: #f59e0b !important; }
+        .aac-nav-btn {
+            background: rgba(245,158,11,0.1); border: 1px solid rgba(245,158,11,0.35);
+            color: #f59e0b !important; padding: 0.4rem 1.2rem; border-radius: 6px;
+            font: 600 0.8rem/1 'Space Grotesk', sans-serif; letter-spacing: 0.08em;
+            text-transform: uppercase; cursor: pointer; transition: background 0.2s, transform 0.15s;
+        }
+        .aac-nav-btn:hover { background: rgba(245,158,11,0.2); transform: translateY(-1px); }
+
+        /* ── Hero ────────────────────────────────────────────────────── */
+        #aac-hero {
+            position: relative; min-height: 100vh;
+            display: flex; align-items: center; justify-content: center;
+            text-align: center; overflow: hidden;
+        }
+        #aac-hero::before {
+            content: ''; position: absolute; inset: 0;
+            background:
+                radial-gradient(ellipse 80% 60% at 50% 42%, rgba(245,158,11,0.07) 0%, transparent 60%),
+                radial-gradient(ellipse 50% 45% at 80% 70%, rgba(99,58,209,0.075) 0%, transparent 55%);
+            animation: aac-breathe 10s ease-in-out infinite alternate;
+        }
+        #aac-hero::after {
+            content: ''; position: absolute; inset: 0;
+            background-image:
+                linear-gradient(rgba(255,255,255,0.016) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255,255,255,0.016) 1px, transparent 1px);
+            background-size: 60px 60px;
+            mask-image: radial-gradient(ellipse 85% 85% at 50% 50%, black 20%, transparent 75%);
+            -webkit-mask-image: radial-gradient(ellipse 85% 85% at 50% 50%, black 20%, transparent 75%);
+        }
+        @keyframes aac-breathe { from { opacity:.55; } to { opacity:1; } }
+        .aac-hero-inner { position: relative; z-index: 2; max-width: 860px; padding: 2rem; }
+        .aac-badge {
+            display: inline-flex; align-items: center; gap: 0.5rem;
+            background: rgba(245,158,11,0.08); border: 1px solid rgba(245,158,11,0.25);
+            color: #f59e0b; font-size: 0.7rem; font-weight: 600; letter-spacing: 0.16em;
+            text-transform: uppercase; padding: 0.3rem 0.9rem; border-radius: 100px;
+            margin-bottom: 2.5rem; animation: aac-up 0.7s 0.1s both;
+        }
+        .aac-badge::before {
+            content: ''; width: 6px; height: 6px; background: #f59e0b; border-radius: 50%;
+            box-shadow: 0 0 7px #f59e0b; animation: aac-blink 2s infinite;
+        }
+        @keyframes aac-blink { 0%,100%{opacity:1} 50%{opacity:0.2} }
+        .aac-hero-title {
+            font-size: clamp(3.2rem, 9vw, 7.5rem); font-weight: 700;
+            line-height: 0.88; letter-spacing: -0.03em; color: #f0ece0;
+            margin: 0 0 1.5rem; animation: aac-up 0.7s 0.28s both;
+        }
+        .aac-hero-title span { display: block; }
+        .aac-gold {
+            background: linear-gradient(135deg, #f59e0b, #fcd34d 55%, #d97706);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+        }
+        .aac-hero-sub {
+            font-size: clamp(0.8rem, 1.8vw, 0.95rem); color: rgba(220,225,238,0.78);
+            letter-spacing: 0.16em; text-transform: uppercase; margin-bottom: 3rem;
+            animation: aac-up 0.7s 0.44s both;
+        }
+        .aac-hero-btns { display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; animation: aac-up 0.7s 0.58s both; }
+        @keyframes aac-up { from{opacity:0;transform:translateY(22px)} to{opacity:1;transform:none} }
+
+        /* Shared buttons */
+        .aac-btn {
+            padding: 0.85rem 2rem; border-radius: 8px; font: 600 0.88rem/1 'Space Grotesk', sans-serif;
+            letter-spacing: 0.04em; cursor: pointer; border: none;
+            transition: transform 0.2s, box-shadow 0.2s, background 0.2s;
+        }
+        .aac-btn-gold {
+            background: #f59e0b; color: #0a0700 !important;
+            box-shadow: 0 4px 20px rgba(245,158,11,0.3);
+        }
+        .aac-btn-gold:hover { background: #fcd34d; transform: translateY(-2px); box-shadow: 0 8px 28px rgba(245,158,11,0.45); }
+        .aac-btn-outline {
+            background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.12) !important;
+            color: rgba(220,225,238,0.92) !important; text-decoration: none;
+            display: inline-flex; align-items: center;
+        }
+        .aac-btn-outline:hover { background: rgba(255,255,255,0.08); border-color: rgba(245,158,11,0.3) !important; color: #f59e0b !important; transform: translateY(-2px); }
+
+        /* Scroll line */
+        .aac-scroll-line {
+            position: absolute; bottom: 2.5rem; left: 50%; transform: translateX(-50%);
+            display: flex; flex-direction: column; align-items: center; gap: 0.45rem;
+            color: rgba(200,205,216,0.2); font-size: 0.6rem; letter-spacing: 0.2em; text-transform: uppercase;
+            z-index: 2; animation: aac-up 1s 1.2s both;
+        }
+        .aac-scroll-line::after {
+            content: ''; width: 1px; height: 40px;
+            background: linear-gradient(to bottom, rgba(245,158,11,0.45), transparent);
+            animation: aac-drip 2s ease-in-out infinite;
+        }
+        @keyframes aac-drip { 0%,100%{opacity:1} 50%{opacity:0.25;transform:translateY(7px)} }
+
+        /* ── Stats Bar ───────────────────────────────────────────────── */
+        .aac-stats {
+            display: flex; flex-wrap: wrap;
+            border-top: 1px solid rgba(255,255,255,0.05);
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+            background: rgba(255,255,255,0.018);
+        }
+        .aac-stat { flex: 1; min-width: 130px; padding: 2rem; text-align: center; border-right: 1px solid rgba(255,255,255,0.05); display: flex; flex-direction: column; gap: 0.3rem; }
+        .aac-stat:last-child { border-right: none; }
+        .aac-stat-n { font-size: 2rem; font-weight: 700; color: #f59e0b; letter-spacing: -0.02em; }
+        .aac-stat-l { font-size: 0.63rem; font-weight: 500; color: rgba(220,225,238,0.65); text-transform: uppercase; letter-spacing: 0.18em; }
+
+        /* ── Sections ────────────────────────────────────────────────── */
+        .aac-sec { padding: 6rem 2rem; max-width: 1100px; margin: 0 auto; }
+        .aac-lbl { font-size: 0.63rem; font-weight: 600; letter-spacing: 0.26em; text-transform: uppercase; color: #f59e0b; margin-bottom: 0.8rem; }
+        .aac-h2 { font-size: clamp(1.8rem, 3.5vw, 2.8rem); font-weight: 700; color: #ece9e1; letter-spacing: -0.03em; line-height: 1.15; margin: 0 0 1.25rem; }
+        .aac-p { font-size: 1rem; color: rgba(220,225,238,0.82); line-height: 1.82; max-width: 580px; }
+        .aac-hr { border: none; border-top: 1px solid rgba(255,255,255,0.05); margin: 0 2rem; }
+
+        /* ── Feature Cards ───────────────────────────────────────────── */
+        .aac-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(290px, 1fr)); gap: 1.25rem; margin-top: 3rem; }
+        .aac-card {
+            background: rgba(255,255,255,0.025); border: 1px solid rgba(255,255,255,0.06);
+            border-radius: 14px; padding: 2rem;
+            transition: transform 0.25s, border-color 0.25s, box-shadow 0.25s, background 0.25s;
+        }
+        .aac-card:hover { transform: translateY(-5px); background: rgba(245,158,11,0.03); border-color: rgba(245,158,11,0.16); box-shadow: 0 20px 50px rgba(0,0,0,0.4); }
+        .aac-card-ico { font-size: 2rem; margin-bottom: 1rem; display: block; }
+        .aac-card-h { font-size: 1.05rem; font-weight: 600; color: #ece9e1; margin-bottom: 0.6rem; }
+        .aac-card-p { font-size: 0.84rem; color: rgba(220,225,238,0.75); line-height: 1.72; }
+        .aac-chip { display: inline-block; margin-top: 1.25rem; background: rgba(245,158,11,0.07); border: 1px solid rgba(245,158,11,0.18); color: #f59e0b; font-size: 0.62rem; font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase; padding: 0.22rem 0.65rem; border-radius: 100px; }
+
+        /* ── Requirements ────────────────────────────────────────────── */
+        .aac-reqs { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1.1rem; margin-top: 2.5rem; }
+        .aac-req { display: flex; gap: 0.85rem; align-items: flex-start; }
+        .aac-req-ico { width: 20px; height: 20px; flex-shrink: 0; margin-top: 2px; background: rgba(245,158,11,0.1); border: 1px solid rgba(245,158,11,0.28); border-radius: 6px; display: flex; align-items: center; justify-content: center; color: #f59e0b; font-size: 0.7rem; }
+        .aac-req-t { font-size: 0.875rem; color: rgba(220,225,238,0.85); line-height: 1.55; }
+        .aac-req-t strong { display: block; color: #eeebe4; font-weight: 500; }
+
+        /* ── CTA ─────────────────────────────────────────────────────── */
+        .aac-cta { text-align: center; padding: 8rem 2rem; position: relative; overflow: hidden; }
+        .aac-cta::before { content: ''; position: absolute; inset: 0; background: radial-gradient(ellipse 55% 55% at 50% 50%, rgba(245,158,11,0.055) 0%, transparent 70%); pointer-events: none; }
+        .aac-cta .aac-h2 { max-width: 600px; margin: 0 auto 1rem; }
+        .aac-cta .aac-p { margin: 0 auto 2.5rem; text-align: center; }
+        .aac-cta-btns { display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; position: relative; }
+
+        /* ── Footer ──────────────────────────────────────────────────── */
+        #aac-footer { padding: 2.5rem; text-align: center; border-top: 1px solid rgba(255,255,255,0.045); color: rgba(220,225,238,0.55); font-size: 0.7rem; letter-spacing: 0.1em; }
+
+        /* ── Scroll Reveal ───────────────────────────────────────────── */
+        .aac-anim { opacity: 0; transform: translateY(24px); transition: opacity 0.65s cubic-bezier(0.22,1,0.36,1), transform 0.65s cubic-bezier(0.22,1,0.36,1); }
+        .aac-anim.aac-in { opacity: 1; transform: none; }
+
+        @media (max-width: 640px) {
+            .aac-nav-links { display: none; }
+            #aac-nav { padding: 0 1.25rem; }
+            .aac-sec { padding: 4rem 1.25rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ══ Simulated Alliance Auth Login Modal ══════════════════════════════ -->
+    <div class="aac-login-root">
+        <div class="aac-login-right">
+            <div class="aac-login-inner">
+                <div class="card card-login">
+                    <div class="card-body">
+                        <img class="img-responsive"
+                             src="https://images.evetech.net/corporations/98631149/logo?size=128"
+                             alt="Corp Logo"
+                             style="max-width:88px;border-radius:50%;margin-bottom:0.25rem;">
+                        <p class="aa-customizer-login-title">REV3NANTS WRATH</p>
+                        <p class="aa-customizer-login-subtitle">Member Portal</p>
+                        <div class="btn-social btn-eve">
+                            <img src="https://web.ccpgamescdn.com/eveonlineassets/developers/eve-sso-login-black-small.png"
+                                 alt="Log in with EVE Online">
+                        </div>
+                        <div style="margin-top:0.75rem;">
+                            <select id="lang-select" aria-label="Language">
+                                <option>English</option>
+                                <option>Deutsch</option>
+                                <option>日本語</option>
+                                <option>Русский</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="aac-ccp-footer" style="margin-top:1rem;text-align:center;padding:0 0.5rem;">
+                    <a href="https://developers.eveonline.com/" target="_blank" rel="noopener noreferrer">CCP Developer Site</a>
+                    &nbsp;·&nbsp;
+                    <a href="https://www.eveonline.com/legal" target="_blank" rel="noopener noreferrer">EVE Legal</a>
+                    &nbsp;·&nbsp;
+                    <a href="https://www.eveonline.com/privacy" target="_blank" rel="noopener noreferrer">Privacy Policy</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ══ Corp Showcase Landing Page ══════════════════════════════════════ -->
+    <nav id="aac-nav">
+        <span class="aac-brand">⚔ REV3NANTS WRATH</span>
+        <ul class="aac-nav-links">
+            <li><a href="#about">About</a></li>
+            <li><a href="#activities">What We Do</a></li>
+            <li><a href="#join">Recruitment</a></li>
+        </ul>
+        <button class="aac-nav-btn" onclick="aacOpen()">Member Login</button>
+    </nav>
+
+    <!-- Hero -->
+    <section id="aac-hero">
+        <div class="aac-hero-inner">
+            <div class="aac-badge">EVE Online · Nullsec Corp</div>
+            <h1 class="aac-hero-title">
+                <span>REV3NANTS</span>
+                <span class="aac-gold">WRATH</span>
+            </h1>
+            <p class="aac-hero-sub">Nullsec PvP &nbsp;·&nbsp; Capital Warfare &nbsp;·&nbsp; Real Community</p>
+            <div class="aac-hero-btns">
+                <button class="aac-btn aac-btn-gold" onclick="aacOpen()">Member Login</button>
+                <a href="#about" class="aac-btn aac-btn-outline">Discover More ↓</a>
+            </div>
+        </div>
+        <div class="aac-scroll-line">scroll</div>
+    </section>
+
+    <!-- Stats Bar -->
+    <div class="aac-stats aac-anim">
+        <div class="aac-stat">
+            <span class="aac-stat-n" data-count="30">0</span>
+            <span class="aac-stat-l">Members</span>
+        </div>
+        <div class="aac-stat">
+            <span class="aac-stat-n">Nullsec</span>
+            <span class="aac-stat-l">Home Space</span>
+        </div>
+        <div class="aac-stat">
+            <span class="aac-stat-n" data-count="2">0</span>
+            <span class="aac-stat-l">Years Active</span>
+        </div>
+        <div class="aac-stat">
+            <span class="aac-stat-n">24/7</span>
+            <span class="aac-stat-l">TZ Coverage</span>
+        </div>
+    </div>
+
+    <!-- About -->
+    <section id="about" class="aac-sec">
+        <div class="aac-anim">
+            <div class="aac-lbl">Who We Are</div>
+            <h2 class="aac-h2">We don't just play EVE.<br>We own it.</h2>
+            <p class="aac-p">Rev3nants Wrath is a nullsec PvP Corporation with The Initivitive. Alliance built on tight coordination,
+            experienced leadership, and a culture that puts real capsuleers first. Whether you're a
+            veteran FC or a pilot looking for your first real fleet, we have a place for you.</p>
+        </div>
+    </section>
+
+    <hr class="aac-hr">
+
+    <!-- Activities / Feature Cards -->
+    <section id="activities" class="aac-sec">
+        <div class="aac-anim">
+            <div class="aac-lbl">What We Do</div>
+            <h2 class="aac-h2">More than just fleets</h2>
+        </div>
+        <div class="aac-grid">
+            <div class="aac-card aac-anim">
+                <span class="aac-card-ico">⚔️</span>
+                <div class="aac-card-h">Nullsec PvP</div>
+                <p class="aac-card-p">From small-gang roams to full-scale capital drops.
+                Daily fleets across all timezones with experienced FCs who know how to win.</p>
+                <span class="aac-chip">Daily Fleets</span>
+            </div>
+            <div class="aac-card aac-anim">
+                <span class="aac-card-ico">🚀</span>
+                <div class="aac-card-h">Capital Warfare</div>
+                <p class="aac-card-p">We field dreads, carriers, and supercaps on the regular.
+                Doctrine ships provided for major deployments. Get your seat at the big kills.</p>
+                <span class="aac-chip">Capital Ready</span>
+            </div>
+            <div class="aac-card aac-anim">
+                <span class="aac-card-ico">🛡️</span>
+                <div class="aac-card-h">Industry Backbone</div>
+                <p class="aac-card-p">A healthy corp wallet means fleets that never stand down.
+                Our industry wing keeps ships and ammo flowing. Great isk-making opportunities.</p>
+                <span class="aac-chip">Sov Space Access</span>
+            </div>
+        </div>
+    </section>
+
+    <hr class="aac-hr">
+
+    <!-- Recruitment / Requirements -->
+    <section id="join" class="aac-sec">
+        <div class="aac-anim">
+            <div class="aac-lbl">Recruitment</div>
+            <h2 class="aac-h2">What we look for</h2>
+            <p class="aac-p">We recruit adults who communicate, show up, and contribute.
+            SP thresholds are a guide — attitude and activity matter more than numbers.</p>
+        </div>
+        <div class="aac-reqs aac-anim">
+            <div class="aac-req">
+                <div class="aac-req-ico">✓</div>
+                <div class="aac-req-t">
+                    <strong>35M+ Skill Points for Null Sec and 5+m for High Sec</strong>
+                    Exceptions made for the right pilots
+                </div>
+            </div>
+            <div class="aac-req">
+                <div class="aac-req-ico">✓</div>
+                <div class="aac-req-t">
+                    <strong>Full ESI Auth</strong>
+                    Required for all members — no exceptions
+                </div>
+            </div>
+            <div class="aac-req">
+                <div class="aac-req-ico">✓</div>
+                <div class="aac-req-t">
+                    <strong>Voice Comms</strong>
+                    Discord + Mumble. Must be able to listen on fleets
+                </div>
+            </div>
+            <div class="aac-req">
+                <div class="aac-req-ico">✓</div>
+                <div class="aac-req-t">
+                    <strong>Active Participation</strong>
+                    No quota, but we notice who shows up
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <hr class="aac-hr">
+
+    <!-- CTA -->
+    <section class="aac-cta aac-anim">
+        <div class="aac-lbl">Get Started</div>
+        <h2 class="aac-h2">Ready to fly with us?</h2>
+        <p class="aac-p">Existing members log in below. Recruits — reach out on Discord first.</p>
+        <div class="aac-cta-btns">
+            <button class="aac-btn aac-btn-gold" onclick="aacOpen()">Member Login</button>
+            <a href="https://discord.gg/5YrxNVNrjj"
+               class="aac-btn aac-btn-outline" target="_blank" rel="noopener noreferrer">
+                Join Our Discord ↗
+            </a>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer id="aac-footer">
+        REV3NANTS WRATH &nbsp;·&nbsp; Alliance Auth &nbsp;·&nbsp; EVE Online
+    </footer>
+
+    <script>
+    (function () {
+        /* ── Modal open/close ── */
+        function aacOpen() {
+            document.querySelector('.aac-login-root').classList.add('aac-open');
+            document.body.style.overflow = 'hidden';
+        }
+        function aacClose() {
+            document.querySelector('.aac-login-root').classList.remove('aac-open');
+            document.body.style.overflow = '';
+        }
+        window.aacOpen = aacOpen;
+
+        document.addEventListener('DOMContentLoaded', function () {
+            /* Inject close button into card */
+            var card = document.querySelector('.card-login');
+            if (card) {
+                var x = document.createElement('button');
+                x.id = 'aac-x';
+                x.innerHTML = '&times;';
+                x.setAttribute('aria-label', 'Close login modal');
+                x.onclick = aacClose;
+                card.prepend(x);
+            }
+
+            /* Close on backdrop click */
+            var root = document.querySelector('.aac-login-root');
+            var right = document.querySelector('.aac-login-right');
+            if (root) {
+                root.addEventListener('click', function (e) {
+                    if (e.target === root || e.target === right) aacClose();
+                });
+            }
+
+            /* ESC to close */
+            document.addEventListener('keydown', function (e) {
+                if (e.key === 'Escape') aacClose();
+            });
+
+            /* Nav scroll frosting */
+            var nav = document.getElementById('aac-nav');
+            if (nav) {
+                window.addEventListener('scroll', function () {
+                    nav.classList.toggle('aac-scrolled', window.scrollY > 40);
+                }, { passive: true });
+            }
+
+            /* Scroll reveal */
+            if ('IntersectionObserver' in window) {
+                var io = new IntersectionObserver(function (entries) {
+                    entries.forEach(function (e) {
+                        if (e.isIntersecting) { e.target.classList.add('aac-in'); io.unobserve(e.target); }
+                    });
+                }, { threshold: 0.1 });
+                document.querySelectorAll('.aac-anim').forEach(function (el) { io.observe(el); });
+
+                /* Stagger cards */
+                document.querySelectorAll('.aac-grid .aac-card').forEach(function (el, i) {
+                    el.style.transitionDelay = (i * 0.12) + 's';
+                });
+
+                /* Count-up animation for stats */
+                var co = new IntersectionObserver(function (entries) {
+                    entries.forEach(function (entry) {
+                        if (!entry.isIntersecting) return;
+                        var el = entry.target;
+                        var target = parseInt(el.dataset.count, 10);
+                        var dur = 1400, startTime = null;
+                        (function step(ts) {
+                            if (!startTime) startTime = ts;
+                            var p = Math.min((ts - startTime) / dur, 1);
+                            var ease = 1 - Math.pow(1 - p, 3);
+                            el.textContent = Math.round(ease * target) + '+';
+                            if (p < 1) requestAnimationFrame(step);
+                            else el.textContent = target + '+';
+                        })(performance.now());
+                        co.unobserve(el);
+                    });
+                }, { threshold: 0.5 });
+                document.querySelectorAll('[data-count]').forEach(function (el) { co.observe(el); });
+            }
+        });
+    })();
+    </script>
+
+</body>
+</html>

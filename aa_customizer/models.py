@@ -435,7 +435,7 @@ class CustomBranding(SingletonModel):
         ),
     )
 
-    class Meta:
+    class Meta:  # type: ignore[override]
         default_permissions = ("view", "change")
         verbose_name = _("Custom Branding")
         verbose_name_plural = _("Custom Branding")
@@ -450,8 +450,9 @@ class CustomBranding(SingletonModel):
         """URL field > library selection > uploaded file > empty string."""
         if self.login_background_url:
             return self.login_background_url
-        if self.login_background_library_id and self.login_background_library.image:
-            return self.login_background_library.image.url
+        lib = self.login_background_library
+        if lib is not None and lib.image:
+            return lib.image.url
         if self.login_background:
             return self.login_background.url
         return ""
@@ -491,8 +492,9 @@ class CustomBranding(SingletonModel):
         """URL field > library selection > uploaded file > empty string."""
         if self.login_logo_url:
             return self.login_logo_url
-        if self.login_logo_library_id and self.login_logo_library.image:
-            return self.login_logo_library.image.url
+        lib = self.login_logo_library
+        if lib is not None and lib.image:
+            return lib.image.url
         if self.login_logo:
             return self.login_logo.url
         return ""
@@ -502,8 +504,9 @@ class CustomBranding(SingletonModel):
         """URL field > library selection > uploaded file > empty string."""
         if self.favicon_url:
             return self.favicon_url
-        if self.favicon_library_id and self.favicon_library.image:
-            return self.favicon_library.image.url
+        lib = self.favicon_library
+        if lib is not None and lib.image:
+            return lib.image.url
         if self.favicon:
             return self.favicon.url
         return ""
@@ -513,8 +516,9 @@ class CustomBranding(SingletonModel):
         """URL field > library selection > uploaded file > empty string."""
         if self.navbar_logo_url:
             return self.navbar_logo_url
-        if self.navbar_logo_library_id and self.navbar_logo_library.image:
-            return self.navbar_logo_library.image.url
+        lib = self.navbar_logo_library
+        if lib is not None and lib.image:
+            return lib.image.url
         if self.navbar_logo:
             return self.navbar_logo.url
         return ""
@@ -524,8 +528,9 @@ class CustomBranding(SingletonModel):
         """URL field > library selection > uploaded file > empty string."""
         if self.sidebar_logo_url:
             return self.sidebar_logo_url
-        if self.sidebar_logo_library_id and self.sidebar_logo_library.image:
-            return self.sidebar_logo_library.image.url
+        lib = self.sidebar_logo_library
+        if lib is not None and lib.image:
+            return lib.image.url
         if self.sidebar_logo:
             return self.sidebar_logo.url
         return ""

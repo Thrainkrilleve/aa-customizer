@@ -5,6 +5,26 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.1.17] - 2026-03-22
+
+### Added
+- **Login page showcase** — added `custom.css` and `customindex.html` reference files demonstrating a complete EVE Online corporation landing-page redesign using only the four login-page custom-code fields, with no server-side changes required.
+- **Interactive docs** — new **Login Showcase** section in the documentation site (`docs/index.html`) with a live embedded `<iframe>` demo, field-by-field attribution cards, and a "How the modal works" explanation box.
+- **Standalone showcase demo** — `docs/showcase.html` self-contained demo page: corp landing page with scroll-reveal, count-up stats, feature cards, CTA, and the Alliance Auth login card as a modal overlay.
+- **Unit tests** — 20 unit tests covering context processors, custom code field round-trips, help-text safety, and template injection for all eight custom HTML/CSS fields (`aa_customizer/tests.py`).
+
+### Fixed
+- **Type annotations** — `effective_*` property helpers in `models.py` now use a local variable (`lib = self.xxx_library`) pattern for FK access instead of the Django-generated `_id` attribute, resolving all Pyright `reportAttributeAccessIssue` errors. `CustomBranding.Meta` annotated with `# type: ignore[override]` to suppress the false-positive `reportIncompatibleVariableOverride` from Pyright's incomplete solo stubs.
+
+### Changed
+- **README** — features table updated with four login-page custom-code field rows: Login Page CSS URL, Login Page CSS (Inline), Login Page Extra `<head>` HTML, Login Page Extra Body HTML.
+- **Docs** — interactive site version badge updated to v1.1.17.
+
+## [1.1.16] - 2026-03-22
+
+### Fixed
+- **Admin** — five `help_text` strings on custom code fields (`login_page_css_url`, `login_page_css`, `login_page_head_html`, `login_page_body_html`, and `custom_css_url`) contained literal `<style>`, `<head>`, and `</body>` HTML tags. Django was parsing these tags as real HTML inside the admin fieldset, causing the entire fieldset to collapse and hide all fields within it. Replaced with HTML entities (`&lt;style&gt;`, `&lt;head&gt;`, `&lt;/body&gt;`) so the help text renders as plain readable text. Migration `0014` applied.
+
 ## [1.1.15] - 2026-03-22
 
 ### Fixed
