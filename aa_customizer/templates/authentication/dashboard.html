@@ -1,0 +1,30 @@
+{% extends "allianceauth/base-bs5.html" %}
+{% load static %}
+{% load i18n %}
+
+{% block page_title %}{% translate "Dashboard" %}{% endblock %}
+{% block header_nav_brand %}
+    {% translate "Dashboard" %}
+{% endblock %}
+
+{% block extra_css %}
+    {% if AA_CUSTOMIZER.dashboard_css_url %}
+        <link rel="stylesheet" href="{{ AA_CUSTOMIZER.dashboard_css_url }}">
+    {% endif %}
+    {% if AA_CUSTOMIZER.dashboard_css %}
+        <style>{{ AA_CUSTOMIZER.dashboard_css|safe }}</style>
+    {% endif %}
+    {% if AA_CUSTOMIZER.dashboard_head_html %}{{ AA_CUSTOMIZER.dashboard_head_html|safe }}{% endif %}
+{% endblock extra_css %}
+
+{% block content %}
+    <div class="row">
+        {% for dash in views %}
+            {{ dash | safe }}
+        {% endfor %}
+    </div>
+{% endblock %}
+
+{% block extra_javascript %}
+    {% if AA_CUSTOMIZER.dashboard_body_html %}{{ AA_CUSTOMIZER.dashboard_body_html|safe }}{% endif %}
+{% endblock extra_javascript %}

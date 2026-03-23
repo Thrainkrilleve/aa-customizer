@@ -161,4 +161,26 @@ class CustomBrandingAdmin(SingletonModelAdmin):
                 ),
             },
         ),
+        (
+            _("Main Dashboard — Custom Code"),
+            {
+                "fields": ("dashboard_css_url", "dashboard_css", "dashboard_head_html", "dashboard_body_html"),
+                "description": _(
+                    "CSS and HTML injected exclusively on the main dashboard page, after all global styles. "
+                    "Use these to style or extend the dashboard widgets without affecting the rest of the site. "
+                    "HTML fields are not sanitized — admin use only."
+                ),
+            },
+        ),
+        (
+            _("Admin Dashboard — Custom Code"),
+            {
+                "fields": ("superuser_dashboard_css_url", "superuser_dashboard_css", "superuser_dashboard_head_html", "superuser_dashboard_body_html"),
+                "description": _(
+                    "CSS and HTML injected exclusively inside the admin status widget, visible to superusers only. "
+                    "Non-superusers never receive these styles or markup. "
+                    "HTML fields are not sanitized — admin use only."
+                ),
+            },
+        ),
     )

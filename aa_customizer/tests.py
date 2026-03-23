@@ -70,6 +70,54 @@ class CustomCSSFieldsTest(TestCase):
         self.branding.save()
         self.assertEqual(CustomBranding.get_solo().login_page_body_html, html)
 
+    def test_dashboard_css_url_round_trip(self):
+        url = "https://cdn.example.com/dashboard-override.css"
+        self.branding.dashboard_css_url = url
+        self.branding.save()
+        self.assertEqual(CustomBranding.get_solo().dashboard_css_url, url)
+
+    def test_dashboard_css_round_trip(self):
+        css = ".dashboard-widget { background: #0d0d1a; }"
+        self.branding.dashboard_css = css
+        self.branding.save()
+        self.assertEqual(CustomBranding.get_solo().dashboard_css, css)
+
+    def test_dashboard_head_html_round_trip(self):
+        html = '<link rel="preconnect" href="https://fonts.googleapis.com">'
+        self.branding.dashboard_head_html = html
+        self.branding.save()
+        self.assertEqual(CustomBranding.get_solo().dashboard_head_html, html)
+
+    def test_dashboard_body_html_round_trip(self):
+        html = '<div id="dash-overlay"></div><script src="widgets.min.js"></script>'
+        self.branding.dashboard_body_html = html
+        self.branding.save()
+        self.assertEqual(CustomBranding.get_solo().dashboard_body_html, html)
+
+    def test_superuser_dashboard_css_url_round_trip(self):
+        url = "https://cdn.example.com/admin-panel.css"
+        self.branding.superuser_dashboard_css_url = url
+        self.branding.save()
+        self.assertEqual(CustomBranding.get_solo().superuser_dashboard_css_url, url)
+
+    def test_superuser_dashboard_css_round_trip(self):
+        css = ".admin-widget { border: 2px solid red; }"
+        self.branding.superuser_dashboard_css = css
+        self.branding.save()
+        self.assertEqual(CustomBranding.get_solo().superuser_dashboard_css, css)
+
+    def test_superuser_dashboard_head_html_round_trip(self):
+        html = '<script src="https://cdn.example.com/chart.js" defer></script>'
+        self.branding.superuser_dashboard_head_html = html
+        self.branding.save()
+        self.assertEqual(CustomBranding.get_solo().superuser_dashboard_head_html, html)
+
+    def test_superuser_dashboard_body_html_round_trip(self):
+        html = '<div id="admin-overlay"></div>'
+        self.branding.superuser_dashboard_body_html = html
+        self.branding.save()
+        self.assertEqual(CustomBranding.get_solo().superuser_dashboard_body_html, html)
+
     def test_all_custom_code_fields_blank_by_default(self):
         for field_name in (
             "custom_css",
@@ -79,6 +127,14 @@ class CustomCSSFieldsTest(TestCase):
             "login_page_css",
             "login_page_head_html",
             "login_page_body_html",
+            "dashboard_css_url",
+            "dashboard_css",
+            "dashboard_head_html",
+            "dashboard_body_html",
+            "superuser_dashboard_css_url",
+            "superuser_dashboard_css",
+            "superuser_dashboard_head_html",
+            "superuser_dashboard_body_html",
         ):
             with self.subTest(field=field_name):
                 self.assertEqual(getattr(self.branding, field_name), "")
@@ -109,6 +165,10 @@ class HelpTextSafetyTest(TestCase):
         "head_extra_html",
         "login_page_head_html",
         "login_page_body_html",
+        "dashboard_head_html",
+        "dashboard_body_html",
+        "superuser_dashboard_head_html",
+        "superuser_dashboard_body_html",
     ]
 
     RAW_TAGS_FORBIDDEN = ["<style>", "<head>", "</head>", "</body>"]
@@ -309,6 +369,208 @@ class TemplateInjectionTest(TestCase):
         for field_name, tpl_str in templates.items():
             with self.subTest(field=field_name):
                 out = _render(tpl_str, {"AA_CUSTOMIZER": self.branding})
+                self.assertEqual(
+                    out.strip(),
+                    "",
+                    f"Expected no output for blank {field_name}, got: {out!r}",
+                )
+
+
+# ---------------------------------------------------------------------------
+# Template rendering — dashboard-specific fields
+# ---------------------------------------------------------------------------
+
+
+class DashboardTemplateInjectionTest(TestCase):
+    """
+    Tests for main dashboard CSS/HTML injection fields, mirroring the
+    ``{% block extra_css %}`` and ``{% block extra_javascript %}`` patterns
+    in ``authentication/dashboard.html``.
+    """
+
+    def setUp(self):
+        self.branding = CustomBranding.get_solo()
+
+    def test_dashboard_css_url_renders_as_link_tag(self):
+        self.branding.dashboard_css_url = "https://cdn.example.com/dash.css"
+        self.branding.save()
+        out = _render(
+            "{% if AA_CUSTOMIZER.dashboard_css_url %}"
+            '<link rel="stylesheet" href="{{ AA_CUSTOMIZER.dashboard_css_url }}">'
+            "{% endif %}",
+            {"AA_CUSTOMIZER": self.branding},
+        )
+        self.assertIn('href="https://cdn.example.com/dash.css"', out)
+
+    def test_dashboard_css_renders_as_inline_style_block(self):
+        self.branding.dashboard_css = ".dashboard-widget { background: #0d0d1a; }"
+        self.branding.save()
+        out = _render(
+            "{% if AA_CUSTOMIZER.dashboard_css %}"
+            "<style>{{ AA_CUSTOMIZER.dashboard_css|safe }}</style>"
+            "{% endif %}",
+            {"AA_CUSTOMIZER": self.branding},
+        )
+        self.assertIn(
+            "<style>.dashboard-widget { background: #0d0d1a; }</style>", out
+        )
+
+    def test_dashboard_head_html_renders_verbatim(self):
+        self.branding.dashboard_head_html = (
+            '<link rel="preconnect" href="https://fonts.googleapis.com">'
+        )
+        self.branding.save()
+        out = _render(
+            "{% if AA_CUSTOMIZER.dashboard_head_html %}"
+            "{{ AA_CUSTOMIZER.dashboard_head_html|safe }}"
+            "{% endif %}",
+            {"AA_CUSTOMIZER": self.branding},
+        )
+        self.assertIn(
+            '<link rel="preconnect" href="https://fonts.googleapis.com">', out
+        )
+
+    def test_dashboard_body_html_renders_verbatim(self):
+        self.branding.dashboard_body_html = '<div id="dash-overlay"></div>'
+        self.branding.save()
+        out = _render(
+            "{% if AA_CUSTOMIZER.dashboard_body_html %}"
+            "{{ AA_CUSTOMIZER.dashboard_body_html|safe }}"
+            "{% endif %}",
+            {"AA_CUSTOMIZER": self.branding},
+        )
+        self.assertIn('<div id="dash-overlay"></div>', out)
+
+    def test_blank_dashboard_fields_produce_no_output(self):
+        templates = {
+            "dashboard_css_url": (
+                "{% if AA_CUSTOMIZER.dashboard_css_url %}"
+                '<link rel="stylesheet" href="{{ AA_CUSTOMIZER.dashboard_css_url }}">'
+                "{% endif %}"
+            ),
+            "dashboard_css": (
+                "{% if AA_CUSTOMIZER.dashboard_css %}"
+                "<style>{{ AA_CUSTOMIZER.dashboard_css|safe }}</style>"
+                "{% endif %}"
+            ),
+            "dashboard_head_html": (
+                "{% if AA_CUSTOMIZER.dashboard_head_html %}"
+                "{{ AA_CUSTOMIZER.dashboard_head_html|safe }}"
+                "{% endif %}"
+            ),
+            "dashboard_body_html": (
+                "{% if AA_CUSTOMIZER.dashboard_body_html %}"
+                "{{ AA_CUSTOMIZER.dashboard_body_html|safe }}"
+                "{% endif %}"
+            ),
+        }
+        for field_name, tpl_str in templates.items():
+            with self.subTest(field=field_name):
+                out = _render(tpl_str, {"AA_CUSTOMIZER": self.branding})
+                self.assertEqual(
+                    out.strip(),
+                    "",
+                    f"Expected no output for blank {field_name}, got: {out!r}",
+                )
+
+
+# ---------------------------------------------------------------------------
+# Template rendering — superuser dashboard fields (via superuser_branding tag)
+# ---------------------------------------------------------------------------
+
+
+class SuperuserDashboardTemplateInjectionTest(TestCase):
+    """
+    Tests for the superuser admin status widget CSS/HTML injection fields.
+    These mirror the patterns in ``allianceauth/admin-status/overview.html``
+    which uses the ``{% superuser_branding as aac_sb %}`` simple_tag because
+    the inclusion tag that renders overview.html does not pass request context.
+    """
+
+    def setUp(self):
+        self.branding = CustomBranding.get_solo()
+
+    def _render_with_tag(self, snippet):
+        """Wrap snippet in the template tag load and superuser_branding call."""
+        return _render(
+            "{% load aa_customizer_tags %}"
+            "{% superuser_branding as aac_sb %}"
+            + snippet,
+            {},
+        )
+
+    def test_superuser_dashboard_css_url_renders_as_link_tag(self):
+        self.branding.superuser_dashboard_css_url = "https://cdn.example.com/admin.css"
+        self.branding.save()
+        out = self._render_with_tag(
+            "{% if aac_sb.superuser_dashboard_css_url %}"
+            '<link rel="stylesheet" href="{{ aac_sb.superuser_dashboard_css_url }}">'
+            "{% endif %}"
+        )
+        self.assertIn('href="https://cdn.example.com/admin.css"', out)
+
+    def test_superuser_dashboard_css_renders_as_inline_style_block(self):
+        self.branding.superuser_dashboard_css = ".admin-widget { border: 2px solid red; }"
+        self.branding.save()
+        out = self._render_with_tag(
+            "{% if aac_sb.superuser_dashboard_css %}"
+            "<style>{{ aac_sb.superuser_dashboard_css|safe }}</style>"
+            "{% endif %}"
+        )
+        self.assertIn(
+            "<style>.admin-widget { border: 2px solid red; }</style>", out
+        )
+
+    def test_superuser_dashboard_head_html_renders_verbatim(self):
+        self.branding.superuser_dashboard_head_html = (
+            '<script src="https://cdn.example.com/chart.js" defer></script>'
+        )
+        self.branding.save()
+        out = self._render_with_tag(
+            "{% if aac_sb.superuser_dashboard_head_html %}"
+            "{{ aac_sb.superuser_dashboard_head_html|safe }}"
+            "{% endif %}"
+        )
+        self.assertIn(
+            '<script src="https://cdn.example.com/chart.js" defer></script>', out
+        )
+
+    def test_superuser_dashboard_body_html_renders_verbatim(self):
+        self.branding.superuser_dashboard_body_html = '<div id="admin-overlay"></div>'
+        self.branding.save()
+        out = self._render_with_tag(
+            "{% if aac_sb.superuser_dashboard_body_html %}"
+            "{{ aac_sb.superuser_dashboard_body_html|safe }}"
+            "{% endif %}"
+        )
+        self.assertIn('<div id="admin-overlay"></div>', out)
+
+    def test_blank_superuser_dashboard_fields_produce_no_output(self):
+        templates = {
+            "superuser_dashboard_css_url": (
+                "{% if aac_sb.superuser_dashboard_css_url %}"
+                '<link rel="stylesheet" href="{{ aac_sb.superuser_dashboard_css_url }}">'
+                "{% endif %}"
+            ),
+            "superuser_dashboard_css": (
+                "{% if aac_sb.superuser_dashboard_css %}"
+                "<style>{{ aac_sb.superuser_dashboard_css|safe }}</style>"
+                "{% endif %}"
+            ),
+            "superuser_dashboard_head_html": (
+                "{% if aac_sb.superuser_dashboard_head_html %}"
+                "{{ aac_sb.superuser_dashboard_head_html|safe }}"
+                "{% endif %}"
+            ),
+            "superuser_dashboard_body_html": (
+                "{% if aac_sb.superuser_dashboard_body_html %}"
+                "{{ aac_sb.superuser_dashboard_body_html|safe }}"
+                "{% endif %}"
+            ),
+        }
+        for field_name, tpl_str in templates.items():
+            with self.subTest(field=field_name):
+                out = self._render_with_tag(tpl_str)
                 self.assertEqual(
                     out.strip(),
                     "",

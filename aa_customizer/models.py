@@ -426,6 +426,74 @@ class CustomBranding(SingletonModel):
         ),
     )
 
+    # ----------------------------------------- main dashboard — custom code --
+    dashboard_css_url = models.URLField(
+        blank=True,
+        verbose_name=_("Dashboard — CSS URL"),
+        help_text=_(
+            "External stylesheet URL loaded on the main dashboard, after the global CSS URL. "
+            "Use this to pull in a widget-specific design framework without affecting other pages."
+        ),
+    )
+    dashboard_css = models.TextField(
+        blank=True,
+        verbose_name=_("Dashboard — CSS"),
+        help_text=_(
+            "Inline CSS applied only on the main dashboard, after all other stylesheets — "
+            "highest priority, full design control over the dashboard layout and widgets."
+        ),
+    )
+    dashboard_head_html = models.TextField(
+        blank=True,
+        verbose_name=_("Dashboard — Extra &lt;head&gt; HTML"),
+        help_text=_(
+            "Raw HTML injected at the end of &lt;head&gt; on the main dashboard only "
+            "(custom fonts, chart libraries, meta tags). Not sanitized."
+        ),
+    )
+    dashboard_body_html = models.TextField(
+        blank=True,
+        verbose_name=_("Dashboard — Extra Body HTML"),
+        help_text=_(
+            "Raw HTML injected before &lt;/body&gt; on the main dashboard only "
+            "(overlays, widget scripts, custom markup). Not sanitized."
+        ),
+    )
+
+    # -------------------------------------- superuser dashboard — custom code --
+    superuser_dashboard_css_url = models.URLField(
+        blank=True,
+        verbose_name=_("Admin Dashboard — CSS URL"),
+        help_text=_(
+            "External stylesheet URL loaded only on the admin status widget (superusers only). "
+            "Non-superusers never receive this stylesheet."
+        ),
+    )
+    superuser_dashboard_css = models.TextField(
+        blank=True,
+        verbose_name=_("Admin Dashboard — CSS"),
+        help_text=_(
+            "Inline CSS applied only inside the admin status widget (superusers only). "
+            "Non-superusers never receive these styles."
+        ),
+    )
+    superuser_dashboard_head_html = models.TextField(
+        blank=True,
+        verbose_name=_("Admin Dashboard — Extra &lt;head&gt; HTML"),
+        help_text=_(
+            "Raw HTML injected at the end of &lt;head&gt; when the admin status widget is shown — "
+            "superusers only (chart libraries, extra scripts for the admin panel). Not sanitized."
+        ),
+    )
+    superuser_dashboard_body_html = models.TextField(
+        blank=True,
+        verbose_name=_("Admin Dashboard — Extra Body HTML"),
+        help_text=_(
+            "Raw HTML injected inside the admin status widget, after all panel cards — "
+            "superusers only (overlays, extra markup). Not sanitized."
+        ),
+    )
+
     class Meta:  # type: ignore[override]
         default_permissions = ("view", "change")
         verbose_name = _("Custom Branding")

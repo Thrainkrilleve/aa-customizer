@@ -88,3 +88,18 @@ def customizer_navbar_logo(context):
         "site_name": context.get("SITE_NAME", ""),
     }
 
+
+# ---------------------------------------------------------------------------
+# Utility — branding access in templates without the context processor
+# ---------------------------------------------------------------------------
+
+
+@register.simple_tag()
+def superuser_branding() -> CustomBranding:
+    """
+    Return the CustomBranding singleton for use in templates that are rendered
+    via inclusion tags (e.g. ``{% status_overview %}``) where the context
+    processor does not run and ``AA_CUSTOMIZER`` is not available.
+    """
+    return CustomBranding.get_solo()
+
