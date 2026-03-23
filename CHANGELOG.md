@@ -5,6 +5,11 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.1.19] - 2026-03-22
+
+### Fixed
+- **Migration** — added migration `0015` for the `help_text` changes on seven fields introduced in v1.1.18 (`custom_css`, `custom_css_url`, `head_extra_html`, `login_page_body_html`, `login_page_css`, `login_page_css_url`, `login_page_head_html`). Django's system check was failing with "Unmigrated model changes detected" in CI.
+
 ## [1.1.18] - 2026-03-22
 
 ### Changed
