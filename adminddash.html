@@ -1,0 +1,113 @@
+<div style="
+    background: linear-gradient(90deg, rgba(139,92,246,0.12) 0%, rgba(245,158,11,0.05) 60%, transparent 100%);
+    border-left: 3px solid #8b5cf6;
+    border-radius: 0 6px 6px 0;
+    padding: 12px 20px 12px 16px;
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    font-family: 'Courier New', monospace;
+    position: relative;
+    overflow: hidden;
+">
+    <span style="color:#8b5cf6;font-size:16px;">⬡</span>
+    <span style="color:#c4b5fd;font-size:12px;font-weight:700;letter-spacing:3px;text-transform:uppercase;">NEXUS COMMAND</span>
+    <span style="width:1px;height:20px;background:rgba(139,92,246,0.4);"></span>
+    <span id="aac-nexus-date" style="color:rgba(255,255,255,0.35);font-size:10px;letter-spacing:1.5px;"></span>
+    <span style="flex:1;height:1px;background:linear-gradient(90deg,rgba(139,92,246,0.4),rgba(245,158,11,0.2),transparent);"></span>
+    <span id="aac-nexus-clock" style="color:#f59e0b;font-size:12px;font-weight:700;letter-spacing:2px;font-variant-numeric:tabular-nums;"></span>
+    <span style="color:#8b5cf6;font-size:10px;letter-spacing:1px;">● LIVE</span>
+</div>
+
+<script>
+!function(){
+    var days=["SUN","MON","TUE","WED","THU","FRI","SAT"];
+    var months=["JAN","FEB","MAR","APR","MAY","JUN","JUL","AUG","SEP","OCT","NOV","DEC"];
+    function tick(){
+        var now=new Date();
+        var clk=document.getElementById("aac-nexus-clock");
+        var dt=document.getElementById("aac-nexus-date");
+        if(clk) clk.textContent=now.toLocaleTimeString('en-US',{hour12:false});
+        if(dt) dt.textContent=days[now.getDay()]+" "+now.getDate()+" "+months[now.getMonth()]+" "+now.getFullYear();
+    }
+    tick(); setInterval(tick,1000);
+}();
+</script>
+
+<div style="
+    margin-top: 16px;
+    text-align: right;
+    font-size: 10px;
+    letter-spacing: 2px;
+    color: rgba(139, 92, 246, 0.3);
+    font-family: 'Courier New', monospace;
+    text-transform: uppercase;
+">
+    ⬡ NEXUS COMMAND &mdash; RESTRICTED ACCESS
+</div>
+
+<!-- CSS BELOW THIS! -->
+
+/* ── Nexus Command theme ── */
+:root {
+    --aac-violet: #8b5cf6;
+    --aac-violet-dim: rgba(139, 92, 246, 0.10);
+    --aac-violet-border: rgba(139, 92, 246, 0.35);
+    --aac-amber: #f59e0b;
+    --aac-amber-dim: rgba(245, 158, 11, 0.12);
+    --aac-red: #ef4444;
+    --aac-green: #10b981;
+}
+
+/* Notifications card — violet glow */
+#aa-dashboard-panel-admin-notifications .card {
+    border: 1px solid var(--aac-violet-border) !important;
+    box-shadow: 0 0 20px rgba(139, 92, 246, 0.15) !important;
+}
+#aa-dashboard-panel-admin-notifications .badge.text-bg-success {
+    background: var(--aac-violet) !important;
+    color: #fff !important;
+    font-weight: 700;
+}
+
+/* Task queue progress bar */
+#celery-tasks-progress-bar {
+    height: 22px !important;
+    background: rgba(255, 255, 255, 0.04) !important;
+    border: 1px solid var(--aac-violet-border) !important;
+    border-radius: 4px !important;
+    overflow: hidden !important;
+    box-shadow: 0 0 12px rgba(139, 92, 246, 0.12) !important;
+}
+#celery-tasks-progress-bar .progress-bar.bg-success {
+    background: linear-gradient(90deg, #7c3aed, #8b5cf6, #a78bfa) !important;
+}
+
+/* Software Version card — amber accent */
+#aa-dashboard-panel-software-version .text-bg-success {
+    background: linear-gradient(135deg, #d97706, #f59e0b) !important;
+    color: #000 !important;
+    box-shadow: 0 0 14px rgba(245, 158, 11, 0.3) !important;
+}
+#aa-dashboard-panel-software-version .list-group-item:first-child {
+    border-color: rgba(245, 158, 11, 0.35) !important;
+    background: var(--aac-amber-dim) !important;
+}
+
+/* Task counter highlights */
+#succeeded-tasks-count { color: var(--aac-green); font-weight: 700; }
+#running-task-count    { color: var(--aac-amber); font-weight: 700; }
+#failed-tasks-count    { color: var(--aac-red); font-weight: 700; }
+#celery-uptime         { color: var(--aac-violet); font-weight: 600; }
+
+/* Pulsing diamond next to running count */
+#running-task-count::before {
+    content: "◆ ";
+    color: var(--aac-amber);
+    animation: aac-nexus-pulse 1.2s ease-in-out infinite;
+}
+@keyframes aac-nexus-pulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50%       { opacity: 0.2; transform: scale(0.8); }
+}

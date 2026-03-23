@@ -5,6 +5,10 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.1.26] - 2026-03-23
+### Fixed
+- **`celery_bar_partial.html` override removed** — the override's `|default:"0"` guards returned `SafeString("0")` when `tasks_count` was `None` or `0`, causing `decimal_widthratio` to crash with `TypeError: unsupported operand type(s) for /: 'SafeString' and 'int'` and breaking the entire dashboard. The stock AA template works correctly because the view always provides integer values; the override was unnecessary and harmful.
+
 ## [1.1.25] - 2026-03-23
 ### Fixed
 - **`pyproject.toml` package-data** — added `templates/allianceauth/**/*.html` and `templates/authentication/*.html` glob patterns. Without these, pip installations were missing the `authentication/dashboard.html` override (so `superuser_dashboard_*` fields never rendered) and the `allianceauth/admin-status/` template overrides (`overview.html`, `celery_bar_partial.html`, `esi_check.html`). All template overrides now ship correctly in the installed package.
