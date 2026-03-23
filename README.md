@@ -10,19 +10,19 @@ Gives administrators a simple admin-panel UI to customize their Alliance Auth in
 ## Screenshots
 
 ### Split Screen layout
-![Split Screen layout](https://i.imgur.com/4TSEjOG.png)
+![Split Screen layout](https://r3v-w.com/Screenshot_20260320_215103.png)
 
 ### Centered Card layout (default)
-![Centered Card layout](https://i.imgur.com/GaTmrDD.png)
+![Centered Card layout](https://r3v-w.com/Screenshot_20260320_201644.png)
 
 ### Side Bar Icon
-![Sidebar Icon](https://i.imgur.com/HG7hRYo.png)
+![Sidebar Icon](https://r3v-w.com/Screenshot_20260320_215038.png)
 
 ### Custom Login CSS/HTML (Design how you want!)
 
-![Login Landing](https://i.imgur.com/5H8bNeM.png)
+![Login Landing](https://r3v-w.com/login.png)
 
-![Login Popup](https://i.imgur.com/b3TqwwW.png)
+![Login Popup](https://r3v-w.com/login2.png)
 ## Features
 
 | Feature | What it does |
