@@ -369,7 +369,7 @@ class CustomBranding(SingletonModel):
         blank=True,
         verbose_name=_("Custom CSS"),
         help_text=_(
-            "CSS injected into every page via an inline <style> block, loaded after "
+            "CSS injected into every page via an inline &lt;style&gt; block, loaded after "
             "the active theme so it can override any style. "
             "Works alongside Alliance Auth's built-in Custom CSS admin."
         ),
@@ -378,7 +378,7 @@ class CustomBranding(SingletonModel):
         blank=True,
         verbose_name=_("Custom CSS — URL"),
         help_text=_(
-            "URL of an external CSS stylesheet linked in every page <head> "
+            "URL of an external CSS stylesheet linked in every page &lt;head&gt; "
             "(e.g. a CDN-hosted custom theme file). Loaded after the active AA theme."
         ),
     )
@@ -388,7 +388,7 @@ class CustomBranding(SingletonModel):
         blank=True,
         verbose_name=_("Extra <head> HTML"),
         help_text=_(
-            "Raw HTML injected at the very end of <head> on every page. "
+            "Raw HTML injected at the very end of &lt;head&gt; on every page. "
             "Useful for analytics scripts, font imports, or custom meta tags. "
             "Only editable by admins — content is rendered without sanitization."
         ),
@@ -418,7 +418,7 @@ class CustomBranding(SingletonModel):
         blank=True,
         verbose_name=_("Login Page — Extra <head> HTML"),
         help_text=_(
-            "Raw HTML injected at the end of <head> only on the login page. "
+            "Raw HTML injected at the end of &lt;head&gt; only on the login page. "
             "Useful for loading custom fonts, icon libraries, JS frameworks, or "
             "Open Graph tags specific to the login page. "
             "Only editable by admins — content is rendered without sanitization."
@@ -428,7 +428,7 @@ class CustomBranding(SingletonModel):
         blank=True,
         verbose_name=_("Login Page — Extra Body HTML"),
         help_text=_(
-            "Raw HTML injected just before </body> only on the login page. "
+            "Raw HTML injected just before &lt;/body&gt; only on the login page. "
             "Useful for custom overlays, particle effects, animation scripts, or "
             "any markup/JavaScript needed for a fully custom landing page. "
             "Only editable by admins — content is rendered without sanitization."
