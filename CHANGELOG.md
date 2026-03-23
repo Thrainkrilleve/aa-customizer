@@ -5,6 +5,22 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.1.22] - 2026-03-22
+
+### Added
+- **`get_branding` template tag** — generic alias for `superuser_branding` usable from any third-party plugin template that lacks the context processor output.
+- **`aac-dashboard-context` CSS hook** — the dashboard row div now carries this class, giving users a stable specificity anchor (`.aac-dashboard-context .card { … }`) without needing `!important`.
+
+### Changed
+- **Admin fieldsets reorganized** — `CustomBrandingAdmin` collapsed from 12 granular fieldsets into 6 logical sections. All four "Custom Code" sections start collapsed by default, so the visual branding fields are immediately visible without scrolling past textarea fields.
+- **`forms.py` monospace widgets** — the six dashboard code fields (`dashboard_css`, `dashboard_head_html`, `dashboard_body_html`, `superuser_dashboard_css`, `superuser_dashboard_head_html`, `superuser_dashboard_body_html`) now render with the shared monospace `Textarea` style, consistent with all other code fields.
+- **`overview.html` template polish** — mobile stacking gap (`mb-3 mb-xl-0`) on the software-version column; version card headings downgraded to `<h6>` and centred; `{% blocktranslate %}` spans pre-populated with server-side `{{ total }}`/`{{ latest }}` values; progress bar height reduced from 21 px to 12 px; task count spans pre-populated from `tasks_succeeded`, `tasks_retried`, and `tasks_failed` context variables so the initial render shows real data before the first 30-second poll.
+- **`celery_bar_partial.html` override** — new template override adds `|default:"0"` guards on `tasks_count` and `tasks_total`, and a `{% if safe_total %}` zero-division guard so the progress bar never crashes on a cold start.
+- **`esi_check.html` override** — jQuery `$(document).ready()` replaced with vanilla `DOMContentLoaded`; added `fetchGet` existence guard with a `console.warn` fallback; `data.error` now type-checked with an `"Unknown error occurred."` fallback string; `.catch()` surfaces the error in the UI instead of swallowing it; `bootstrap.Collapse` call guarded with a `classList.remove('collapse')` fallback; container gains `aria-live="polite"`; `<pre>` block gains `max-height: 300px; overflow-y: auto`; status message uses `{% blocktranslate %}` for correct i18n word order.
+
+### Tests
+- Added `test_superuser_code_suppressed_for_non_superusers` — confirms the AA view gate prevents custom superuser code from reaching non-superuser responses. Total: 39 tests.
+
 ## [1.1.21] - 2026-03-23
 
 ### Added

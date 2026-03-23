@@ -30,6 +30,12 @@ class CustomBrandingAdminForm(forms.ModelForm):
             "login_page_css": forms.Textarea(attrs={"rows": 14, "style": _MONO}),
             "login_page_head_html": forms.Textarea(attrs={"rows": 8, "style": _MONO}),
             "login_page_body_html": forms.Textarea(attrs={"rows": 8, "style": _MONO}),
+            "dashboard_css": forms.Textarea(attrs={"rows": 14, "style": _MONO}),
+            "dashboard_head_html": forms.Textarea(attrs={"rows": 8, "style": _MONO}),
+            "dashboard_body_html": forms.Textarea(attrs={"rows": 8, "style": _MONO}),
+            "superuser_dashboard_css": forms.Textarea(attrs={"rows": 14, "style": _MONO}),
+            "superuser_dashboard_head_html": forms.Textarea(attrs={"rows": 8, "style": _MONO}),
+            "superuser_dashboard_body_html": forms.Textarea(attrs={"rows": 8, "style": _MONO}),
         }
 
     def clean_login_background_color(self):

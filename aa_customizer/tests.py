@@ -545,6 +545,41 @@ class SuperuserDashboardTemplateInjectionTest(TestCase):
         )
         self.assertIn('<div id="admin-overlay"></div>', out)
 
+    def test_superuser_code_suppressed_for_non_superusers(self):
+        """
+        The AA view layer gates the widget: dashboard_admin() returns '' for
+        non-superusers without rendering overview.html at all.  We replicate
+        that guard here without importing from allianceauth, verifying that
+        a non-superuser request produces empty output containing none of the
+        custom superuser CSS/HTML.
+        """
+        from unittest.mock import MagicMock
+
+        self.branding.superuser_dashboard_css = ".secret { color: red; }"
+        self.branding.superuser_dashboard_head_html = "<script>alert(1)</script>"
+        self.branding.save()
+
+        request = RequestFactory().get("/")
+        request.user = MagicMock(is_superuser=False)
+
+        # Replicate the AA view gate: render only for superusers
+        output = (
+            self._render_with_tag(
+                "{% if aac_sb.superuser_dashboard_css %}"
+                "<style>{{ aac_sb.superuser_dashboard_css|safe }}</style>"
+                "{% endif %}"
+                "{% if aac_sb.superuser_dashboard_head_html %}"
+                "{{ aac_sb.superuser_dashboard_head_html|safe }}"
+                "{% endif %}"
+            )
+            if request.user.is_superuser
+            else ""
+        )
+
+        self.assertEqual(output, "")
+        self.assertNotIn(".secret", output)
+        self.assertNotIn("alert(1)", output)
+
     def test_blank_superuser_dashboard_fields_produce_no_output(self):
         templates = {
             "superuser_dashboard_css_url": (

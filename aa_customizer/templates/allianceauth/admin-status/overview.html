@@ -95,22 +95,22 @@ the escapejs filter without having to redefine them later.
 <div class="col-12 mb-3">
     <div class="card">
         <div class="card-body row">
-            <div id="aa-dashboard-panel-software-version" class="col-xl-6 col-lg-12 col-md-12 col-sm-12">
+            <div id="aa-dashboard-panel-software-version" class="col-xl-6 col-lg-12 col-md-12 col-sm-12 mb-3 mb-xl-0">
                 {% translate "Software Version" as widget_title %}
                 {% include "framework/dashboard/widget-title.html" with title=widget_title %}
 
                 <div>
                     <ul class="list-group list-group-horizontal w-100" role="group" aria-label="{% translate 'Software Version' %}">
                         <li class="list-group-item w-100">
-                            <div class="btn h-100 w-100 cursor-default">
-                                <h5 class="list-group-item-heading">{% translate "Current" %}</h5>
+                            <div class="btn h-100 w-100 cursor-default text-center">
+                                <h6 class="list-group-item-heading">{% translate "Current" %}</h6>
                                 <p class="list-group-item-text">{{ current_version }}</p>
                             </div>
                         </li>
 
                         <li class="list-group-item text-bg-{% if latest_patch %}success{% elif latest_minor %}warning{% else %}danger{% endif %} w-100">
-                            <a class="btn h-100 w-100" href="https://gitlab.com/allianceauth/allianceauth/-/releases/v{{ latest_patch_version }}">
-                                <h5 class="list-group-item-heading">{% translate "Latest Stable" %}</h5>
+                            <a class="btn h-100 w-100 text-center" href="https://gitlab.com/allianceauth/allianceauth/-/releases/v{{ latest_patch_version }}">
+                                <h6 class="list-group-item-heading">{% translate "Latest Stable" %}</h6>
 
                                 <p class="list-group-item-text">
                                     <i class="fab fa-gitlab hidden-xs" aria-hidden="true"></i>
@@ -122,8 +122,8 @@ the escapejs filter without having to redefine them later.
 
                         {% if latest_beta %}
                             <li class="list-group-item text-bg-info w-100">
-                                <a class="btn h-100 w-100" href="https://gitlab.com/allianceauth/allianceauth/-/releases/v{{ latest_beta_version }}">
-                                    <h5 class="list-group-item-heading">{% translate "Latest Pre-Release" %}</h5>
+                                <a class="btn h-100 w-100 text-center" href="https://gitlab.com/allianceauth/allianceauth/-/releases/v{{ latest_beta_version }}">
+                                    <h6 class="list-group-item-heading">{% translate "Latest Pre-Release" %}</h6>
 
                                     <p class="list-group-item-text">
                                         <i class="fab fa-gitlab hidden-xs" aria-hidden="true"></i>
@@ -144,27 +144,27 @@ the escapejs filter without having to redefine them later.
                 <div>
                     <p>
                         {% blocktranslate with total=tasks_total|intcomma latest=earliest_task|timesince|default:"?" %}
-                            Status of <span id="total-task-count">?</span> processed tasks • last <span id="celery-uptime">?</span>
+                            Status of <span id="total-task-count">{{ total }}</span> processed tasks • last <span id="celery-uptime">{{ latest }}</span>
                         {% endblocktranslate %}
                     </p>
 
                     <div
                         id="celery-tasks-progress-bar"
                         class="progress mb-2"
-                        style="height: 21px;"
-                        title="? {{ l10nSucceeded }}, ? {{ l10nRetried }}, ? {{ l10nFailed }}"
+                        style="height: 12px;"
+                        title="Pending data update…"
                     >
-                        {% include "allianceauth/admin-status/celery_bar_partial.html" with label="succeeded" level="success" tasks_count=0 %}
-                        {% include "allianceauth/admin-status/celery_bar_partial.html" with label="retried" level="info" tasks_count=0 %}
-                        {% include "allianceauth/admin-status/celery_bar_partial.html" with label="failed" level="danger" tasks_count=0 %}
+                        {% include "allianceauth/admin-status/celery_bar_partial.html" with label="succeeded" level="success" tasks_count=tasks_succeeded %}
+                        {% include "allianceauth/admin-status/celery_bar_partial.html" with label="retried" level="info" tasks_count=tasks_retried %}
+                        {% include "allianceauth/admin-status/celery_bar_partial.html" with label="failed" level="danger" tasks_count=tasks_failed %}
                     </div>
 
                     <p>
                         <span id="running-task-count">?</span> {{ l10nRunning }} |
                         <span id="queued-tasks-count">?</span> {{ l10nQueued }} |
-                        <span id="succeeded-tasks-count">?</span> {{ l10nSucceeded }} |
-                        <span id="retried-tasks-count">?</span> {{ l10nRetried }} |
-                        <span id="failed-tasks-count">?</span> {{ l10nFailed }}
+                        <span id="succeeded-tasks-count">{{ tasks_succeeded|intcomma }}</span> {{ l10nSucceeded }} |
+                        <span id="retried-tasks-count">{{ tasks_retried|intcomma }}</span> {{ l10nRetried }} |
+                        <span id="failed-tasks-count">{{ tasks_failed|intcomma }}</span> {{ l10nFailed }}
                     </p>
                 </div>
             </div>

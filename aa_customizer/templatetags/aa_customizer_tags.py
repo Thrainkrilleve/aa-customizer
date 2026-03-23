@@ -103,3 +103,19 @@ def superuser_branding() -> CustomBranding:
     """
     return CustomBranding.get_solo()
 
+
+@register.simple_tag()
+def get_branding() -> CustomBranding:
+    """
+    Generic alias for ``superuser_branding``.  Use this in any third-party
+    widget or plugin template to access the CustomBranding singleton without
+    depending on the context processor being in scope.
+
+    Example::
+
+        {% load aa_customizer_tags %}
+        {% get_branding as branding %}
+        {% if branding.custom_css %}...{% endif %}
+    """
+    return CustomBranding.get_solo()
+

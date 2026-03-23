@@ -1,0 +1,58 @@
+{% load i18n %}
+
+<div id="esi-alert" class="col-12 collapse" aria-live="polite">
+    <div class="alert alert-warning">
+        <p class="text-center">
+            {% blocktranslate with code='<b id="esi-code">?</b>' %}
+                Your server received an ESI error response code of {{ code }}
+            {% endblocktranslate %}
+        </p>
+        <hr>
+        <pre id="esi-data" class="text-center text-wrap" style="max-height: 300px; overflow-y: auto;"></pre>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            'use strict';
+
+            if (typeof fetchGet !== 'function') {
+                console.warn('ESI check: fetchGet is not available, skipping.');
+                return;
+            }
+
+            const elements = {
+                card: document.getElementById('esi-alert'),
+                message: document.getElementById('esi-data'),
+                code: document.getElementById('esi-code')
+            };
+
+            fetchGet({url: '{% url "authentication:esi_check" %}'})
+                .then(({status, data}) => {
+                    console.log('ESI Check:', JSON.stringify({status, data}, null, 2));
+
+                    if (status !== 200) {
+                        elements.code.textContent = status;
+                        elements.message.textContent = (data && typeof data.error === 'string')
+                            ? data.error
+                            : '{% trans "Unknown error occurred." %}';
+
+                        if (typeof bootstrap !== 'undefined' && bootstrap.Collapse) {
+                            new bootstrap.Collapse(elements.card, {toggle: true});
+                        } else {
+                            elements.card.classList.remove('collapse');
+                        }
+                    }
+                })
+                .catch((error) => {
+                    console.error('ESI check: network or fetch error:', error);
+                    elements.message.textContent = '{% trans "Unknown error occurred." %}';
+
+                    if (typeof bootstrap !== 'undefined' && bootstrap.Collapse) {
+                        new bootstrap.Collapse(elements.card, {toggle: true});
+                    } else {
+                        elements.card.classList.remove('collapse');
+                    }
+                });
+        });
+    </script>
+</div>

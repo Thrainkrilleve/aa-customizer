@@ -1,0 +1,16 @@
+{% load humanize %}
+{% load admin_status %}
+
+{% with safe_count=tasks_count|default:"0" safe_total=tasks_total|default:"0" %}
+<div
+    id="celery-progress-bar-{{ label }}"
+    class="progress-bar text-bg-{{ level }} task-status-progress-bar"
+    role="progressbar"
+    aria-valuenow="{% if safe_total %}{% decimal_widthratio safe_count safe_total 100 %}{% else %}0{% endif %}"
+    aria-valuemin="0"
+    aria-valuemax="100"
+    style="width: {% if safe_total %}{% decimal_widthratio safe_count safe_total 100 %}{% else %}0{% endif %}%;"
+>
+    <span id="celery-progress-bar-{{ label }}-progress">{% if safe_total %}{% widthratio safe_count safe_total 100 %}%{% else %}0%{% endif %}</span>
+</div>
+{% endwith %}
