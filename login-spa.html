@@ -1,0 +1,130 @@
+<!-- ═══════════════════════════════════════════════════════════════════
+     AA-CUSTOMIZER  ·  LOGIN PAGE SPA SCAFFOLD  (v1.2.0)
+     ───────────────────────────────────────────────────────────────────
+     HOW TO USE
+     ──────────────────────────────────────────────────────────────────
+     1. In Admin › Custom Branding, tick "Login Page — Enable SPA mode".
+     2. Optionally set "Login Page — SPA nav brand" text (defaults to
+        SITE_NAME if left blank).
+     3. Paste the content in SECTION 1 below into:
+          Admin › Custom Branding › Login Page › Extra Body HTML
+        Edit the <section> elements to build your pages. Each section
+        becomes a nav link; add/remove sections freely.
+     4. The bundled CSS is served automatically while SPA mode is on.
+        If you want to customise the look, paste the CSS in SECTION 2
+        into:
+          Admin › Custom Branding › Login Page › CSS
+        and edit as needed.
+     ═══════════════════════════════════════════════════════════════════ -->
+
+
+<!-- ── SECTION 1 ── paste into: Login Page › Extra Body HTML ─────────
+
+     Each <section> becomes one page in the SPA.
+       data-route  — URL hash slug (no spaces/special chars)
+       data-label  — text shown in the nav link
+
+     The hidden wrapper div is required; do NOT change the id.
+     Add or remove <section> elements as needed.
+     ──────────────────────────────────────────────────────────────────── -->
+
+<div id="aac-spa-content" style="display:none">
+
+  <!-- ── HOME ── ─────────────────────────────────────────────────────── -->
+  <section data-route="home" data-label="Home">
+    <div class="aac-spa-page aac-spa-home">
+      <p class="aac-spa-home-corp-tag">EST. YC 110  ·  NULL-SEC  ·  EU/US TZ</p>
+      <h1 class="aac-spa-hero-title">YOUR CORP NAME</h1>
+      <p class="aac-spa-hero-sub">Elite PvP &middot; Sov Warfare &middot; Brotherhood</p>
+      <div class="aac-spa-hero-actions">
+        <a href="#about" class="aac-spa-btn aac-spa-btn-outline">Learn More</a>
+        <a href="#apply" class="aac-spa-btn aac-spa-btn-primary">Apply Now</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── ABOUT ── ────────────────────────────────────────────────────── -->
+  <section data-route="about" data-label="About">
+    <div class="aac-spa-page">
+      <h2 class="aac-spa-page-title">About Us</h2>
+      <p class="aac-spa-body-text">
+        We are a tight-knit PvP corporation operating in null-security space.
+        Founded by veterans, we focus on small-gang roams, fleet warfare, and
+        building a community worth logging in for.
+      </p>
+      <div class="aac-spa-stat-row">
+        <div class="aac-spa-stat">
+          <span class="aac-spa-stat-num">120+</span>
+          <span class="aac-spa-stat-label">Members</span>
+        </div>
+        <div class="aac-spa-stat">
+          <span class="aac-spa-stat-num">5K+</span>
+          <span class="aac-spa-stat-label">Kills / Month</span>
+        </div>
+        <div class="aac-spa-stat">
+          <span class="aac-spa-stat-num">90%</span>
+          <span class="aac-spa-stat-label">Efficiency</span>
+        </div>
+      </div>
+      <a href="#apply" class="aac-spa-btn aac-spa-btn-primary" style="margin-top:2rem">Join Us</a>
+    </div>
+  </section>
+
+  <!-- ── APPLY ── ────────────────────────────────────────────────────── -->
+  <section data-route="apply" data-label="Apply">
+    <div class="aac-spa-page">
+      <h2 class="aac-spa-page-title">How to Apply</h2>
+      <p class="aac-spa-body-text" style="margin-bottom:1.5rem">
+        Think you have what it takes? Meet the requirements and authenticate
+        below to start your application.
+      </p>
+      <ul class="aac-spa-req-list">
+        <li>Minimum 20M skill points</li>
+        <li>Full ESI token (all scopes)</li>
+        <li>Working microphone &amp; Discord</li>
+        <li>EU or US primary timezone</li>
+        <li>No alts in hostile corps</li>
+      </ul>
+      <a href="#signin" class="aac-spa-btn aac-spa-btn-primary" style="margin-top:1.5rem">
+        Login with EVE SSO to Apply &rarr;
+      </a>
+    </div>
+  </section>
+
+</div><!-- /#aac-spa-content -->
+
+<!-- ── END SECTION 1 ─────────────────────────────────────────────────── -->
+
+
+
+
+<!-- ═══════════════════════════════════════════════════════════════════
+     SECTION 2 (optional) — customise CSS
+     Paste into: Admin › Custom Branding › Login Page › CSS
+     The styles below are the built-in defaults. Only paste this in if
+     you want to override or extend them.
+     ═══════════════════════════════════════════════════════════════════ -->
+
+/*
+ * AA-Customizer SPA — Login Page CSS overrides
+ * Prefix: aac-spa-*  (no collisions with Bootstrap or AA)
+ *
+ * The built-in static CSS is already loaded when SPA mode is enabled.
+ * Paste rules here to override or extend the defaults.
+ */
+
+/* Example: change the accent colour from violet to teal */
+/*
+#aac-spa-nav           { border-bottom-color: rgba(20, 184, 166, 0.3); }
+#aac-spa-brand         { color: #5eead4; }
+.aac-spa-diamond       { color: #14b8a6; }
+.aac-spa-hero-title    { text-shadow: 0 0 50px rgba(20, 184, 166, 0.55),
+                                      0 0 100px rgba(20, 184, 166, 0.2); }
+.aac-spa-stat-num      { color: #14b8a6; }
+.aac-spa-btn-primary   { background: #14b8a6; border-color: #14b8a6; }
+.aac-spa-btn-primary:hover { background: #0d9488; border-color: #0d9488; }
+.aac-spa-req-list li::before { color: #14b8a6; }
+#aac-spa-links a:hover,
+#aac-spa-links a.aac-spa-active { color: #5eead4;
+                                   background: rgba(20, 184, 166, 0.15); }
+*/

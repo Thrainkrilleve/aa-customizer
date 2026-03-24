@@ -75,6 +75,9 @@
             <style>{{ AA_CUSTOMIZER.login_page_css|safe }}</style>
         {% endif %}
         {% if AA_CUSTOMIZER.login_page_head_html %}{{ AA_CUSTOMIZER.login_page_head_html|safe }}{% endif %}
+        {% if AA_CUSTOMIZER.login_spa_enabled %}
+            <link rel="stylesheet" href="{% static 'aa_customizer/css/login-spa.css' %}">
+        {% endif %}
     </head>
 
     <body>
@@ -108,5 +111,8 @@
         </div>
         {% endblock outer_container %}
         {% if AA_CUSTOMIZER.login_page_body_html %}{{ AA_CUSTOMIZER.login_page_body_html|safe }}{% endif %}
+        {% if AA_CUSTOMIZER.login_spa_enabled %}
+            {% include 'aa_customizer/partials/login_spa_shell.html' %}
+        {% endif %}
     </body>
 </html>

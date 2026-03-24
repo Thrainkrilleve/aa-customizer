@@ -1,0 +1,116 @@
+{% load static %}
+{% load i18n %}
+{#
+  Login page SPA — overlay shell.
+
+  Injected at the end of <body> when AA_CUSTOMIZER.login_spa_enabled is True.
+
+  Page content is read from <section data-route="slug" data-label="Nav Label">
+  elements inside a hidden #aac-spa-content div, which the user provides via
+  the "Login Page — Extra Body HTML" admin field.  Example:
+
+      <div id="aac-spa-content" style="display:none">
+        <section data-route="home" data-label="Home">
+          <!-- your hero HTML here -->
+        </section>
+        <section data-route="about" data-label="About">
+          <!-- your about HTML here -->
+        </section>
+        <section data-route="apply" data-label="Apply">
+          <!-- your apply HTML here -->
+        </section>
+      </div>
+#}
+
+<div id="aac-spa">
+
+  <nav id="aac-spa-nav">
+    <div id="aac-spa-brand">
+      <span class="aac-spa-diamond">⬡</span>
+      <span id="aac-spa-brand-text">{% if AA_CUSTOMIZER.login_spa_nav_brand %}{{ AA_CUSTOMIZER.login_spa_nav_brand }}{% else %}{{ SITE_NAME }}{% endif %}</span>
+    </div>
+    <ul id="aac-spa-links">
+      {# Nav links are built dynamically by JS from section[data-route] elements #}
+    </ul>
+    <a href="#signin" id="aac-spa-signin-link">{% translate "Sign In" %} →</a>
+    <button id="aac-spa-menu-btn" aria-label="{% translate "Menu" %}"
+            onclick="document.getElementById('aac-spa-links').classList.toggle('open')">
+      <span></span><span></span><span></span>
+    </button>
+  </nav>
+
+  <main id="aac-spa-view"></main>
+
+</div>
+
+<script>
+!function () {
+    var content = document.getElementById('aac-spa-content');
+    if (!content) return;  // no content div — SPA won't run
+
+    /* ── collect pages from section[data-route] ── */
+    var PAGES = {};
+    var LABELS = {};
+    var ROUTES = [];
+    var sections = content.querySelectorAll('[data-route]');
+    for (var i = 0; i < sections.length; i++) {
+        var s = sections[i];
+        var r = s.getAttribute('data-route');
+        PAGES[r]  = s.innerHTML;
+        LABELS[r] = s.getAttribute('data-label') || r;
+        ROUTES.push(r);
+    }
+    if (!ROUTES.length) return;  // nothing to show
+
+    /* ── build nav links ── */
+    var linksList = document.getElementById('aac-spa-links');
+    for (var j = 0; j < ROUTES.length; j++) {
+        var li = document.createElement('li');
+        var a  = document.createElement('a');
+        a.href = '#' + ROUTES[j];
+        a.setAttribute('data-route', ROUTES[j]);
+        a.textContent = LABELS[ROUTES[j]];
+        li.appendChild(a);
+        linksList.appendChild(li);
+    }
+
+    /* ── router ── */
+    var overlay = document.getElementById('aac-spa');
+    var view    = document.getElementById('aac-spa-view');
+
+    function currentRoute() {
+        return (window.location.hash || '').replace(/^#/, '') || ROUTES[0];
+    }
+
+    function render() {
+        var r = currentRoute();
+
+        /* signin hash, or auth redirect (?next=) — hide overlay, show login card */
+        if (r === 'signin' || window.location.search.indexOf('next=') !== -1) {
+            overlay.style.display = 'none';
+            return;
+        }
+
+        /* unknown route — fall back to first page */
+        if (!PAGES[r]) r = ROUTES[0];
+
+        overlay.style.display = 'flex';
+        view.innerHTML = PAGES[r];
+
+        document.getElementById('aac-spa-links').classList.remove('open');
+
+        var links = linksList.querySelectorAll('[data-route]');
+        for (var k = 0; k < links.length; k++) {
+            var active = links[k].getAttribute('data-route') === r;
+            if (active) {
+                links[k].classList.add('aac-spa-active');
+            } else {
+                links[k].classList.remove('aac-spa-active');
+            }
+        }
+    }
+
+    window.addEventListener('hashchange', render);
+    render();
+}();
+</script>

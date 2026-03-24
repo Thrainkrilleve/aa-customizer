@@ -85,6 +85,26 @@ class CustomBrandingAdmin(SingletonModelAdmin):
             },
         ),
         (
+            _("Login Page — SPA Mode"),
+            {
+                "classes": ("collapse",),
+                "fields": (
+                    "login_spa_enabled",
+                    "login_spa_nav_brand",
+                ),
+                "description": _(
+                    "Turn the login page into a multi-page public-facing SPA. "
+                    "Enable the toggle, then add your page content via the "
+                    "'Login Page — Custom Code' › 'Extra Body HTML' field using "
+                    "<div id=\"aac-spa-content\" style=\"display:none\"> "
+                    "containing <section data-route=\"slug\" data-label=\"Nav Label\"> elements. "
+                    "A 'Sign In' link in the nav bar reveals the standard EVE SSO card. "
+                    "Use the bundled CSS classes (aac-spa-page, aac-spa-hero-title, "
+                    "aac-spa-btn-primary, etc.) or supply your own via 'Login Page CSS'."
+                ),
+            },
+        ),
+        (
             _("Login Page — Custom Code"),
             {
                 "classes": ("collapse",),

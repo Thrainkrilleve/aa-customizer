@@ -5,6 +5,10 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.2.0] - 2026-03-23
+### Added
+- **Login Page SPA mode** — new `login_spa_enabled` toggle and `login_spa_nav_brand` field in Custom Branding admin. When enabled, a full-viewport overlay SPA is rendered on the login page. Admins define page content via the existing *Extra Body HTML* field using `<div id="aac-spa-content">` containing `<section data-route="slug" data-label="Nav Label">` elements. The JS router reads these at load time, builds nav links automatically, and handles hash-based routing. Navigating to `#signin` (or arriving with a `?next=` query param) hides the overlay and reveals the standard EVE SSO login card. Bundled CSS (`aac-spa-*` class prefix) is served automatically as a static file when SPA mode is on; each class is namespaced to avoid collisions with Bootstrap or Alliance Auth. Nav brand text defaults to `SITE_NAME` when left blank. See `login-spa.html` for a copy-paste scaffold.
+
 ## [1.1.27] - 2026-03-23
 ### Added
 - **`AA_CUSTOMIZER_TRUSTED_USER_IDS` setting** — optional list of integer user PKs in `local.py` that restricts access to the CustomBranding admin page. When set, only the listed users may view or modify branding settings, regardless of superuser status. When absent or empty, any superuser retains access (backward-compatible). The permission helper lives in `aa_customizer/permissions.py` so it can be tested without requiring `django.contrib.admin` in `INSTALLED_APPS`.

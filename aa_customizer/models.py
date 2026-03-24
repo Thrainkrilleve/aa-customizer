@@ -422,7 +422,36 @@ class CustomBranding(SingletonModel):
         verbose_name=_("Login Page — Extra Body HTML"),
         help_text=_(
             "Raw HTML injected before &lt;/body&gt; on the login page "
-            "(overlays, animation scripts, custom markup). Not sanitized."
+            "(overlays, animation scripts, custom markup). Not sanitized. "
+            "When SPA mode is enabled, wrap your page sections here as "
+            "&lt;div id=&quot;aac-spa-content&quot; style=&quot;display:none&quot;&gt;"
+            "&lt;section data-route=&quot;home&quot; data-label=&quot;Home&quot;&gt;…&lt;/section&gt;"
+            "&lt;/div&gt;."
+        ),
+    )
+
+    # --------------------------------------------------- login page — SPA mode
+    login_spa_enabled = models.BooleanField(
+        default=False,
+        verbose_name=_("Login Page — Enable SPA mode"),
+        help_text=_(
+            "When enabled, a full-viewport overlay SPA is shown on the login page. "
+            "Visitors see a multi-page public site (Home, About, Apply, …) with a "
+            "nav bar; clicking 'Sign In' reveals the standard EVE SSO card underneath. "
+            "Add page content via the 'Login Page — Extra Body HTML' field using "
+            "&lt;div id=&quot;aac-spa-content&quot; style=&quot;display:none&quot;&gt; "
+            "containing &lt;section data-route=&quot;slug&quot; data-label=&quot;Nav Label&quot;&gt; "
+            "elements."
+        ),
+    )
+    login_spa_nav_brand = models.CharField(
+        max_length=120,
+        blank=True,
+        default="",
+        verbose_name=_("Login Page — SPA nav brand"),
+        help_text=_(
+            "Text shown in the top-left of the SPA navigation bar. "
+            "Defaults to the site name if left blank."
         ),
     )
 
