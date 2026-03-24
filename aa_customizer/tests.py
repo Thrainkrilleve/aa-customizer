@@ -822,3 +822,69 @@ class CustomBrandingAdminHTTPTests(TestCase):
             # App list JSON (used by the sidebar) should not mention custombranding
             content = resp.content.decode()
             self.assertNotIn('custombranding', content.lower())
+
+
+class AACMediaImageAdminPermissionTests(TestCase):
+    """
+    Verify that AACMediaImageAdmin is also restricted by _is_trusted_admin,
+    not just CustomBrandingAdmin.
+    """
+
+    def setUp(self):
+        from django.contrib.admin import site as admin_site
+        from aa_customizer.admin import AACMediaImageAdmin
+        from aa_customizer.models import AACMediaImage
+        self.admin_instance = AACMediaImageAdmin(AACMediaImage, admin_site)
+
+        from django.contrib.auth import get_user_model
+        User = get_user_model()
+        self.trusted = User.objects.create_superuser(
+            username='media_trusted', password='x', email='mt@example.com'
+        )
+        self.untrusted = User.objects.create_superuser(
+            username='media_untrusted', password='x', email='mu@example.com'
+        )
+
+    def _req(self, user):
+        req = RequestFactory().get('/')
+        req.user = user
+        return req
+
+    def test_trusted_can_view(self):
+        with self.settings(AA_CUSTOMIZER_TRUSTED_USER_IDS=[self.trusted.pk]):
+            self.assertTrue(self.admin_instance.has_view_permission(self._req(self.trusted)))
+
+    def test_trusted_can_add(self):
+        with self.settings(AA_CUSTOMIZER_TRUSTED_USER_IDS=[self.trusted.pk]):
+            self.assertTrue(self.admin_instance.has_add_permission(self._req(self.trusted)))
+
+    def test_trusted_can_change(self):
+        with self.settings(AA_CUSTOMIZER_TRUSTED_USER_IDS=[self.trusted.pk]):
+            self.assertTrue(self.admin_instance.has_change_permission(self._req(self.trusted)))
+
+    def test_trusted_can_delete(self):
+        with self.settings(AA_CUSTOMIZER_TRUSTED_USER_IDS=[self.trusted.pk]):
+            self.assertTrue(self.admin_instance.has_delete_permission(self._req(self.trusted)))
+
+    def test_untrusted_superuser_denied_view(self):
+        with self.settings(AA_CUSTOMIZER_TRUSTED_USER_IDS=[self.trusted.pk]):
+            self.assertFalse(self.admin_instance.has_view_permission(self._req(self.untrusted)))
+
+    def test_untrusted_superuser_denied_add(self):
+        with self.settings(AA_CUSTOMIZER_TRUSTED_USER_IDS=[self.trusted.pk]):
+            self.assertFalse(self.admin_instance.has_add_permission(self._req(self.untrusted)))
+
+    def test_untrusted_superuser_denied_change(self):
+        with self.settings(AA_CUSTOMIZER_TRUSTED_USER_IDS=[self.trusted.pk]):
+            self.assertFalse(self.admin_instance.has_change_permission(self._req(self.untrusted)))
+
+    def test_untrusted_superuser_denied_delete(self):
+        with self.settings(AA_CUSTOMIZER_TRUSTED_USER_IDS=[self.trusted.pk]):
+            self.assertFalse(self.admin_instance.has_delete_permission(self._req(self.untrusted)))
+
+    def test_untrusted_not_in_admin_index(self):
+        """Media Library must not appear in the admin index for an untrusted user."""
+        with self.settings(AA_CUSTOMIZER_TRUSTED_USER_IDS=[self.trusted.pk]):
+            self.client.force_login(self.untrusted)
+            resp = self.client.get('/admin/')
+            self.assertNotIn('aacmediaimage', resp.content.decode().lower())

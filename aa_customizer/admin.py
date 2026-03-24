@@ -22,6 +22,18 @@ class AACMediaImageAdmin(admin.ModelAdmin):
     readonly_fields = ("thumbnail", "uploaded")
     fields = ("name", "image_type", "image", "thumbnail", "uploaded")
 
+    def has_view_permission(self, request, obj=None):
+        return _is_trusted_admin(request)
+
+    def has_add_permission(self, request):
+        return _is_trusted_admin(request)
+
+    def has_change_permission(self, request, obj=None):
+        return _is_trusted_admin(request)
+
+    def has_delete_permission(self, request, obj=None):
+        return _is_trusted_admin(request)
+
     @admin.display(description=_("Preview"))
     def thumbnail(self, obj):
         if obj.image:
