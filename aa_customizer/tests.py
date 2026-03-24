@@ -674,3 +674,151 @@ class TrustedAdminUserTests(TestCase):
         with self.settings(AA_CUSTOMIZER_TRUSTED_USER_IDS=[3]):
             self.assertTrue(_is_trusted_admin(self._make_request(pk=3)))
             self.assertFalse(_is_trusted_admin(self._make_request(pk=4)))
+
+
+# ---------------------------------------------------------------------------
+# Admin integration tests — real ModelAdmin instances + real User objects
+# ---------------------------------------------------------------------------
+
+
+class CustomBrandingAdminPermissionTests(TestCase):
+    """
+    End-to-end permission tests for CustomBrandingAdmin.
+
+    These use real Django User objects and real admin class instances so that
+    any bypass introduced by the MRO (SingletonModelAdmin → ModelAdmin) is
+    caught, rather than only testing the helper function in isolation.
+    """
+
+    def setUp(self):
+        from django.contrib.admin import site as admin_site
+        from aa_customizer.admin import CustomBrandingAdmin
+        from aa_customizer.models import CustomBranding
+
+        self.admin_instance = CustomBrandingAdmin(CustomBranding, admin_site)
+
+        # Trusted superuser (pk will be determined after creation)
+        from django.contrib.auth import get_user_model
+        User = get_user_model()
+        self.trusted = User.objects.create_superuser(
+            username='trusted', password='x', email='t@example.com'
+        )
+        self.untrusted = User.objects.create_superuser(
+            username='untrusted', password='x', email='u@example.com'
+        )
+
+    def _req(self, user):
+        req = RequestFactory().get('/')
+        req.user = user
+        return req
+
+    # -- with AA_CUSTOMIZER_TRUSTED_USER_IDS set --
+
+    def test_trusted_user_has_view_permission(self):
+        with self.settings(AA_CUSTOMIZER_TRUSTED_USER_IDS=[self.trusted.pk]):
+            self.assertTrue(
+                self.admin_instance.has_view_permission(self._req(self.trusted))
+            )
+
+    def test_trusted_user_has_change_permission(self):
+        with self.settings(AA_CUSTOMIZER_TRUSTED_USER_IDS=[self.trusted.pk]):
+            self.assertTrue(
+                self.admin_instance.has_change_permission(self._req(self.trusted))
+            )
+
+    def test_untrusted_superuser_denied_view(self):
+        with self.settings(AA_CUSTOMIZER_TRUSTED_USER_IDS=[self.trusted.pk]):
+            self.assertFalse(
+                self.admin_instance.has_view_permission(self._req(self.untrusted))
+            )
+
+    def test_untrusted_superuser_denied_change(self):
+        with self.settings(AA_CUSTOMIZER_TRUSTED_USER_IDS=[self.trusted.pk]):
+            self.assertFalse(
+                self.admin_instance.has_change_permission(self._req(self.untrusted))
+            )
+
+    def test_untrusted_superuser_model_perms_all_false(self):
+        """get_model_perms returns all False → model hidden from admin index."""
+        with self.settings(AA_CUSTOMIZER_TRUSTED_USER_IDS=[self.trusted.pk]):
+            perms = self.admin_instance.get_model_perms(self._req(self.untrusted))
+            self.assertFalse(any(perms.values()), perms)
+
+    def test_trusted_user_model_perms_has_true(self):
+        """get_model_perms has at least view/change True for a trusted user."""
+        with self.settings(AA_CUSTOMIZER_TRUSTED_USER_IDS=[self.trusted.pk]):
+            perms = self.admin_instance.get_model_perms(self._req(self.trusted))
+            self.assertTrue(perms.get('view') or perms.get('change'), perms)
+
+    # -- without AA_CUSTOMIZER_TRUSTED_USER_IDS (fallback mode) --
+
+    def test_fallback_any_superuser_can_view(self):
+        with self.settings(AA_CUSTOMIZER_TRUSTED_USER_IDS=[]):
+            self.assertTrue(
+                self.admin_instance.has_view_permission(self._req(self.untrusted))
+            )
+
+    def test_fallback_non_superuser_blocked(self):
+        from django.contrib.auth import get_user_model
+        regular = get_user_model().objects.create_user(
+            username='regular', password='x', email='r@example.com'
+        )
+        with self.settings(AA_CUSTOMIZER_TRUSTED_USER_IDS=[]):
+            self.assertFalse(
+                self.admin_instance.has_view_permission(self._req(regular))
+            )
+
+
+class CustomBrandingAdminHTTPTests(TestCase):
+    """
+    HTTP-level admin tests using Django's test client.
+
+    These hit the actual admin views to confirm that Django's permission
+    stack (admin_view wrapper → changeform_view → has_view_or_change_permission)
+    honours our overrides end-to-end.
+    """
+
+    def setUp(self):
+        from django.contrib.auth import get_user_model
+        User = get_user_model()
+        self.trusted = User.objects.create_superuser(
+            username='trusted_http', password='pass', email='th@example.com'
+        )
+        self.untrusted = User.objects.create_superuser(
+            username='untrusted_http', password='pass', email='uh@example.com'
+        )
+        # Ensure the singleton exists
+        from aa_customizer.models import CustomBranding
+        CustomBranding.get_solo()
+
+    def _admin_url(self):
+        from django.contrib.admin import site as admin_site
+        from aa_customizer.models import CustomBranding
+        opts = CustomBranding._meta
+        # With SOLO_ADMIN_SKIP_OBJECT_LIST_PAGE=True (default), the root url
+        # maps straight to change_view; test the change URL explicitly.
+        from django.urls import reverse
+        return reverse('admin:%s_%s_change' % (opts.app_label, opts.model_name),
+                       args=(1,))
+
+    def test_trusted_user_can_access_change_view(self):
+        with self.settings(AA_CUSTOMIZER_TRUSTED_USER_IDS=[self.trusted.pk]):
+            self.client.force_login(self.trusted)
+            resp = self.client.get(self._admin_url())
+            # 200 = show form; 302 = redirect after save (also fine)
+            self.assertIn(resp.status_code, (200, 302))
+
+    def test_untrusted_superuser_gets_403_on_change_view(self):
+        with self.settings(AA_CUSTOMIZER_TRUSTED_USER_IDS=[self.trusted.pk]):
+            self.client.force_login(self.untrusted)
+            resp = self.client.get(self._admin_url())
+            self.assertEqual(resp.status_code, 403)
+
+    def test_untrusted_superuser_not_in_admin_app_list(self):
+        """The model must not appear in the admin index for an untrusted user."""
+        with self.settings(AA_CUSTOMIZER_TRUSTED_USER_IDS=[self.trusted.pk]):
+            self.client.force_login(self.untrusted)
+            resp = self.client.get('/admin/')
+            # App list JSON (used by the sidebar) should not mention custombranding
+            content = resp.content.decode()
+            self.assertNotIn('custombranding', content.lower())
