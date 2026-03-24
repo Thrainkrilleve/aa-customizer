@@ -5,6 +5,10 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.2.4] - 2026-03-23
+### Fixed
+- **SPA mode ignores split layout setting** — when Login Page SPA mode was enabled, the `aac-split` / `aac-split-right` layout classes were still applied to `.aac-login-root`. When a visitor clicked "Sign In" and the SPA overlay dismissed, the login card appeared as a full split-screen layout instead of a centred card. The split classes are now suppressed when SPA mode is active.
+
 ## [1.2.3] - 2026-03-23
 ### Fixed
 - **SPA template comments rendering as text** — `{# ... #}` Django shorthand comments in `base.html` and `login_spa_shell.html` were leaking through as visible text on the login page in some server environments. The inline comment in `base.html` has been removed and the docstring block in `login_spa_shell.html` has been converted to `{% comment %}...{% endcomment %}`, which is a proper template node that is always stripped regardless of how the template loader processes the file.
