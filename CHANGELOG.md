@@ -5,6 +5,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.2.2] - 2026-03-23
+### Fixed
+- **SPA content bleeding through** — when `login_spa_enabled` is True, `login_page_body_html` is now wrapped in a hidden container before being injected into the DOM. The SPA JavaScript reads content from it normally via `getElementById`/`querySelector`, but any old-format HTML (without the `#aac-spa-content` wrapper) can no longer bleed through and render visibly on the page. `#aac-spa-body-src` and `#aac-spa-content` are also locked with `display: none !important` in the SPA CSS as a belt-and-suspenders measure.
+- **Migration 0018** — captures `help_text` updates on `login_page_body_html` (added SPA usage guidance) and `login_spa_enabled` (expanded instructions) that were missed in earlier migrations.
+### Removed
+- `custom.css` and `customindex.html` — instance-specific development files removed from the repository.
+
 ## [1.2.1] - 2026-03-23
 ### Fixed
 - **Media Library access restriction** — `AACMediaImageAdmin` was missing all permission overrides, allowing any superuser to access the Media Library even when `AA_CUSTOMIZER_TRUSTED_USER_IDS` was configured. All four permission methods (`has_view`, `has_add`, `has_change`, `has_delete`) now delegate to `_is_trusted_admin()`, matching `CustomBrandingAdmin`. Nine new tests verify the restriction at every level, including admin index visibility.

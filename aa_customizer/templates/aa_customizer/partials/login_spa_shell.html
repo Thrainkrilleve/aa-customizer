@@ -45,8 +45,13 @@
 
 <script>
 !function () {
-    var content = document.getElementById('aac-spa-content');
-    if (!content) return;  // no content div — SPA won't run
+    /* Body HTML is wrapped in #aac-spa-body-src when SPA is active.
+       Support both the wrapper id (current) and the bare #aac-spa-content id
+       (backwards-compat if someone inlines it without the wrapper). */
+    var src = document.getElementById('aac-spa-body-src') ||
+              document.getElementById('aac-spa-content');
+    if (!src) return;  // no content source — SPA won't run
+    var content = src.querySelector('#aac-spa-content') || src;
 
     /* ── collect pages from section[data-route] ── */
     var PAGES = {};

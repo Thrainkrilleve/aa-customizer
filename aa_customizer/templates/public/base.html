@@ -110,9 +110,13 @@
             {% endblock %}
         </div>
         {% endblock outer_container %}
-        {% if AA_CUSTOMIZER.login_page_body_html %}{{ AA_CUSTOMIZER.login_page_body_html|safe }}{% endif %}
         {% if AA_CUSTOMIZER.login_spa_enabled %}
+            {# Wrap body HTML in a hidden div — the SPA JS reads from it via DOM API
+               but old-format or unstyled content can never bleed through. #}
+            <div id="aac-spa-body-src" style="display:none">{{ AA_CUSTOMIZER.login_page_body_html|safe }}</div>
             {% include 'aa_customizer/partials/login_spa_shell.html' %}
+        {% else %}
+            {% if AA_CUSTOMIZER.login_page_body_html %}{{ AA_CUSTOMIZER.login_page_body_html|safe }}{% endif %}
         {% endif %}
     </body>
 </html>

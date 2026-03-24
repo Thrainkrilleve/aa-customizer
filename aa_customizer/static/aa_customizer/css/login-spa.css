@@ -7,6 +7,10 @@
  * via the "Login Page — Extra Body HTML" admin field.
  */
 
+/* ── hidden content source (always invisible; JS reads from it) ──────── */
+#aac-spa-body-src,
+#aac-spa-content { display: none !important; }
+
 /* ── overlay ──────────────────────────────────────────────────────────── */
 #aac-spa {
     position: fixed;
