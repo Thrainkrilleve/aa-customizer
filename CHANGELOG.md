@@ -5,6 +5,10 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.2.3] - 2026-03-23
+### Fixed
+- **SPA template comments rendering as text** — `{# ... #}` Django shorthand comments in `base.html` and `login_spa_shell.html` were leaking through as visible text on the login page in some server environments. The inline comment in `base.html` has been removed and the docstring block in `login_spa_shell.html` has been converted to `{% comment %}...{% endcomment %}`, which is a proper template node that is always stripped regardless of how the template loader processes the file.
+
 ## [1.2.2] - 2026-03-23
 ### Fixed
 - **SPA content bleeding through** — when `login_spa_enabled` is True, `login_page_body_html` is now wrapped in a hidden container before being injected into the DOM. The SPA JavaScript reads content from it normally via `getElementById`/`querySelector`, but any old-format HTML (without the `#aac-spa-content` wrapper) can no longer bleed through and render visibly on the page. `#aac-spa-body-src` and `#aac-spa-content` are also locked with `display: none !important` in the SPA CSS as a belt-and-suspenders measure.
