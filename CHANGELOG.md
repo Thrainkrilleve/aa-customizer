@@ -5,6 +5,10 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.2.1] - 2026-03-23
+### Fixed
+- **Media Library access restriction** — `AACMediaImageAdmin` was missing all permission overrides, allowing any superuser to access the Media Library even when `AA_CUSTOMIZER_TRUSTED_USER_IDS` was configured. All four permission methods (`has_view`, `has_add`, `has_change`, `has_delete`) now delegate to `_is_trusted_admin()`, matching `CustomBrandingAdmin`. Nine new tests verify the restriction at every level, including admin index visibility.
+
 ## [1.2.0] - 2026-03-23
 ### Added
 - **Login Page SPA mode** — new `login_spa_enabled` toggle and `login_spa_nav_brand` field in Custom Branding admin. When enabled, a full-viewport overlay SPA is rendered on the login page. Admins define page content via the existing *Extra Body HTML* field using `<div id="aac-spa-content">` containing `<section data-route="slug" data-label="Nav Label">` elements. The JS router reads these at load time, builds nav links automatically, and handles hash-based routing. Navigating to `#signin` (or arriving with a `?next=` query param) hides the overlay and reveals the standard EVE SSO login card. Bundled CSS (`aac-spa-*` class prefix) is served automatically as a static file when SPA mode is on; each class is namespaced to avoid collisions with Bootstrap or Alliance Auth. Nav brand text defaults to `SITE_NAME` when left blank. See `login-spa.html` for a copy-paste scaffold.
