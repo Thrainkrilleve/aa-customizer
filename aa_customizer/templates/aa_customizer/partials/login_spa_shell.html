@@ -6,10 +6,12 @@
   Injected at the end of <body> when AA_CUSTOMIZER.login_spa_enabled is True.
 
   Page content is read from <section data-route="slug" data-label="Nav Label">
-  elements inside a hidden #aac-spa-content div, which the user provides via
-  the "Login Page — Extra Body HTML" admin field.  Example:
+  elements inside #aac-spa-content, which the user provides via the
+  "Login Page — Extra Body HTML" admin field.  The plugin automatically wraps
+  the field value in <div id="aac-spa-body-src" style="display:none">, so you
+  do NOT need display:none on your own wrapper div.  Example:
 
-      <div id="aac-spa-content" style="display:none">
+      <div id="aac-spa-content">
         <section data-route="home" data-label="Home">
           <!-- your hero HTML here -->
         </section>
@@ -20,6 +22,15 @@
           <!-- your apply HTML here -->
         </section>
       </div>
+
+  JavaScript hooks (listen on document):
+    aac-spa-route-change  — fires after each route is rendered
+                             detail: { route: "slug" }
+    aac-spa-signin        — fires when the overlay hides for the login card
+
+  Global API:
+    window.AAC_SPA.routes      — array of route slugs in order
+    window.AAC_SPA.nav(slug)   — navigate to a named route (re-shows overlay)
 {% endcomment %}
 
 <div id="aac-spa">
@@ -79,10 +90,36 @@
         linksList.appendChild(li);
     }
 
-    /* ── router ── */
+    /* ── DOM refs ── */
     var overlay = document.getElementById('aac-spa');
     var view    = document.getElementById('aac-spa-view');
 
+    /* ── expose public API for body-HTML scripts ── */
+    window.AAC_SPA = {
+        routes: ROUTES,
+        /** Navigate to a named route (re-shows the SPA overlay). */
+        nav: function (route) {
+            window.location.hash = route || ROUTES[0];
+        }
+    };
+
+    /* ── re-execute <script> tags injected via innerHTML ──
+       Browsers silently ignore script elements set through innerHTML;
+       we have to clone-and-replace each one so it actually runs. */
+    function runScripts(container) {
+        var scripts = container.querySelectorAll('script');
+        for (var si = 0; si < scripts.length; si++) {
+            var old = scripts[si];
+            var neo = document.createElement('script');
+            for (var ai = 0; ai < old.attributes.length; ai++) {
+                neo.setAttribute(old.attributes[ai].name, old.attributes[ai].value);
+            }
+            neo.textContent = old.textContent;
+            old.parentNode.replaceChild(neo, old);
+        }
+    }
+
+    /* ── router ── */
     function currentRoute() {
         return (window.location.hash || '').replace(/^#/, '') || ROUTES[0];
     }
@@ -93,6 +130,10 @@
         /* signin hash, or auth redirect (?next=) — hide overlay, show login card */
         if (r === 'signin' || window.location.search.indexOf('next=') !== -1) {
             overlay.style.display = 'none';
+            /* close mobile menu before exiting */
+            linksList.classList.remove('open');
+            /* notify body-HTML scripts (e.g. to open a custom modal overlay) */
+            document.dispatchEvent(new CustomEvent('aac-spa-signin'));
             return;
         }
 
@@ -100,14 +141,20 @@
         if (!PAGES[r]) r = ROUTES[0];
 
         overlay.style.display = 'flex';
+        view.scrollTop = 0;          /* always start at top of the new page */
         view.innerHTML = PAGES[r];
+        runScripts(view);            /* execute any <script> tags in the section */
 
-        document.getElementById('aac-spa-links').classList.remove('open');
+        /* notify body-HTML scripts (e.g. to re-attach IntersectionObserver) */
+        document.dispatchEvent(new CustomEvent('aac-spa-route-change', { detail: { route: r } }));
 
+        /* close mobile menu */
+        linksList.classList.remove('open');
+
+        /* update active link */
         var links = linksList.querySelectorAll('[data-route]');
         for (var k = 0; k < links.length; k++) {
-            var active = links[k].getAttribute('data-route') === r;
-            if (active) {
+            if (links[k].getAttribute('data-route') === r) {
                 links[k].classList.add('aac-spa-active');
             } else {
                 links[k].classList.remove('aac-spa-active');

@@ -1,5 +1,5 @@
 <!-- ═══════════════════════════════════════════════════════════════════
-     AA-CUSTOMIZER  ·  LOGIN PAGE SPA SCAFFOLD  (v1.2.0)
+     AA-CUSTOMIZER  ·  LOGIN PAGE SPA SCAFFOLD  (v1.2.5)
      ───────────────────────────────────────────────────────────────────
      HOW TO USE
      ──────────────────────────────────────────────────────────────────
@@ -15,6 +15,39 @@
         into:
           Admin › Custom Branding › Login Page › CSS
         and edit as needed.
+
+     JAVASCRIPT EVENTS  (v1.2.5+)
+     ──────────────────────────────────────────────────────────────────
+     Scripts inside your body HTML sections can listen to custom events
+     dispatched on `document` by the SPA shell:
+
+       aac-spa-route-change
+         Fired after each route is rendered.  Use this to re-attach
+         animations, IntersectionObservers, etc.
+         e.detail.route — slug of the route that was just rendered
+
+       aac-spa-signin
+         Fired when the SPA overlay dismisses to show the login card
+         (hash #signin or ?next= redirect).  Use this to close custom
+         modals or cancel timers.
+
+     Example:
+       document.addEventListener('aac-spa-route-change', function(e) {
+           if (e.detail.route === 'home') setupCounters();
+       });
+
+     PUBLIC API  (v1.2.5+)
+     ──────────────────────────────────────────────────────────────────
+     window.AAC_SPA is exposed by the SPA shell:
+
+       window.AAC_SPA.routes     — array of route slugs in order
+       window.AAC_SPA.nav(slug)  — navigate to a route (or ROUTES[0]
+                                   if called with no argument)
+
+     Example: re-show the overlay from a modal close button
+       closeBtn.addEventListener('click', function() {
+           window.AAC_SPA.nav('home');
+       });
      ═══════════════════════════════════════════════════════════════════ -->
 
 

@@ -8,6 +8,7 @@ Coverage:
   - Context processor injects AA_CUSTOMIZER and SITE_NAME
   - Template logic correctly injects custom CSS/HTML into rendered output
   - Template logic suppresses output when fields are blank
+  - SPA mode: model fields, template wrapping, CSS loading, split-class suppression
 """
 
 from django.db import models as django_models
@@ -888,3 +889,199 @@ class AACMediaImageAdminPermissionTests(TestCase):
             self.client.force_login(self.untrusted)
             resp = self.client.get('/admin/')
             self.assertNotIn('aacmediaimage', resp.content.decode().lower())
+
+
+# ---------------------------------------------------------------------------
+# SPA mode — model fields and template rendering
+# ---------------------------------------------------------------------------
+
+
+class SPAModeModelTest(TestCase):
+    """Tests for SPA mode model fields."""
+
+    def setUp(self):
+        self.branding = CustomBranding.get_solo()
+
+    def test_spa_disabled_by_default(self):
+        self.assertFalse(self.branding.login_spa_enabled)
+
+    def test_spa_nav_brand_blank_by_default(self):
+        self.assertEqual(self.branding.login_spa_nav_brand, "")
+
+    def test_spa_enabled_round_trip(self):
+        self.branding.login_spa_enabled = True
+        self.branding.save()
+        self.assertTrue(CustomBranding.get_solo().login_spa_enabled)
+
+    def test_spa_disabled_round_trip(self):
+        self.branding.login_spa_enabled = True
+        self.branding.save()
+        self.branding.login_spa_enabled = False
+        self.branding.save()
+        self.assertFalse(CustomBranding.get_solo().login_spa_enabled)
+
+    def test_spa_nav_brand_round_trip(self):
+        self.branding.login_spa_nav_brand = "REV3NANTS WRATH"
+        self.branding.save()
+        self.assertEqual(CustomBranding.get_solo().login_spa_nav_brand, "REV3NANTS WRATH")
+
+    def test_spa_nav_brand_max_length(self):
+        field = CustomBranding._meta.get_field("login_spa_nav_brand")
+        self.assertEqual(field.max_length, 120)
+
+
+class SPATemplateRenderingTest(TestCase):
+    """
+    Tests for SPA mode template rendering, mirroring the logic in
+    ``public/base.html``.
+    """
+
+    def setUp(self):
+        self.branding = CustomBranding.get_solo()
+
+    # Inline template that mirrors the real base.html SPA block
+    SPA_BODY_TPL = (
+        "{% if AA_CUSTOMIZER.login_spa_enabled %}"
+        '<div id="aac-spa-body-src" style="display:none">'
+        "{{ AA_CUSTOMIZER.login_page_body_html|safe }}</div>"
+        "{% else %}"
+        "{% if AA_CUSTOMIZER.login_page_body_html %}"
+        "{{ AA_CUSTOMIZER.login_page_body_html|safe }}"
+        "{% endif %}"
+        "{% endif %}"
+    )
+
+    SPA_CSS_TPL = (
+        "{% load static %}"
+        "{% if AA_CUSTOMIZER.login_spa_enabled %}"
+        '<link rel="stylesheet" href="{% static \'aa_customizer/css/login-spa.css\' %}">'
+        "{% endif %}"
+    )
+
+    def test_spa_enabled_wraps_body_html_in_src_div(self):
+        """SPA on: body HTML is wrapped in #aac-spa-body-src."""
+        self.branding.login_spa_enabled = True
+        self.branding.login_page_body_html = '<div id="aac-spa-content">…</div>'
+        self.branding.save()
+        out = _render(self.SPA_BODY_TPL, {"AA_CUSTOMIZER": self.branding})
+        self.assertIn('id="aac-spa-body-src"', out)
+        self.assertIn('<div id="aac-spa-content">…</div>', out)
+
+    def test_spa_disabled_body_html_injected_directly(self):
+        """SPA off: body HTML is NOT wrapped in #aac-spa-body-src."""
+        self.branding.login_spa_enabled = False
+        self.branding.login_page_body_html = '<div id="custom-markup">test</div>'
+        self.branding.save()
+        out = _render(self.SPA_BODY_TPL, {"AA_CUSTOMIZER": self.branding})
+        self.assertNotIn('id="aac-spa-body-src"', out)
+        self.assertIn('<div id="custom-markup">test</div>', out)
+
+    def test_spa_disabled_body_html_blank_produces_no_output(self):
+        """SPA off, blank body HTML: nothing rendered."""
+        self.branding.login_spa_enabled = False
+        self.branding.login_page_body_html = ""
+        self.branding.save()
+        out = _render(self.SPA_BODY_TPL, {"AA_CUSTOMIZER": self.branding})
+        self.assertEqual(out.strip(), "")
+
+    def test_spa_enabled_empty_body_html_still_renders_src_div(self):
+        """SPA on even with blank body HTML: wrapper div is present (JS will just skip)."""
+        self.branding.login_spa_enabled = True
+        self.branding.login_page_body_html = ""
+        self.branding.save()
+        out = _render(self.SPA_BODY_TPL, {"AA_CUSTOMIZER": self.branding})
+        self.assertIn('id="aac-spa-body-src"', out)
+
+    def test_spa_enabled_loads_spa_css(self):
+        """SPA on: login-spa.css link tag is rendered."""
+        self.branding.login_spa_enabled = True
+        self.branding.save()
+        out = _render(self.SPA_CSS_TPL, {"AA_CUSTOMIZER": self.branding})
+        self.assertIn("login-spa.css", out)
+
+    def test_spa_disabled_does_not_load_spa_css(self):
+        """SPA off: login-spa.css is NOT rendered."""
+        self.branding.login_spa_enabled = False
+        self.branding.save()
+        out = _render(self.SPA_CSS_TPL, {"AA_CUSTOMIZER": self.branding})
+        self.assertNotIn("login-spa.css", out)
+
+
+class SPASplitClassSuppressionTest(TestCase):
+    """
+    Verify that split layout classes are suppressed (v1.2.4 fix) when SPA is on.
+
+    Mirrors the conditional in ``public/middle_box.html``:
+        class="aac-login-root{% if not login_spa_enabled %}{% if split %} aac-split{% endif %}…{% endif %}"
+    """
+
+    TPL = (
+        "{% if AA_CUSTOMIZER.login_spa_enabled %}"
+        '<div class="aac-login-root">'
+        "{% else %}"
+        '<div class="aac-login-root'
+        '{% if AA_CUSTOMIZER.login_layout == "split" or AA_CUSTOMIZER.login_layout == "split-right" %}'
+        " aac-split"
+        "{% endif %}"
+        '{% if AA_CUSTOMIZER.login_layout == "split-right" %}'
+        " aac-split-right"
+        "{% endif %}"
+        '">'
+        "{% endif %}"
+    )
+
+    def setUp(self):
+        self.branding = CustomBranding.get_solo()
+
+    def _out(self):
+        return _render(self.TPL, {"AA_CUSTOMIZER": self.branding})
+
+    def test_card_layout_no_split_classes(self):
+        self.branding.login_spa_enabled = False
+        self.branding.login_layout = "card"
+        self.branding.save()
+        out = self._out()
+        self.assertIn('class="aac-login-root"', out)
+        self.assertNotIn("aac-split", out)
+
+    def test_split_layout_adds_aac_split_class(self):
+        self.branding.login_spa_enabled = False
+        self.branding.login_layout = "split"
+        self.branding.save()
+        out = self._out()
+        self.assertIn("aac-split", out)
+        self.assertNotIn("aac-split-right", out)
+
+    def test_split_right_layout_adds_both_classes(self):
+        self.branding.login_spa_enabled = False
+        self.branding.login_layout = "split-right"
+        self.branding.save()
+        out = self._out()
+        self.assertIn("aac-split", out)
+        self.assertIn("aac-split-right", out)
+
+    def test_spa_enabled_suppresses_split_classes_on_split_layout(self):
+        """SPA mode: no split classes even when layout is 'split'."""
+        self.branding.login_spa_enabled = True
+        self.branding.login_layout = "split"
+        self.branding.save()
+        out = self._out()
+        self.assertNotIn("aac-split", out)
+
+    def test_spa_enabled_suppresses_split_right_classes(self):
+        """SPA mode: no split-right classes even when layout is 'split-right'."""
+        self.branding.login_spa_enabled = True
+        self.branding.login_layout = "split-right"
+        self.branding.save()
+        out = self._out()
+        self.assertNotIn("aac-split", out)
+        self.assertNotIn("aac-split-right", out)
+
+    def test_spa_enabled_card_layout_is_plain_root(self):
+        """SPA mode with card layout: plain aac-login-root, no split noise."""
+        self.branding.login_spa_enabled = True
+        self.branding.login_layout = "card"
+        self.branding.save()
+        out = self._out()
+        self.assertIn('class="aac-login-root"', out)
+        self.assertNotIn("aac-split", out)

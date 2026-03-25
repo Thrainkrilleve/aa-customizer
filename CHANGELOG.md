@@ -5,6 +5,20 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.2.5] - 2026-03-24
+### Fixed
+- **SPA view scroll cut-off** — `#aac-spa-view` had `display: flex; align-items: center` which caused sections taller than the viewport to have their top portion clipped above the scroll origin (unreachable by scrolling). Flex centering has been removed from the view container; horizontal centering is now handled by `.aac-spa-page { margin: 0 auto }`.
+- **Mobile menu stays open when clicking "Sign In →"** — an early `return` in the signin path of `render()` bypassed the `linksList.classList.remove('open')` call, leaving the hamburger menu open as the SPA overlay dismissed.
+- **No scroll-to-top on route change** — navigating between SPA routes left the view at its previous scroll position. `view.scrollTop = 0` is now set before each route's content is injected.
+- **`<script>` tags in section HTML silently ignored** — browsers do not execute `<script>` elements assigned via `innerHTML`. A `runScripts()` helper now clone-replaces each script tag so inline scripts in section content actually run.
+### Added
+- **`aac-spa-signin` custom event** — dispatched on `document` when the SPA overlay hides for the login card (hash `#signin` or `?next=` redirect). Body HTML scripts can listen to open a custom modal or perform other actions.
+- **`aac-spa-route-change` custom event** — dispatched on `document` after each route render, with `detail: { route: slug }`. Body HTML scripts can re-attach IntersectionObserver, count-up animations, or other DOM-dependent setup.
+- **`window.AAC_SPA` public API** — exposes `{ routes: [...], nav(slug) }` so body HTML scripts can programmatically navigate back to a SPA route (e.g. re-show the overlay after closing a custom modal).
+- **EVE time in Nexus Command bar** — the admin dashboard header now displays EVE time (UTC) in blue alongside the existing local time clock. Both update every second from the same interval.
+### Removed
+- **`adminddash.html`** — instance-specific admin dashboard file removed from the repository and added to `.gitignore`.
+
 ## [1.2.4] - 2026-03-23
 ### Fixed
 - **SPA mode ignores split layout setting** — when Login Page SPA mode was enabled, the `aac-split` / `aac-split-right` layout classes were still applied to `.aac-login-root`. When a visitor clicked "Sign In" and the SPA overlay dismissed, the login card appeared as a full split-screen layout instead of a centred card. The split classes are now suppressed when SPA mode is active.

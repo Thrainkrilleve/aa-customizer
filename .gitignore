@@ -32,3 +32,12 @@ env/
 .DS_Store
 Thumbs.db
 .playwright-mcp/
+
+# Instance-specific files (not part of the plugin package)
+adminddash.html
+dash.html
+nginx.conf
+security.txt
+cloudflare-worker.js
+spa.html
+spa.css
