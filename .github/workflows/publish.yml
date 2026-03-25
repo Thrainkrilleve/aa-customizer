@@ -39,6 +39,20 @@ jobs:
     steps:
       - name: Checkout source
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0   # full history needed for merge-base check
+
+      - name: Verify tag is on main branch
+        # Prevent accidental publishes triggered by tags pushed from non-main
+        # branches (e.g. a 'testing' branch).  On workflow_dispatch there is no
+        # tag, so we skip the check.
+        if: startsWith(github.ref, 'refs/tags/v')
+        run: |
+          git fetch origin main
+          git merge-base --is-ancestor "$GITHUB_SHA" "origin/main" || {
+            echo "::error::Tag $GITHUB_REF_NAME is not reachable from 'main'. Publish aborted."
+            exit 1
+          }
 
       - name: Set up Python
         uses: actions/setup-python@v5
