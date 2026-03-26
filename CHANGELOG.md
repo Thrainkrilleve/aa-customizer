@@ -5,6 +5,10 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.2.6] - 2026-03-25
+### Changed
+- Version bump to allow PyPI publish. `v1.2.5` was accidentally published from the `testing` branch and yanked; PyPI does not allow re-uploading a yanked version under the same filename.
+
 ## [1.2.5] - 2026-03-24
 ### Fixed
 - **SPA view scroll cut-off** — `#aac-spa-view` had `display: flex; align-items: center` which caused sections taller than the viewport to have their top portion clipped above the scroll origin (unreachable by scrolling). Flex centering has been removed from the view container; horizontal centering is now handled by `.aac-spa-page { margin: 0 auto }`.
