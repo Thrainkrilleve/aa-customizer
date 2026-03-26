@@ -15,7 +15,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **`aac-spa-signin` custom event** — dispatched on `document` when the SPA overlay hides for the login card (hash `#signin` or `?next=` redirect). Body HTML scripts can listen to open a custom modal or perform other actions.
 - **`aac-spa-route-change` custom event** — dispatched on `document` after each route render, with `detail: { route: slug }`. Body HTML scripts can re-attach IntersectionObserver, count-up animations, or other DOM-dependent setup.
 - **`window.AAC_SPA` public API** — exposes `{ routes: [...], nav(slug) }` so body HTML scripts can programmatically navigate back to a SPA route (e.g. re-show the overlay after closing a custom modal).
-- **EVE time in Nexus Command bar** — the admin dashboard header now displays EVE time (UTC) in blue alongside the existing local time clock. Both update every second from the same interval.
 ### Removed
 - **`adminddash.html`** — instance-specific admin dashboard file removed from the repository and added to `.gitignore`.
 

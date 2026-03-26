@@ -43,6 +43,10 @@ Gives administrators a simple admin-panel UI to customize their Alliance Auth in
 | **Login Page — CSS (Inline)** | CSS injected only on the login page, after global CSS; use to fully restyle or completely replace the login card with a custom design |
 | **Login Page — Extra `<head>` HTML** | Raw HTML injected at the end of `<head>` on the login page only (font imports, meta tags) |
 | **Login Page — Extra Body HTML** | Raw HTML injected before `</body>` on the login page only; combine with the CSS field to build a full custom landing page over the existing login card |
+| **Login Page SPA mode** | Turns the login page into a mini multi-page website with a navigation bar — visitors can browse corp info, check requirements, and then click Sign In |
+| **Member dashboard injection** | Inject custom CSS and HTML into the dashboard that all logged-in members see |
+| **Admin dashboard injection** | Inject custom CSS and HTML into the superuser admin overview page |
+| **Restricted admin access** | Limit who can edit branding settings to specific user IDs via a `local.py` setting |
 
 
 ## Requirements
@@ -330,6 +334,69 @@ Changes take effect immediately on the next page load — no server restart need
 | **Custom CSS** | Inline CSS injected via `<style>` on every page |
 | **Extra `<head>` HTML** | Raw HTML injected at the end of `<head>` on every page |
 
+### Login Page — SPA Mode
+
+SPA mode turns your login page into a **mini website** with a navigation bar. Visitors can browse multiple pages (About, Requirements, etc.) before clicking Sign In to get the normal EVE SSO login card.
+
+| Field | Description |
+|---|---|
+| **Enable Login Page SPA** | Toggle this on to activate SPA mode |
+| **SPA Nav Brand Text** | The name shown in the top-left corner of the nav bar. Leave blank to use your site name |
+
+**How to build your SPA pages**
+
+With SPA mode on, go to **Login Page — Extra Body HTML** and paste your pages using this structure:
+
+```html
+<div id="aac-spa-content">
+
+  <section data-route="home" data-label="Home">
+    <div class="aac-spa-page">
+      <p class="aac-spa-corp-tag">YOUR CORP TAG</p>
+      <h1 class="aac-spa-hero-title">My Corporation</h1>
+      <p class="aac-spa-hero-sub">Short tagline here</p>
+      <div class="aac-spa-hero-actions">
+        <a href="#about" class="aac-spa-btn aac-spa-btn-outline">About Us</a>
+        <a href="#signin" class="aac-spa-btn aac-spa-btn-primary">Sign In →</a>
+      </div>
+    </div>
+  </section>
+
+  <section data-route="about" data-label="About Us">
+    <div class="aac-spa-page">
+      <h2 class="aac-spa-page-title">About Us</h2>
+      <p class="aac-spa-body-text">Tell visitors about your corp here.</p>
+    </div>
+  </section>
+
+</div>
+```
+
+- Each `<section>` becomes one page. The `data-route` is its internal name; `data-label` is the nav link text.
+- Nav links are built automatically — no extra setup needed.
+- Linking to `href="#signin"` closes the SPA and shows the login card.
+- A full ready-to-use scaffold is available in `login-spa.html` in this repository — copy and paste it into the Extra Body HTML field and edit the text.
+
+### Member Dashboard — Custom Code
+
+Inject custom CSS or HTML into the dashboard all logged-in members see.
+
+| Field | Description |
+|---|---|
+| **Dashboard CSS** | Inline CSS injected on the member dashboard page only |
+| **Dashboard — Extra `<head>` HTML** | Raw HTML injected into `<head>` on the member dashboard only |
+| **Dashboard — Extra Body HTML** | Raw HTML injected at the bottom of the member dashboard page |
+
+### Superuser Dashboard — Custom Code
+
+Inject custom CSS or HTML into the admin status overview page (`/admin/`). Only superusers and staff see this.
+
+| Field | Description |
+|---|---|
+| **Superuser Dashboard CSS** | Inline CSS injected on the admin overview page only |
+| **Superuser Dashboard — Extra `<head>` HTML** | Raw HTML injected into `<head>` on the admin overview only |
+| **Superuser Dashboard — Extra Body HTML** | Raw HTML injected at the top of the admin overview page, above the dashboard panels |
+
 
 ## Image recommendations
 
@@ -341,6 +408,23 @@ Changes take effect immediately on the next page load — no server restart need
 | Favicon | ≥ 192 × 192 px, PNG or ICO |
 | Navbar logo | Transparent PNG, height ≤ 64 px |
 | Sidebar logo | Transparent PNG, width ≤ 256 px |
+
+
+## Restricting admin access
+
+By default, any superuser can edit **Custom Branding** and the **Media Library** in admin.
+
+If you want to lock those pages down to specific people only — even if other superusers exist — add this to `local.py`:
+
+```python
+AA_CUSTOMIZER_TRUSTED_USER_IDS = [1, 42]
+```
+
+Replace `1` and `42` with the real user IDs of the people who should have access. Anyone not on the list will be turned away even if they are a superuser.
+
+**How to find a user's ID:** Go to **Admin → Authentication → Users**, click the user's name, and look at the number in the URL. For example, `/admin/auth/user/5/change/` means their ID is `5`.
+
+If you leave this setting out of `local.py` entirely, all superusers retain access as normal.
 
 
 ## Security notes
