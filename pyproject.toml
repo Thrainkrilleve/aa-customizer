@@ -8,7 +8,7 @@ version = "1.2.6"
 description = "Branding & customization plugin for Alliance Auth — custom logos, login backgrounds, favicons, and more."
 readme = "README.md"
 license = { text = "MIT" }
-requires-python = ">=3.8"
+requires-python = ">=3.10"
 authors = [
     { name = "Thrainkrilleve" },
 ]
@@ -20,8 +20,6 @@ classifiers = [
     "License :: OSI Approved :: MIT License",
     "Operating System :: OS Independent",
     "Programming Language :: Python :: 3",
-    "Programming Language :: Python :: 3.8",
-    "Programming Language :: Python :: 3.9",
     "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
@@ -29,7 +27,7 @@ classifiers = [
     "Topic :: Internet :: WWW/HTTP :: Dynamic Content",
 ]
 dependencies = [
-    "allianceauth>=4.0.0",
+    "allianceauth>=5.0.0",
     "django-solo",
     "django-crum>=0.7.9",
     "Pillow",

@@ -113,7 +113,7 @@ the escapejs filter without having to redefine them later.
                                 <h6 class="list-group-item-heading">{% translate "Latest Stable" %}</h6>
 
                                 <p class="list-group-item-text">
-                                    <i class="fab fa-gitlab hidden-xs" aria-hidden="true"></i>
+                                    <i class="fab fa-gitlab hidden-xs d-none d-sm-inline" aria-hidden="true"></i>
                                     {{ latest_patch_version }}
                                     {% if not latest_patch %}<br>{% translate "Update available" %}{% endif %}
                                 </p>
@@ -126,7 +126,7 @@ the escapejs filter without having to redefine them later.
                                     <h6 class="list-group-item-heading">{% translate "Latest Pre-Release" %}</h6>
 
                                     <p class="list-group-item-text">
-                                        <i class="fab fa-gitlab hidden-xs" aria-hidden="true"></i>
+                                        <i class="fab fa-gitlab hidden-xs d-none d-sm-inline" aria-hidden="true"></i>
                                         {{ latest_beta_version }}
                                         <br>{% translate "Pre-Release available" %}
                                     </p>
