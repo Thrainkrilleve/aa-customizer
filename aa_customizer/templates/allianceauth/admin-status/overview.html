@@ -154,9 +154,9 @@ the escapejs filter without having to redefine them later.
                         style="height: 12px;"
                         title="Pending data update…"
                     >
-                        {% include "allianceauth/admin-status/celery_bar_partial.html" with label="succeeded" level="success" tasks_count=tasks_succeeded %}
-                        {% include "allianceauth/admin-status/celery_bar_partial.html" with label="retried" level="info" tasks_count=tasks_retried %}
-                        {% include "allianceauth/admin-status/celery_bar_partial.html" with label="failed" level="danger" tasks_count=tasks_failed %}
+                        {% include "admin_status/celery_bar_partial.html" with label="succeeded" level="success" tasks_count=tasks_succeeded %}
+                        {% include "admin_status/celery_bar_partial.html" with label="retried" level="info" tasks_count=tasks_retried %}
+                        {% include "admin_status/celery_bar_partial.html" with label="failed" level="danger" tasks_count=tasks_failed %}
                     </div>
 
                     <p>

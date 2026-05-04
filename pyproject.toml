@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "aa-customizer"
-version = "1.2.6"
+version = "1.2.7"
 description = "Branding & customization plugin for Alliance Auth — custom logos, login backgrounds, favicons, and more."
 readme = "README.md"
 license = { text = "MIT" }
@@ -51,5 +51,6 @@ aa_customizer = [
     "templates/authentication/*.html",
     "templates/public/*.html",
     "templates/menu/*.html",
+    "templates/admin_status/*.html",
     "static/aa_customizer/css/*.css",
 ]
