@@ -52,10 +52,10 @@ the escapejs filter without having to redefine them later.
 {% endif %}
 
 {% if notifications %}
-    <div id="aa-dashboard-panel-admin-notifications" class="col-12 mb-3">
+    <div id="aa-dashboard-panel-admin-application-notifications" class="col-12 mb-3">
         <div class="card">
             <div class="card-body">
-                {% translate "Alliance Auth Notifications" as widget_title %}
+                {% translate "Announcements" as widget_title %}
                 {% include "framework/dashboard/widget-title.html" with title=widget_title %}
 
                 <div>
@@ -63,7 +63,7 @@ the escapejs filter without having to redefine them later.
                         {% for notif in notifications %}
                             <li class="list-group-item">
                                 <span class="badge text-bg-success me-2">{% translate "Open" %}</span>
-                                <a href="{{ notif.web_url }}" target="_blank">#{{ notif.iid }} {{ notif.title }}</a>
+                                <a href="{{ notif.announcement_url }}" target="_blank">#{{ notif.announcement_number }} {{ notif.announcement_text }}</a>
                             </li>
                         {% empty %}
                             <div class="alert alert-primary" role="alert">
