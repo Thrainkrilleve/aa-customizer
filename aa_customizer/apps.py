@@ -27,3 +27,21 @@ class AaCustomizerConfig(AppConfig):
                 dirs = engine.setdefault("DIRS", [])
                 if templates_dir not in dirs:
                     dirs.append(templates_dir)
+
+        # Ensure allianceauth.admin_status is in the app registry so its
+        # templates, templatetags, and migrations are available without
+        # requiring users to add it manually to INSTALLED_APPS.
+        #
+        # We REPLACE apps.app_configs with a new dict rather than mutating
+        # the existing one.  During populate() Phase 3, Django iterates over
+        # app_configs.values() — mutating the dict mid-iteration raises
+        # RuntimeError.  Replacing the attribute leaves the iterator's
+        # bound view pointing at the old dict, so no error is raised.
+        from django.apps import apps as django_apps
+        if not django_apps.is_installed("allianceauth.admin_status"):
+            from django.apps import AppConfig as DjangoAppConfig
+            app_config = DjangoAppConfig.create("allianceauth.admin_status")
+            app_config.apps = django_apps
+            django_apps.app_configs = {**django_apps.app_configs, app_config.label: app_config}
+            app_config.import_models()
+            django_apps.clear_cache()
