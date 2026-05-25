@@ -39,9 +39,13 @@ class AaCustomizerConfig(AppConfig):
         # bound view pointing at the old dict, so no error is raised.
         from django.apps import apps as django_apps
         if not django_apps.is_installed("allianceauth.admin_status"):
-            from django.apps import AppConfig as DjangoAppConfig
-            app_config = DjangoAppConfig.create("allianceauth.admin_status")
-            app_config.apps = django_apps
-            django_apps.app_configs = {**django_apps.app_configs, app_config.label: app_config}
-            app_config.import_models()
-            django_apps.clear_cache()
+            try:
+                from django.apps import AppConfig as DjangoAppConfig
+                app_config = DjangoAppConfig.create("allianceauth.admin_status")
+                app_config.apps = django_apps
+                django_apps.app_configs = {**django_apps.app_configs, app_config.label: app_config}
+                app_config.import_models()
+                django_apps.clear_cache()
+            except ImportError:
+                # allianceauth is not installed in this environment (e.g. CI/tests)
+                pass

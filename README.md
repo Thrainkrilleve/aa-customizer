@@ -59,7 +59,7 @@ Gives administrators a simple admin-panel UI to customize their Alliance Auth in
 
 To prevent confusion on how to get this installed, I figured I would break it down a little more.
 
-After the initial install, mirgate, etc. the app will function without having to do any of the extra folder creations by using image URLs.
+After the initial install, migrate, etc. the app will function without having to do any of the extra folder creations by using image URLs.
 
 The upside is, it will work, the downside is, for any user that is located in a country that is blocking certain websites, like Imgur, the images will not appear. (A UK user in our Corp pointed this out to me.) 
 
@@ -93,6 +93,9 @@ INSTALLED_APPS.insert(0, 'aa_customizer')
 > Django searches each app's `templates/` folder in `INSTALLED_APPS` order and uses the first match.
 > Placing `aa_customizer` first ensures its template overrides are picked up before the Alliance Auth originals.
 
+> **Note:** `allianceauth.admin_status` (the dashboard version/celery widget) is automatically registered
+> by `aa_customizer` at startup — you do not need to add it to `INSTALLED_APPS` manually.
+
 **3 — Add the context processor**
 
 In `local.py`, add to the settings section to append the existing `TEMPLATES` list:
@@ -118,6 +121,9 @@ python manage.py migrate aa_customizer
 ```bash
 python manage.py collectstatic
 ```
+
+**6 — Configure your web server**
+
 Make sure your web server (nginx, Apache, etc.) is configured to serve files from `MEDIA_ROOT` at `MEDIA_URL`.
 
 In your `nginx.conf`, add inside the `server {}` block:
@@ -162,6 +168,9 @@ INSTALLED_APPS.insert(0, 'aa_customizer')
 > Django searches each app's `templates/` folder in `INSTALLED_APPS` order and uses the first match.
 > Placing `aa_customizer` first ensures its template overrides are picked up before the Alliance Auth originals.
 
+> **Note:** `allianceauth.admin_status` (the dashboard version/celery widget) is automatically registered
+> by `aa_customizer` at startup — you do not need to add it to `INSTALLED_APPS` manually.
+
 **3 — Add the context processor**
 
 In `local.py`, add to the settings section to append the existing `TEMPLATES` list:
@@ -170,7 +179,21 @@ In `local.py`, add to the settings section to append the existing `TEMPLATES` li
 TEMPLATES[0]["OPTIONS"]["context_processors"].append(
     "aa_customizer.context_processors.aa_customizer"
 )
+```
 
+**4 — Run migrations**
+
+```bash
+python manage.py migrate aa_customizer
+```
+
+**5 — (Optional) Configure media storage**
+
+Skip this section if you plan to use URL fields for all images.
+
+**a) Add media settings to `local.py`**
+
+```python
 MEDIA_ROOT = "/path/to/your/media/"
 MEDIA_URL  = "/media/"
 ```
@@ -219,33 +242,27 @@ location /media {
 
 > Adjust `client_max_body_size` to suit your largest file. A 1920×1080 JPEG is typically 1–5 MB; a short MP4 video background can be 10–20 MB. Set it slightly above your expected maximum.
 
-**d) Bring the stack up**
+**6 — Build and restart**
 
 ```bash
-docker compose up -d
-```
-
-**e) Fix volume permissions**
-
-Docker creates named volumes owned by root. The AA container runs as uid/gid `61000`. Run this once after first bringing the stack up:
-
-Confimr the uid/gid
-
-```bash
-docker compose exec allianceauth_gunicorn ls -la /var/www/myauth/media
-#change using
-docker compose exec -u root allianceauth_gunicorn chown -R 61000:61000 /var/www/myauth/media
-```
-
-After this, uploads made through `/admin/aa_customizer/aacustomizersettings/` will be stored under `/var/www/myauth/media/aa_customizer/` and served immediately by nginx.
-
-**5 — Build and Restart**
-
-```
 docker compose build
 docker compose down
 docker compose up -d
 ```
+
+**7 — Fix volume permissions (if media was configured)**
+
+Docker creates named volumes owned by root. The AA container runs as uid/gid `61000`. Run this once after first bringing the stack up:
+
+Confirm the uid/gid:
+
+```bash
+docker compose exec allianceauth_gunicorn ls -la /var/www/myauth/media
+# fix ownership
+docker compose exec -u root allianceauth_gunicorn chown -R 61000:61000 /var/www/myauth/media
+```
+
+After this, uploads made through `/admin/aa_customizer/aacustomizersettings/` will be stored under `/var/www/myauth/media/aa_customizer/` and served immediately by nginx.
 
 ## Usage
 
