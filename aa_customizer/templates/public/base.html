@@ -31,7 +31,7 @@
                     {# Video element handles the visual; use color fallback or black behind it #}
                     background: {{ AA_CUSTOMIZER.login_background_color|default:'#000' }};
                 {% elif AA_CUSTOMIZER.effective_login_background %}
-                    background: url('{{ AA_CUSTOMIZER.effective_login_background }}') no-repeat center center fixed;
+                    background: url('{{ AA_CUSTOMIZER.effective_login_background|escapejs }}') no-repeat center center fixed;
                 {% elif AA_CUSTOMIZER.login_background_color %}
                     background: {{ AA_CUSTOMIZER.login_background_color }};
                 {% else %}

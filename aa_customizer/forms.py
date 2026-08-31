@@ -4,7 +4,7 @@ Forms for the aa_customizer app.
 
 from django import forms
 
-from .models import CustomBranding, _ALLOWED_BACKGROUND_EXTENSIONS
+from .models import CustomBranding, _ALLOWED_BACKGROUND_EXTENSIONS, _ALLOWED_IMAGE_EXTENSIONS
 
 _MONO = "font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace; width: 100%;"
 
@@ -59,3 +59,27 @@ class CustomBrandingAdminForm(forms.ModelForm):
                     "Please upload an image (JPEG, PNG, GIF, WebP) or a video (MP4, WebM, OGV)."
                 )
         return f
+
+    def _clean_image_field(self, field_name):
+        f = self.cleaned_data.get(field_name)
+        if f and hasattr(f, "name"):
+            import os
+            ext = os.path.splitext(f.name)[1].lower()
+            if ext not in _ALLOWED_IMAGE_EXTENSIONS:
+                raise forms.ValidationError(
+                    f"Unsupported file type '{ext}'. "
+                    "Please upload a supported image format (e.g. PNG, JPEG, SVG, WebP)."
+                )
+        return f
+
+    def clean_login_logo(self):
+        return self._clean_image_field("login_logo")
+
+    def clean_favicon(self):
+        return self._clean_image_field("favicon")
+
+    def clean_navbar_logo(self):
+        return self._clean_image_field("navbar_logo")
+
+    def clean_sidebar_logo(self):
+        return self._clean_image_field("sidebar_logo")

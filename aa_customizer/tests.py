@@ -1085,3 +1085,36 @@ class SPASplitClassSuppressionTest(TestCase):
         out = self._out()
         self.assertIn('class="aac-login-root"', out)
         self.assertNotIn("aac-split", out)
+
+# ---------------------------------------------------------------------------
+# Form Validation
+# ---------------------------------------------------------------------------
+
+import io
+
+from PIL import Image
+from django.core.files.uploadedfile import SimpleUploadedFile
+
+from .forms import CustomBrandingAdminForm
+
+
+class FormValidationTest(TestCase):
+    def _valid_png_file(self, name="logo.png"):
+        buffer = io.BytesIO()
+        Image.new("RGBA", (32, 32), color=(255, 0, 0)).save(buffer, format="PNG")
+        return SimpleUploadedFile(name, buffer.getvalue(), content_type="image/png")
+
+    def test_image_extension_validation(self):
+        """Image fields should reject unsupported extensions even when the payload is valid."""
+        bad_file = self._valid_png_file("logo.pdf")
+
+        # valid image bytes but forbidden extension should trigger the custom extension check
+        form = CustomBrandingAdminForm(files={"login_logo": bad_file})
+        self.assertFalse(form.is_valid())
+        self.assertIn("login_logo", form.errors)
+        self.assertIn("Unsupported file type", form.errors["login_logo"][0])
+
+        good_file = self._valid_png_file("logo.png")
+        form = CustomBrandingAdminForm(files={"login_logo": good_file})
+        self.assertNotIn("Unsupported file type", "\n".join(form.errors.get("login_logo", [])))
+

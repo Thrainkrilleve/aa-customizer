@@ -5,6 +5,15 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.3.1] - 2026-08-31
+### Fixed
+- Hardened the login background CSS injection with `|escapejs` to reduce CSS breakout risk from custom background URLs.
+- Updated the SPA login shell so the overlay persists unless there is an explicit login error or the URL is set to `#signin`, while also fixing URL state and accessibility state handling.
+- Added explicit file-extension validation for `login_logo`, `favicon`, `navbar_logo`, and `sidebar_logo` uploads to prevent unsupported image types from being accepted.
+
+### Tests
+- Added regression coverage for the new upload validation checks.
+
 ## [1.2.6] - 2026-03-25
 ### Changed
 - Version bump to allow PyPI publish. `v1.2.5` was accidentally published from the `testing` branch and yanked; PyPI does not allow re-uploading a yanked version under the same filename.
