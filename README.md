@@ -391,6 +391,8 @@ With SPA mode on, go to **Login Page — Extra Body HTML** and paste your pages 
 
 - Each `<section>` becomes one page. The `data-route` is its internal name; `data-label` is the nav link text.
 - Nav links are built automatically — no extra setup needed.
+- On desktop, scrolling past the bottom or top of a page navigates to the next or previous configured page. On touch devices, swipe past either boundary to do the same. This works automatically for every `data-route` section.
+- Page changes include a brief visual wipe that does not interfere with mouse-wheel or touch scrolling. Custom login-page CSS can override its appearance when needed.
 - Linking to `href="#signin"` closes the SPA and shows the login card.
 - A full ready-to-use scaffold is available in `login-spa.html` in this repository — copy and paste it into the Extra Body HTML field and edit the text.
 
