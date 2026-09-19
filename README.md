@@ -6,7 +6,7 @@ A branding & customization plugin for [Alliance Auth](https://allianceauth.readt
 
 Gives administrators a simple admin-panel UI to customize their Alliance Auth installation without touching code or replacing static files.
 
-### - Going forward. Some work will be completed with the help of AI, to include fixes, reviews, and research on future updates to Auth. Work/home live balancing has become very non-existence at this point in time with me. If you have any questions of concerns, please reach out to me in the AA Discord server.
+### - Going forward. Some work will be completed with the help of AI, to include fixes, reviews, and research on future updates to Auth. If you have any questions of concerns, please reach out to me in the AA Discord server.
 
 
 ## Screenshots
