@@ -5,6 +5,10 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+### Changed
+- Dropped support for Python 3.10 and 3.11; `requires-python` is now `>=3.12`. This follows Alliance Auth moving its Python 3.10/3.11 deprecation up to 2026-11-13 (mid AA v5). Docker installs already run Python 3.12, so no action is needed there.
+
 ## [1.3.1] - 2026-08-31
 ### Fixed
 - Hardened the login background CSS injection with `|escapejs` to reduce CSS breakout risk from custom background URLs.
