@@ -1118,3 +1118,55 @@ class FormValidationTest(TestCase):
         form = CustomBrandingAdminForm(files={"login_logo": good_file})
         self.assertNotIn("Unsupported file type", "\n".join(form.errors.get("login_logo", [])))
 
+
+
+# ---------------------------------------------------------------------------
+# Login background URL inside the <style> block (issue #4)
+# ---------------------------------------------------------------------------
+
+
+class LoginBackgroundCSSURLTest(TestCase):
+    """
+    ``public/base.html`` puts the login background URL inside a CSS string in
+    a ``<style>`` element. Browsers don't decode HTML entities there, and CSS
+    reads ``\\u002D`` as the letter "u" followed by "002D", so neither
+    ``escapejs`` nor HTML escaping produces a working URL.
+    """
+
+    def setUp(self):
+        self.branding = CustomBranding.get_solo()
+
+    def _render_background_css(self, url):
+        from django.template.loader import render_to_string
+
+        self.branding.login_background_url = url
+        self.branding.save()
+        html = render_to_string(
+            "public/base.html",
+            {"AA_CUSTOMIZER": self.branding},
+            request=RequestFactory().get("/"),
+        )
+        start = html.index("background: url('") + len("background: url('")
+        return html[start:html.index("')", start)]
+
+    def test_hyphens_are_kept(self):
+        url = "https://example.com/front-portal/background-image.jpg"
+        self.assertEqual(self._render_background_css(url), url)
+
+    def test_query_string_ampersands_are_kept(self):
+        url = "https://cdn.example.com/bg.png?ex=1&is=2&hm=abc-def"
+        self.assertEqual(self._render_background_css(url), url)
+
+    def test_quote_and_style_breakout_are_escaped(self):
+        css = self._render_background_css("https://example.com/a');}</style><script>x()</script>.png")
+        self.assertNotIn("'", css)
+        self.assertNotIn("<", css)
+        self.assertNotIn(">", css)
+        self.assertIn("\\27 ", css)
+
+    def test_css_url_filter_escapes_with_css_hex_escapes(self):
+        from .templatetags.aa_customizer_tags import css_url
+
+        self.assertEqual(css_url("https://a.example/x y\\z'\n"), "https://a.example/x\\20 y\\5c z\\27 \\a ")
+        self.assertEqual(css_url(""), "")
+        self.assertEqual(css_url(None), "")

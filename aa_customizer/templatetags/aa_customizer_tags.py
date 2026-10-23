@@ -13,6 +13,33 @@ from ..models import CustomBranding
 register = template.Library()
 
 
+# Characters left as-is in a quoted CSS url(): everything a URL normally uses,
+# minus the quote, backslash and angle brackets.
+_CSS_URL_SAFE = frozenset(
+    "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
+    "-._~:/?#[]@!$&()*+,;=%"
+)
+
+
+@register.filter
+def css_url(value) -> str:
+    """
+    Escape a URL for use inside a quoted CSS ``url('...')`` in a ``<style>``.
+
+    Anything outside ``_CSS_URL_SAFE`` becomes a CSS hex escape (``\\27 `` for
+    ``'``), which CSS decodes back to the original character and which can't
+    end the string, the ``url()`` or the ``<style>`` element. ``escapejs``
+    is wrong here: CSS reads its ``\\u002D`` as "u002D", breaking hyphens.
+    HTML escaping is wrong too, because entities aren't decoded inside
+    ``<style>``, so ``&`` would arrive as ``&amp;``.
+    """
+    if not value:
+        return ""
+    return mark_safe(
+        "".join(ch if ch in _CSS_URL_SAFE else f"\\{ord(ch):x} " for ch in str(value))
+    )
+
+
 def _get_branding(context) -> CustomBranding:
     """Return the branding object from context or the DB."""
     return context.get("AA_CUSTOMIZER") or CustomBranding.get_solo()
