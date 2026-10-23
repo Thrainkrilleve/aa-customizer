@@ -5,7 +5,7 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased]
+## [1.3.3] - 2026-10-23
 ### Fixed
 - External login background URLs containing hyphens, or a query string with `=` and `&`, failed to load ([#4](https://github.com/Thrainkrilleve/aa-customizer/issues/4)). The URL was escaped with `escapejs`, whose `\u002D`-style escapes CSS doesn't understand. It's now escaped with a CSS-specific filter that leaves normal URL characters alone and still stops the URL from breaking out of the `<style>` block.
 
